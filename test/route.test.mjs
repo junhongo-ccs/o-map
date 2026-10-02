@@ -229,7 +229,7 @@ test("沿線の見どころ用の地点ID：新宿→日本橋 9時発は、甲�
 });
 
 test("名所：事実カードのある宿場・名所にはすべて種類（category）と画像がある", () => {
-  const CATS = ["宿場", "門", "社寺", "川・橋", "花の名所", "紅葉の名所", "街道", "町並み", "水車", "馬場"];
+  const CATS = ["宿場", "門", "社寺", "川・橋", "花の名所", "紅葉の名所", "庭園", "街道", "町並み", "水車", "馬場"];
   const IMAGES = load("spot-images.json").images;
   for (const [id, n] of Object.entries(OLD.nodes)) {
     if (!["place", "shuku"].includes(n.kind) || !n.facts?.some((f) => FACTS.facts[f])) continue;

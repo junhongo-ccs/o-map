@@ -118,7 +118,7 @@ const markers = {
 // 名所のラベルの先頭に付けるアイコン。名所の種類（network-1885.json の category）ごとに決める
 // （Material Symbols。index.html の icon_names に同じ名前を並べる）。鳥居・橋・馬の形のアイコンは無いので近いもので代用
 const CATEGORY_ICON = {
-  宿場: "hotel", 門: "gate", 社寺: "temple_buddhist", "川・橋": "water", 花の名所: "local_florist", 紅葉の名所: "eco",
+  宿場: "hotel", 門: "gate", 社寺: "temple_buddhist", "川・橋": "water", 花の名所: "local_florist", 紅葉の名所: "eco", 庭園: "park",
   街道: "road", 町並み: "shopping_bag", 水車: "mode_fan", 馬場: "target",
 };
 // 名所のピン（事実カードのある宿場・名所。経路に関係なく両方の地図にいつも置く）。押すとカードを出す
@@ -135,10 +135,13 @@ function spotImageHTML(id) {
   return `<figure class="spot-fig"><a href="${esc(im.page)}" target="_blank" rel="noopener"><img src="${esc(im.file)}" width="${im.width}" height="${im.height}" alt="${esc(im.title)}" loading="lazy"></a>
     <figcaption>${esc(im.title)}（${esc(who)}）／${lic}</figcaption></figure>`;
 }
+const baseName = (s) => s.replace(/（.*?）/g, "").trim();
 function spotCardHTML(sp) {
   return `<div class="spot-card">${spotImageHTML(sp.id)}<strong>${esc(sp.name)}</strong>${sp.facts.map((id) => {
     const f = FACTS.facts[id];
-    return `<p><span class="spot-title">${esc(f.title)}</span><br>${esc(f.body)}
+    // 事実カードのタイトルが名所名と同じ（かっこ書きを除いて同じ）なら、見出しの繰り返しになるので出さない
+    const same = baseName(f.title) === baseName(sp.name);
+    return `<p>${same ? "" : `<span class="spot-title">${esc(f.title)}</span><br>`}${esc(f.body)}
       <br><a class="spot-src" href="${esc(f.source.url)}" target="_blank" rel="noopener">出典：${esc(f.source.label)}</a></p>`;
   }).join("")}</div>`;
 }
@@ -151,7 +154,7 @@ function placeSpotCard() {
   const { sp, map } = spotOpen;
   const wrap = spotCard.parentElement.getBoundingClientRect();
   const pt = map.project([sp.lon, sp.lat]);
-  const w = spotCard.offsetWidth, h = spotCard.offsetHeight, gap = 40;
+  const w = spotCard.offsetWidth, h = spotCard.offsetHeight, gap = 34; // gap はラベル（吹き出し）の高さ＋少し
   const x = Math.min(Math.max(8, pt.x - w / 2), wrap.width - w - 8);
   const above = pt.y - gap - h >= 8; // 上に入らなければピンの下に出す
   spotCard.style.left = `${x}px`;
@@ -178,7 +181,7 @@ const spotPins = ALL_SPOTS.flatMap((sp) => [mapNow, mapOld].map((m) => {
   el.type = "button"; el.className = "spot-pin"; el.dataset.spot = sp.id;
   el.setAttribute("aria-label", `${sp.name}の説明を開く`);
   const icon = CATEGORY_ICON[sp.category];
-  el.innerHTML = `<span class="spot-pin-label">${icon ? `<span class="material-symbols-outlined" aria-hidden="true">${icon}</span>` : ""}${esc(sp.name)}</span><span class="material-symbols-outlined" aria-hidden="true">location_on</span>`;
+  el.innerHTML = `<span class="spot-pin-label">${icon ? `<span class="material-symbols-outlined" aria-hidden="true">${icon}</span>` : ""}${esc(sp.name)}</span>`;
   el.addEventListener("click", (e) => {
     e.stopPropagation();
     openSpotCard(sp, m);
@@ -488,7 +491,7 @@ function recompute(fit) {
   if (!state.origin || !state.dest) return;
   const opt = { departMin: state.departMin };
   const fastest = route(NET_OLD, state.origin, state.dest, state.overrides.old, opt);
-  // 乗り物を優先：乗り物を使う経路のうち最も早いもの。その時刻以降に乗り物がなければ、最速の経路のまま
+  // 汽車・馬車を優先：汽車か鉄道馬車を使う経路のうち最も早いもの。その時刻以降になければ、最速の経路のまま
   const ride = state.preferVehicle ? route(NET_OLD, state.origin, state.dest, state.overrides.old, { ...opt, requireVehicle: true }) : null;
   const old = ride || fastest;
   const oldWalk = route(NET_OLD, state.origin, state.dest, state.overrides.old, { ...opt, vehicles: false });
@@ -528,10 +531,10 @@ function renderBars({ old, oldWalk, now, fastest, preferred, noRide }) {
     row("now", "現在", now, modeIcons(now, true)) +
     row("old", "明治18年", old, modeIcons(old, false), fare) +
     (ratio === null ? `<p class="ratio">出発地と目的地がほぼ同じ地点です。</p>`
-      : `<p class="ratio">明治18年の${preferred ? "乗り物を使う経路" : "最速経路"}は、現在の約<strong>${ratio}倍</strong>の時間がかかります。${
-        preferred && old.totalMin > fastest.totalMin ? `乗り物を優先しています（${fastest.legs.every((l) => l.mode === "walk") ? "歩くだけ" : "最速の経路"}なら${formatMin(fastest.totalMin)}）。`
-        : noRide ? "この時刻からは乗り物を使う経路がないため、最速の経路を表示しています。"
-        : walkSame ? "この区間では、乗り物を使っても歩いた方が早く着きます。" : ""}</p>${laterDepartHTML(old)}`);
+      : `<p class="ratio">明治18年の${preferred ? "汽車・馬車を使う経路" : "最速経路"}は、現在の約<strong>${ratio}倍</strong>の時間がかかります。${
+        preferred && old.totalMin > fastest.totalMin ? `汽車・馬車を優先しています（${fastest.legs.every((l) => l.mode === "walk") ? "歩くだけ" : "最速の経路"}なら${formatMin(fastest.totalMin)}）。`
+        : noRide ? "この時刻からは汽車も馬車もないため、最速の経路を表示しています。"
+        : walkSame ? "この区間では、汽車や馬車を使うより歩いた方が早く着きます。" : ""}</p>${laterDepartHTML(old)}`);
 }
 
 // 最初に乗る汽車を駅で長く待つときは、出発を遅らせても同じ汽車に間に合うことを伝え、その時刻にするボタンを出す
@@ -655,7 +658,7 @@ function renderTemplateExplain(ids) {
   const ttNote = "汽車の発着時刻と運賃は明治18年5月刊の『鉄道汽車便覧表』によります";
   const fareNote = rides.length && old.fare ? `運賃は下等で${formatSen(old.fare.sen[2])}${old.fare.atLeast ? "以上（鉄道馬車は区の区切りが分からないため1区分で計算）" : ""}、上等なら${formatSen(old.fare.sen[0])}${old.fare.atLeast ? "以上" : ""}です。` : "";
   const why = rides.length
-    ? `${depart}に出発すると、明治18年の${preferred ? "乗り物を使う経路のうち最も早いもの" : "最速経路"}は${rides.map((l) => `${l.label}（${l.from}→${l.to}${l.departAt ? `、${l.firstRun ? "始発" : ""}${l.departAt}発` : ""}）`).join("、")}を乗り継ぎ、合計${formatMin(old.totalMin)}です。${fareNote}歩くだけなら${formatMin(oldWalk.totalMin)}かかります。${ttNote}。鉄道馬車の待ち時間と運行時間（始発・終発）は仮定値で、「設定」ページの「計算の前提」で変えられます。`
+    ? `${depart}に出発すると、明治18年の${preferred ? "汽車・馬車を使う経路のうち最も早いもの" : "最速経路"}は${rides.map((l) => `${l.label}（${l.from}→${l.to}${l.departAt ? `、${l.firstRun ? "始発" : ""}${l.departAt}発` : ""}）`).join("、")}を乗り継ぎ、合計${formatMin(old.totalMin)}です。${fareNote}歩くだけなら${formatMin(oldWalk.totalMin)}かかります。${ttNote}。鉄道馬車の待ち時間と運行時間（始発・終発）は仮定値で、「設定」ページの「計算の前提」で変えられます。`
     : `${depart}に出発すると、明治18年のこの区間では、汽車や鉄道馬車を待つより歩く方が早く、${old.legs.filter((l) => l.mode === "walk" && l.label !== "徒歩（市街路・推定）").map((l) => l.label).join("・") || "市街路"}を通って${formatMin(old.totalMin)}です。現在は${formatMin(now.totalMin)}です。${ttNote}。`;
   const bodies = (pred) => ids.filter((id) => pred(id)).map((id) => ({ id, text: FACTS.facts[id].body }));
   const oldLineFacts = new Set(NET_OLD.lines.flatMap((l) => l.facts || []));

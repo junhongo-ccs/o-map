@@ -209,15 +209,18 @@ button { font: inherit; cursor: pointer; }
 .marker.d { background: #fff; color: #3b7a4a; border-color: #3b7a4a; }
 /* 名所のピン（いつも表示）と、押すと出るカード。経路が通る名所は強調する */
 .spot-pin {
-  display: flex; flex-direction: column; align-items: center; padding: 0; border: 0; background: none; cursor: pointer;
-  color: #5c3b1e; opacity: 0.8; /* 地図（明るい色）の上に乗るので、ダークモードでも濃茶のまま */
+  display: block; padding: 0 0 6px; border: 0; background: none; cursor: pointer; opacity: 0.85;
 }
 .spot-pin.on-route { opacity: 1; }
-.spot-pin.on-route > .material-symbols-outlined { font-size: 32px; }
-.spot-pin > .material-symbols-outlined { font-size: 26px; line-height: 1; text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
+.spot-pin.on-route .spot-pin-label { transform: scale(1.15); }
+/* 地名のラベルを吹き出しにし、下向きの三角（とげ）で場所を指す。三角の先がマーカーの下端＝地点（ダークモードでも濃茶のまま） */
 .spot-pin-label {
-  font-size: 11px; font-weight: 700; color: #fff; background: #5c3b1e; padding: 0 5px; border-radius: 4px;
-  box-shadow: var(--shadow); white-space: nowrap; margin-bottom: 1px;
+  position: relative; display: block; font-size: 11px; font-weight: 700; line-height: 1.6; color: #fff; background: #5c3b1e;
+  padding: 0 6px; border-radius: 4px; box-shadow: var(--shadow); white-space: nowrap; transform-origin: 50% calc(100% + 6px);
+}
+.spot-pin-label::after {
+  content: ""; position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%);
+  border: 6px solid transparent; border-top-color: #5c3b1e; border-bottom: 0;
 }
 .spot-pin-label .material-symbols-outlined { font-size: 13px; line-height: 1; vertical-align: -2px; margin-right: 2px; }
 /* 名所のカード：地図・スワイプの境目より上に重ねる（位置は app.js がピンに合わせて決める） */

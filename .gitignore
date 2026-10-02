@@ -4,3 +4,5 @@ node_modules/
 .claude/settings.local.json
 # 外部LLMの調査レポート（誤りを含む作業メモ。手元にだけ置く）
 doc/report-*.md
+# graphify の出力（グラフ・キャッシュ。手元で作り直せる）
+graphify-out/

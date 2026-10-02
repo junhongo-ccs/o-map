@@ -192,7 +192,7 @@
       "status": "未照合"
     },
     "omokagebashi": {
-      "title": "面影橋と姿見の橋",
+      "title": "面影橋（姿見の橋）",
       "body": "神田川に架かる面影橋は、近くの姿見の橋とともに江戸の名所として知られた。歌川広重の『名所江戸百景』に「高田姿見のはし俤の橋砂利場」として描かれた。",
       "year": null,
       "source": { "label": "Wikipedia「面影橋」", "url": "https://ja.wikipedia.org/wiki/面影橋" },
@@ -206,7 +206,7 @@
       "status": "未照合"
     },
     "sekiguchi": {
-      "title": "関口の芭蕉庵と椿山",
+      "title": "関口の芭蕉庵・椿山",
       "body": "神田上水の取水口があった関口には、松尾芭蕉ゆかりの芭蕉庵がある。隣の椿山は椿の名所で、現在の椿山荘のあたりにあたる。",
       "year": null,
       "source": { "label": "Wikipedia「関口芭蕉庵」", "url": "https://ja.wikipedia.org/wiki/関口芭蕉庵" },
@@ -224,6 +224,27 @@
       "body": "石神井川は王子のあたりで音無川と呼ばれ、堰から落ちる水は「大滝」と呼ばれて行楽客でにぎわった。歌川広重の『名所江戸百景』に「王子音無川堰埭世俗大滝ト唱」として描かれた。",
       "year": null,
       "source": { "label": "Wikipedia「石神井川」", "url": "https://ja.wikipedia.org/wiki/石神井川" },
+      "status": "未照合"
+    },
+    "hamarikyu": {
+      "title": "浜離宮（浜御殿）",
+      "body": "浜離宮は将軍家の別邸「浜御殿」だった庭園で、海の水を引き入れた池がある。明治になって皇室の離宮となった。歌川広重は『名所江戸百景』の「芝うらの風景」で、芝浦の海から浜御殿の石垣を望む景色を描いた。",
+      "year": null,
+      "source": { "label": "Wikipedia「浜離宮恩賜庭園」", "url": "https://ja.wikipedia.org/wiki/浜離宮恩賜庭園" },
+      "status": "未照合"
+    },
+    "zojoji": {
+      "title": "増上寺",
+      "body": "増上寺は浄土宗の大本山で、徳川将軍家の菩提寺として歴代将軍の霊廟が置かれた。歌川広重の『名所江戸百景』に「芝神明増上寺」として描かれた。",
+      "year": null,
+      "source": { "label": "Wikipedia「増上寺」", "url": "https://ja.wikipedia.org/wiki/増上寺" },
+      "status": "未照合"
+    },
+    "kanasugibashi": {
+      "title": "金杉橋",
+      "body": "金杉橋は、古川（渋谷川の下流）が海に注ぐあたりに架かる橋で、東海道が渡っていた。歌川広重の『名所江戸百景』に「金杉橋芝浦」として描かれた。",
+      "year": null,
+      "source": { "label": "Wikipedia「渋谷川」", "url": "https://ja.wikipedia.org/wiki/渋谷川" },
       "status": "未照合"
     }
   }

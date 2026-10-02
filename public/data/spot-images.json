@@ -252,6 +252,42 @@
       "license": "パブリックドメイン",
       "licenseUrl": null,
       "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1303223-Utagawa_Hiroshige-%E5%90%8D%E6%89%80%E6%B1%9F%E6%88%B8%E7%99%BE%E6%99%AF_%E7%8E%8B%E5%AD%90%E9%9F%B3%E7%84%A1%E5%B7%9D%E5%A0%B0%E3%80%94%E3%82%BF%E3%82%A4%E3%80%95%E4%B8%96%E4%BF%97%E5%A4%A7%E6%BB%9D%E3%83%88%E5%94%B1-crd.jpg"
+    },
+    "hamarikyu": {
+      "file": "img/spots/hamarikyu.jpg",
+      "width": 499,
+      "height": 760,
+      "title": "名所江戸百景 芝うらの風景",
+      "artist": "歌川広重",
+      "date": "1856〜58年刊の揃物",
+      "holder": "国立国会図書館",
+      "license": "パブリックドメイン",
+      "licenseUrl": null,
+      "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1303314-Utagawa_Hiroshige-%E5%90%8D%E6%89%80%E6%B1%9F%E6%88%B8%E7%99%BE%E6%99%AF_%E8%8A%9D%E3%81%86%E3%82%89%E3%81%AE%E9%A2%A8%E6%99%AF-crd.jpg"
+    },
+    "zojoji": {
+      "file": "img/spots/zojoji.jpg",
+      "width": 491,
+      "height": 760,
+      "title": "名所江戸百景 芝神明増上寺",
+      "artist": "歌川広重",
+      "date": "1856〜58年刊の揃物",
+      "holder": "国立国会図書館",
+      "license": "パブリックドメイン",
+      "licenseUrl": null,
+      "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1303285-Utagawa_Hiroshige-%E5%90%8D%E6%89%80%E6%B1%9F%E6%88%B8%E7%99%BE%E6%99%AF_%E8%8A%9D%E7%A5%9E%E6%98%8E%E5%A2%97%E4%B8%8A%E5%AF%BA-crd.jpg"
+    },
+    "kanasugibashi": {
+      "file": "img/spots/kanasugibashi.jpg",
+      "width": 491,
+      "height": 760,
+      "title": "名所江戸百景 金杉橋芝浦",
+      "artist": "歌川広重",
+      "date": "1856〜58年刊の揃物",
+      "holder": "国立国会図書館",
+      "license": "パブリックドメイン",
+      "licenseUrl": null,
+      "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1303286-Utagawa_Hiroshige-%E5%90%8D%E6%89%80%E6%B1%9F%E6%88%B8%E7%99%BE%E6%99%AF_%E9%87%91%E6%9D%89%E6%A9%8B%E8%8A%9D%E6%B5%A6-crd.jpg"
     }
   }
 }
