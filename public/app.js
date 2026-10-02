@@ -494,6 +494,11 @@ function aiInput() {
   };
 }
 
+// AI解説は、server.mjs で動かしていて AI が設定されているときだけ使える。
+// GitHub Pages などの静的な公開では /api/status が無いので、ボタンは隠したまま（定型解説だけ）
+fetch("api/status").then((r) => (r.ok ? r.json() : null)).catch(() => null)
+  .then((s) => { if (s?.ai) $("#btn-ai").hidden = false; });
+
 $("#btn-ai").addEventListener("click", async () => {
   if (!state.result) return;
   const btn = $("#btn-ai");

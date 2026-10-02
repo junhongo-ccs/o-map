@@ -13,6 +13,12 @@ npm test           # 経路計算・データ整合性・AI出力チェックの
 
 AI解説を使う場合は、起動前に環境変数 `ANTHROPIC_API_KEY` を設定する。未設定でも動作し、解説は「事実カード＋計算結果」から作る定型文になる。
 
+## 公開（GitHub Pages）
+
+main に push すると、GitHub Actions（`.github/workflows/pages.yml`）がテストを通したうえで `public/` を GitHub Pages に公開する：https://junhongo-ccs.github.io/o-map/
+
+静的な公開なので AI 解説は使えず、「AIで解説を生成」ボタンは表示されない（画面は起動時に `/api/status` を確かめ、AI が使えるときだけボタンを出す）。AI 解説を公開で使う方法は doc/tasks.md の7。
+
 ## 構成
 
 | ファイル | 役割 |
