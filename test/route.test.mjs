@@ -209,6 +209,18 @@ test("運賃：日本鉄道の乗り継ぎは通し運賃、品川線の新橋�
   assert.equal(route(NOW, P.shibuya, P.asakusa).fare, null);
 });
 
+test("乗り物を優先：歩いた方が早い時刻でも、駅で待って汽車に乗る経路を返す。乗り物がない時刻は null", () => {
+  const shibuyaSt = { name: "渋谷駅", lat: 35.65808, lon: 139.70176 }, shinagawaSt = { name: "品川駅", lat: 35.6287, lon: 139.73913 };
+  const fastest = route(OLD, shibuyaSt, shinagawaSt, {}, at(9));
+  assert.ok(fastest.legs.every((l) => l.mode === "walk"));
+  const ride = route(OLD, shibuyaSt, shinagawaSt, {}, { ...at(9), requireVehicle: true });
+  const train = ride.legs.find((l) => l.mode === "rail");
+  assert.equal(train.departAt, "10:41"); // 品川線の上り、渋谷10:41発
+  assert.ok(ride.totalMin > fastest.totalMin);
+  // 夜遅く（汽車も鉄道馬車も終わった後）は、乗り物を使う経路がない
+  assert.equal(route(OLD, shibuyaSt, shinagawaSt, {}, { ...at(23, 30), requireVehicle: true }), null);
+});
+
 test("沿線の見どころ用の地点ID：新宿→日本橋 9時発は、甲州街道で内藤新宿・四谷大木戸を通る順に並ぶ", () => {
   const ids = route(OLD, P.shinjuku, P.nihonbashi, {}, at(9)).legs.flatMap((l) => l.viaIds);
   const i = ids.indexOf("naito_shinjuku"), j = ids.indexOf("yotsuya_okido");

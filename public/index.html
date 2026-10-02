@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>タイムトラベルナビ</title>
+  <title>今昔東京往来便覧</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600;700&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <h1>タイムトラベルナビ</h1>
+      <h1>今昔東京往来便覧</h1>
       <p>明治18年（1885）の東京を移動</p>
     </div>
     <div class="topbar-right">
@@ -57,6 +57,7 @@
       </form>
     </div>
     <label class="depart-row">出発時刻 <input id="in-depart" type="time" value="11:30" step="300"></label>
+    <label class="prefer-row" title="歩いた方が早くても、汽車や鉄道馬車を使う経路を出す（駅での待ち時間を含めて最も早いもの）"><input id="in-prefer" type="checkbox"> 乗り物を優先</label>
   </section>
 
   <div class="stage">
@@ -66,6 +67,10 @@
         <div id="compare" class="compare">
           <div id="map-now" class="map"></div>
           <div id="map-old" class="map"></div>
+        </div>
+        <div id="spot-card" class="spot-popup" role="dialog" aria-label="名所の説明" hidden>
+          <button type="button" class="spot-popup-close" aria-label="閉じる">×</button>
+          <div class="spot-popup-body"></div>
         </div>
         <div class="map-labels" aria-hidden="true">
           <span class="lbl lbl-now">現在（地理院地図）</span>

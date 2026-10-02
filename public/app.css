@@ -13,6 +13,8 @@
   --rail: #2b2620;
   --horse: #a0681f;
   --spot: #5c3b1e;
+  --swiper-arrows: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath fill='%232b2620' d='M25 24 16 30 25 36zM35 24v12l9-6z'/%3E%3C/svg%3E");
+  --old-bar: #8cc49b; /* 所要時間の比較の明治の棒（経路の線の緑を浅くした色） */
   --ok: #3b7a4a;
   --warn: #9a6a12;
   --radius: 10px;
@@ -36,6 +38,8 @@
     --rail: #efe8dc;
     --horse: #e0a454;
     --spot: #c99a6b;
+    --swiper-arrows: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath fill='%23efe8dc' d='M25 24 16 30 25 36zM35 24v12l9-6z'/%3E%3C/svg%3E");
+    --old-bar: #6aa77d;
     --ok: #7cc48d;
     --warn: #e2b456;
     color-scheme: dark;
@@ -135,8 +139,10 @@ details[open] summary { margin-bottom: 10px; }
   color: #fff; font-size: 12px; font-weight: 700;
 }
 .pin-o { background: #3b7a4a; }
-.pin-d { background: #8a2f5c; }
+.pin-d { background: #fff; color: #3b7a4a; border: 2px solid #3b7a4a; } /* 着：白地に緑の文字と緑の枠 */
 .depart-row { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 13px; color: var(--ink-2); flex: none; }
+.prefer-row { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); flex: none; cursor: pointer; }
+.prefer-row input { width: 16px; height: 16px; accent-color: #3b7a4a; }
 .depart-row input {
   padding: 5px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit;
   font-variant-numeric: tabular-nums;
@@ -185,17 +191,22 @@ button { font: inherit; cursor: pointer; }
 .map-labels { position: absolute; bottom: 28px; left: 12px; right: 12px; display: flex; justify-content: space-between; pointer-events: none; }
 .lbl { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; box-shadow: var(--shadow); }
 .lbl-now { background: var(--now); color: #fff; }
-.lbl-old { background: var(--old); color: #fff; }
+.lbl-old { background: #3b7a4a; color: #fff; } /* 明治の経路の線と同じ緑 */
 .map-wrap.overlay .lbl-old { display: none; }
 
-.maplibregl-compare .compare-swiper-vertical { background-color: var(--old); }
+/* スワイプの境目：縦線は白、つまみはヘッダーと同じ背景色に白い枠線。矢印は画面の文字色で描き直す（ライブラリの矢印は白で、明るい背景では見えないため） */
+.maplibregl-compare { background-color: #fff; }
+.maplibregl-compare .compare-swiper-vertical {
+  background-color: var(--panel); background-image: var(--swiper-arrows);
+  box-shadow: 0 0 0 2px #fff, var(--shadow);
+}
 
 .marker {
   width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; color: #fff;
   font-size: 12px; font-weight: 700; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35);
 }
 .marker.o { background: #3b7a4a; }
-.marker.d { background: #8a2f5c; }
+.marker.d { background: #fff; color: #3b7a4a; border-color: #3b7a4a; }
 /* 名所のピン（いつも表示）と、押すと出るカード。経路が通る名所は強調する */
 .spot-pin {
   display: flex; flex-direction: column; align-items: center; padding: 0; border: 0; background: none; cursor: pointer;
@@ -209,10 +220,17 @@ button { font: inherit; cursor: pointer; }
   box-shadow: var(--shadow); white-space: nowrap; margin-bottom: 1px;
 }
 .spot-pin-label .material-symbols-outlined { font-size: 13px; line-height: 1; vertical-align: -2px; margin-right: 2px; }
-.maplibregl-popup-content { background: var(--panel); color: var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px 14px; }
-.maplibregl-popup-anchor-bottom .maplibregl-popup-tip { border-top-color: var(--panel); }
-.maplibregl-popup-anchor-top .maplibregl-popup-tip { border-bottom-color: var(--panel); }
-.maplibregl-popup-close-button { color: var(--ink-2); font-size: 18px; }
+/* 名所のカード：地図・スワイプの境目より上に重ねる（位置は app.js がピンに合わせて決める） */
+.spot-popup {
+  position: absolute; z-index: 20; width: min(300px, calc(100% - 16px)); max-height: min(70%, 520px); overflow-y: auto;
+  background: var(--panel); color: var(--ink); border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  padding: 12px 14px; overscroll-behavior: contain;
+}
+.spot-popup-close {
+  position: sticky; top: 0; float: right; margin: -6px -6px 0 4px; width: 28px; height: 28px; border: 0; border-radius: 50%;
+  background: var(--panel); color: var(--ink-2); font-size: 18px; line-height: 1; cursor: pointer; z-index: 1;
+}
+.spot-popup-close:hover { background: var(--bg); color: var(--ink); }
 .spot-fig { margin: 0 0 8px; }
 .spot-fig img { display: block; width: 100%; height: auto; max-height: 200px; object-fit: contain; background: var(--bg); border-radius: 6px; }
 .spot-fig figcaption { margin-top: 3px; font-size: 10.5px; line-height: 1.4; color: var(--ink-3); }
@@ -241,9 +259,11 @@ button { font: inherit; cursor: pointer; }
 .bar { height: 10px; border-radius: 5px; background: var(--bg); overflow: hidden; }
 .bar > i { display: block; height: 100%; border-radius: 5px; }
 .bar.now > i { background: var(--now); }
-.bar.old > i { background: var(--old); }
+.bar.old > i { background: var(--old-bar); }
 .bar.walk > i { background: var(--walk); opacity: 0.6; }
 .bar-fare { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.later { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-2); }
+.later-btn { margin-top: 4px; padding: 3px 10px; font-size: 12px; }
 .ratio { font-size: 12.5px; color: var(--ink-2); margin: 0; }
 
 .legs { list-style: none; margin: 0; padding: 0; }
@@ -268,7 +288,7 @@ button { font: inherit; cursor: pointer; }
 .leg-sub .wait { color: var(--warn); }
 .badge-approx { font-size: 10.5px; color: var(--warn); border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; margin-left: 4px; }
 .leg-end { padding-left: 26px; position: relative; font-weight: 700; font-size: 13px; }
-.leg-end::before { content: ""; position: absolute; left: 3px; top: 5px; width: 13px; height: 13px; border-radius: 50%; background: #8a2f5c; }
+.leg-end::before { content: ""; position: absolute; left: 3px; top: 5px; width: 13px; height: 13px; border-radius: 50%; background: #fff; border: 3px solid #3b7a4a; }
 .end-icon { font-size: 16px; line-height: 1; vertical-align: -3px; margin-right: 2px; color: var(--ink-2); font-weight: 400; }
 
 .ai-head { display: flex; justify-content: flex-end; margin-bottom: 4px; }

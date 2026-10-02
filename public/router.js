@@ -152,12 +152,14 @@ class Heap {
 /**
  * origin / dest: {lat, lon, name}
  * options.vehicles=false で徒歩のみ。options.departMin は出発時刻（0時からの分、既定 9:00）
+ * options.requireVehicle=true なら、乗り物（汽車・鉄道馬車など）を少なくとも1回使う経路のうち最も早いものを返す（なければ null）
  * 戻り値: { totalMin, totalKm, departMin, legs[], params }
  */
 export function route(net, origin, dest, overrides = {}, options = {}) {
   const p = resolveParams(net, overrides);
   const { nodes, adj } = buildGraph(net, p);
   const vehicles = options.vehicles !== false;
+  const requireVehicle = vehicles && !!options.requireVehicle;
   const departMin = options.departMin ?? 9 * 60;
   const O = "__origin", D = "__dest";
   const all = { ...nodes, [O]: { ...origin, name: origin.name || "出発地" }, [D]: { ...dest, name: dest.name || "目的地" } };
@@ -185,18 +187,22 @@ export function route(net, origin, dest, overrides = {}, options = {}) {
   // 時刻表の路線は、駅に早く着いて損をすることがない（遅れて着けば同じか後の列車になる）ので、Dijkstra 法のままで最短になる
   // 優先度 pri = 所要分 + 徒歩分 × ごく小さい係数。同着なら、歩き回るより駅で待つ経路を選ぶ（所要時間 cost は変えない）
   const WALK_TIE = 1e-6;
-  const sKey = (n, l) => `${n}#${l || ""}`;
-  const best = new Map([[sKey(O, null), 0]]);
+  // 状態には「乗り物をもう使ったか」も含める（requireVehicle のとき、使っていない状態で目的地に着いても終わりにしない）
+  const sKey = (n, l, v) => `${n}#${l || ""}#${v ? 1 : 0}`;
+  const best = new Map([[sKey(O, null, false), 0]]);
   const prev = new Map();
   const heap = new Heap();
-  heap.push({ cost: 0, pri: 0, node: O, line: null });
+  heap.push({ cost: 0, pri: 0, node: O, line: null, used: false });
   let goal = null;
 
   while (heap.size) {
     const cur = heap.pop();
-    const ck = sKey(cur.node, cur.line);
+    const ck = sKey(cur.node, cur.line, cur.used);
     if (cur.pri > best.get(ck)) continue;
-    if (cur.node === D) { goal = cur; break; }
+    if (cur.node === D) {
+      if (requireVehicle && !cur.used) continue;
+      goal = cur; break;
+    }
     for (const e of edgesOf(cur.node)) {
       if (!vehicles && e.mode !== "walk") continue;
       const nextLine = e.mode === "walk" ? null : e.trip || `${e.lineId}:${e.dir}`;
@@ -214,11 +220,12 @@ export function route(net, origin, dest, overrides = {}, options = {}) {
       }
       const cost = cur.cost + e.min + wait;
       const pri = cur.pri + e.min + wait + (e.mode === "walk" ? e.min * WALK_TIE : 0);
-      const nk = sKey(e.to, nextLine);
+      const used = cur.used || e.mode !== "walk";
+      const nk = sKey(e.to, nextLine, used);
       if (pri < (best.get(nk) ?? Infinity)) {
         best.set(nk, pri);
         prev.set(nk, { from: ck, edge: e, wait, firstRun, boardAt: cur.cost + wait });
-        heap.push({ cost, pri, node: e.to, line: nextLine });
+        heap.push({ cost, pri, node: e.to, line: nextLine, used });
       }
     }
   }
@@ -226,7 +233,7 @@ export function route(net, origin, dest, overrides = {}, options = {}) {
 
   // 経路を復元し、同じ手段・同じ路線（または同じ街道）の連続区間を1区間にまとめる
   const steps = [];
-  for (let k = sKey(goal.node, goal.line); prev.has(k); k = prev.get(k).from) {
+  for (let k = sKey(goal.node, goal.line, goal.used); prev.has(k); k = prev.get(k).from) {
     const s = prev.get(k);
     steps.unshift({ ...s, fromNode: s.from.split("#")[0] });
   }

@@ -13,6 +13,7 @@ const state = {
   dest: null,
   overrides: { old: {}, now: {} },
   departMin: 11 * 60 + 30,
+  preferVehicle: false, // 明治の経路で、乗り物を少なくとも1回使う経路を出す
   result: null,
   mode: "swipe",
 };
@@ -69,7 +70,7 @@ function networkGeoJSON(net) {
   return { type: "FeatureCollection", features };
 }
 
-const COLORS = { now: "#2f6db5", old: "#b8452a", walk: "#7a6a52", rail: "#2b2620", horsecar: "#a0681f" };
+const COLORS = { now: "#2f6db5", old: "#3b7a4a", walk: "#7a6a52", rail: "#2b2620", horsecar: "#a0681f" }; // old は明治の経路の線（「出」「着」のアイコンと同じ緑）
 
 function addNetworkLayers(m) {
   m.addSource("net1885", { type: "geojson", data: networkGeoJSON(NET_OLD) });
@@ -141,7 +142,37 @@ function spotCardHTML(sp) {
       <br><a class="spot-src" href="${esc(f.source.url)}" target="_blank" rel="noopener">出典：${esc(f.source.label)}</a></p>`;
   }).join("")}</div>`;
 }
-let spotPopup = null; // 開いているカードは1枚だけにする
+// 名所のカード。地図の中（MapLibre のポップアップ）に描くと、スワイプ表示で地図ごと切り取られ、境目のつまみの下にも隠れるので、
+// 地図の上に重ねた1枚の要素（#spot-card）をピンの位置に合わせて置く。開くのは1枚だけ
+const spotCard = $("#spot-card");
+let spotOpen = null; // { sp, map }
+function placeSpotCard() {
+  if (!spotOpen) return;
+  const { sp, map } = spotOpen;
+  const wrap = spotCard.parentElement.getBoundingClientRect();
+  const pt = map.project([sp.lon, sp.lat]);
+  const w = spotCard.offsetWidth, h = spotCard.offsetHeight, gap = 40;
+  const x = Math.min(Math.max(8, pt.x - w / 2), wrap.width - w - 8);
+  const above = pt.y - gap - h >= 8; // 上に入らなければピンの下に出す
+  spotCard.style.left = `${x}px`;
+  spotCard.style.top = `${above ? pt.y - gap - h : Math.max(8, Math.min(pt.y + 12, wrap.height - h - 8))}px`;
+}
+function openSpotCard(sp, map) {
+  spotOpen = { sp, map };
+  spotCard.querySelector(".spot-popup-body").innerHTML = spotCardHTML(sp) + spotActionsHTML(sp);
+  spotCard.hidden = false;
+  spotCard.scrollTop = 0;
+  placeSpotCard();
+  spotCard.querySelectorAll("img").forEach((img) => img.addEventListener("load", placeSpotCard, { once: true }));
+}
+function closeSpotCard() { spotOpen = null; spotCard.hidden = true; }
+spotCard.querySelector(".spot-popup-close").addEventListener("click", closeSpotCard);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && spotOpen) closeSpotCard(); });
+for (const m of [mapNow, mapOld]) {
+  m.on("move", placeSpotCard);
+  m.on("resize", placeSpotCard);
+  m.on("click", (e) => { if (!e.originalEvent?.target?.closest?.(".spot-pin")) closeSpotCard(); }); // 地図の空いた所を押したら閉じる
+}
 const spotPins = ALL_SPOTS.flatMap((sp) => [mapNow, mapOld].map((m) => {
   const el = document.createElement("button");
   el.type = "button"; el.className = "spot-pin"; el.dataset.spot = sp.id;
@@ -150,8 +181,7 @@ const spotPins = ALL_SPOTS.flatMap((sp) => [mapNow, mapOld].map((m) => {
   el.innerHTML = `<span class="spot-pin-label">${icon ? `<span class="material-symbols-outlined" aria-hidden="true">${icon}</span>` : ""}${esc(sp.name)}</span><span class="material-symbols-outlined" aria-hidden="true">location_on</span>`;
   el.addEventListener("click", (e) => {
     e.stopPropagation();
-    spotPopup?.remove();
-    spotPopup = new maplibregl.Popup({ offset: 30, maxWidth: "300px", focusAfterOpen: false }).setLngLat([sp.lon, sp.lat]).setHTML(spotCardHTML(sp) + spotActionsHTML(sp)).addTo(m);
+    openSpotCard(sp, m);
   });
   return new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([sp.lon, sp.lat]).addTo(m);
 }));
@@ -170,7 +200,7 @@ document.addEventListener("click", (e) => {
   const b = e.target.closest(".spot-set");
   if (!b) return;
   const sp = ALL_SPOTS.find((x) => x.id === b.dataset.spot);
-  spotPopup?.remove();
+  closeSpotCard();
   setPoint(b.dataset.role, { name: sp.name, lat: sp.lat, lon: sp.lon });
 });
 
@@ -301,6 +331,10 @@ $("#swap").addEventListener("click", () => {
 $("#in-depart").addEventListener("change", (e) => {
   if (!e.target.value) return;
   state.departMin = parseClock(e.target.value);
+  recompute(false);
+});
+$("#in-prefer").addEventListener("change", (e) => {
+  state.preferVehicle = e.target.checked;
   recompute(false);
 });
 
@@ -453,10 +487,13 @@ showPage();
 function recompute(fit) {
   if (!state.origin || !state.dest) return;
   const opt = { departMin: state.departMin };
-  const old = route(NET_OLD, state.origin, state.dest, state.overrides.old, opt);
+  const fastest = route(NET_OLD, state.origin, state.dest, state.overrides.old, opt);
+  // 乗り物を優先：乗り物を使う経路のうち最も早いもの。その時刻以降に乗り物がなければ、最速の経路のまま
+  const ride = state.preferVehicle ? route(NET_OLD, state.origin, state.dest, state.overrides.old, { ...opt, requireVehicle: true }) : null;
+  const old = ride || fastest;
   const oldWalk = route(NET_OLD, state.origin, state.dest, state.overrides.old, { ...opt, vehicles: false });
   const now = route(NET_NOW, state.origin, state.dest, state.overrides.now, opt);
-  state.result = { old, oldWalk, now };
+  state.result = { old, oldWalk, now, fastest, preferred: !!ride, noRide: state.preferVehicle && !ride };
   state.resultGen = (state.resultGen || 0) + 1;
   renderResult();
   drawRoutes(fit);
@@ -477,7 +514,7 @@ function drawRoutes(fit) {
   }
 }
 
-function renderBars({ old, oldWalk, now }) {
+function renderBars({ old, oldWalk, now, fastest, preferred, noRide }) {
   const max = Math.max(old.totalMin, now.totalMin, 1);
   const row = (cls, title, r, sub, extra = "") => `<div class="bar-row">
       <div class="bar-label"><span>${title} <span class="sub">${sub}</span></span><strong>${formatMin(r.totalMin)}</strong></div>
@@ -491,8 +528,29 @@ function renderBars({ old, oldWalk, now }) {
     row("now", "現在", now, modeIcons(now, true)) +
     row("old", "明治18年", old, modeIcons(old, false), fare) +
     (ratio === null ? `<p class="ratio">出発地と目的地がほぼ同じ地点です。</p>`
-      : `<p class="ratio">明治18年の最速経路は、現在の約<strong>${ratio}倍</strong>の時間がかかります。${walkSame ? "この区間では、乗り物を使っても歩いた方が早く着きます。" : ""}</p>`);
+      : `<p class="ratio">明治18年の${preferred ? "乗り物を使う経路" : "最速経路"}は、現在の約<strong>${ratio}倍</strong>の時間がかかります。${
+        preferred && old.totalMin > fastest.totalMin ? `乗り物を優先しています（${fastest.legs.every((l) => l.mode === "walk") ? "歩くだけ" : "最速の経路"}なら${formatMin(fastest.totalMin)}）。`
+        : noRide ? "この時刻からは乗り物を使う経路がないため、最速の経路を表示しています。"
+        : walkSame ? "この区間では、乗り物を使っても歩いた方が早く着きます。" : ""}</p>${laterDepartHTML(old)}`);
 }
+
+// 最初に乗る汽車を駅で長く待つときは、出発を遅らせても同じ汽車に間に合うことを伝え、その時刻にするボタンを出す
+// （乗るまでの徒歩の時間は出発時刻によらないので、待ち時間の分だけ遅らせてよい）
+const LATER_MIN = 10;
+function laterDepartHTML(r) {
+  const first = r.legs.find((l) => l.mode !== "walk");
+  if (!first?.departAt || first.waitMin < LATER_MIN || state.departMin + first.waitMin >= 24 * 60) return "";
+  const t = formatClock(state.departMin + first.waitMin);
+  return `<p class="later">駅で${formatMin(first.waitMin)}待ちます。出発を${t}に遅らせても、同じ${first.firstRun ? "始発" : `${first.departAt}発`}に間に合います。
+    <button type="button" class="btn-ghost later-btn" data-depart="${t}">出発を${t}にする</button></p>`;
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest(".later-btn");
+  if (!b) return;
+  state.departMin = parseClock(b.dataset.depart);
+  $("#in-depart").value = b.dataset.depart.padStart(5, "0");
+  recompute(false);
+});
 
 const MODE_LABEL = { walk: "徒歩", rail: "汽車", horsecar: "鉄道馬車" };
 // 経路の内訳で区間の先頭に付けるアイコン（Material Symbols。index.html の icon_names に同じ名前を並べる）
@@ -591,13 +649,13 @@ function renderSpots(r) {
 // ---------- 解説 ----------
 // AIを使わない定型解説。数値は経路計算の結果、文章は事実カードのみから組み立てる
 function renderTemplateExplain(ids) {
-  const { old, oldWalk, now } = state.result;
+  const { old, oldWalk, now, preferred } = state.result;
   const rides = old.legs.filter((l) => l.mode !== "walk");
   const depart = formatClock(state.departMin);
   const ttNote = "汽車の発着時刻と運賃は明治18年5月刊の『鉄道汽車便覧表』によります";
   const fareNote = rides.length && old.fare ? `運賃は下等で${formatSen(old.fare.sen[2])}${old.fare.atLeast ? "以上（鉄道馬車は区の区切りが分からないため1区分で計算）" : ""}、上等なら${formatSen(old.fare.sen[0])}${old.fare.atLeast ? "以上" : ""}です。` : "";
   const why = rides.length
-    ? `${depart}に出発すると、明治18年の最速経路は${rides.map((l) => `${l.label}（${l.from}→${l.to}${l.departAt ? `、${l.firstRun ? "始発" : ""}${l.departAt}発` : ""}）`).join("、")}を乗り継ぎ、合計${formatMin(old.totalMin)}です。${fareNote}歩くだけなら${formatMin(oldWalk.totalMin)}かかります。${ttNote}。鉄道馬車の待ち時間と運行時間（始発・終発）は仮定値で、「設定」ページの「計算の前提」で変えられます。`
+    ? `${depart}に出発すると、明治18年の${preferred ? "乗り物を使う経路のうち最も早いもの" : "最速経路"}は${rides.map((l) => `${l.label}（${l.from}→${l.to}${l.departAt ? `、${l.firstRun ? "始発" : ""}${l.departAt}発` : ""}）`).join("、")}を乗り継ぎ、合計${formatMin(old.totalMin)}です。${fareNote}歩くだけなら${formatMin(oldWalk.totalMin)}かかります。${ttNote}。鉄道馬車の待ち時間と運行時間（始発・終発）は仮定値で、「設定」ページの「計算の前提」で変えられます。`
     : `${depart}に出発すると、明治18年のこの区間では、汽車や鉄道馬車を待つより歩く方が早く、${old.legs.filter((l) => l.mode === "walk" && l.label !== "徒歩（市街路・推定）").map((l) => l.label).join("・") || "市街路"}を通って${formatMin(old.totalMin)}です。現在は${formatMin(now.totalMin)}です。${ttNote}。`;
   const bodies = (pred) => ids.filter((id) => pred(id)).map((id) => ({ id, text: FACTS.facts[id].body }));
   const oldLineFacts = new Set(NET_OLD.lines.flatMap((l) => l.facts || []));

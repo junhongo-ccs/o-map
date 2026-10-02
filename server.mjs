@@ -21,7 +21,7 @@ const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; ch
 let client = null;
 try { client = new Anthropic(); } catch (e) { console.warn("[ai] Anthropic クライアントを初期化できません。定型解説のみで動作します:", e.message); }
 
-const SYSTEM = `あなたは「タイムトラベルナビ」の解説担当です。明治18年（1885）の東京と現在の移動経路を比べ、利用者向けに短い解説を書きます。
+const SYSTEM = `あなたは「今昔東京往来便覧」の解説担当です。明治18年（1885）の東京と現在の移動経路を比べ、利用者向けに短い解説を書きます。
 
 守ること:
 - 使ってよい情報は、入力JSONの route（経路計算の結果）、assumptions（計算の前提）、facts（出典付きの事実カード）だけです。一般知識で補わないでください。
@@ -119,4 +119,4 @@ http.createServer(async (req, res) => {
   } catch {
     send(res, 404, "not found", "text/plain");
   }
-}).listen(PORT, () => console.log(`タイムトラベルナビ: http://localhost:${PORT}`));
+}).listen(PORT, () => console.log(`今昔東京往来便覧: http://localhost:${PORT}`));
