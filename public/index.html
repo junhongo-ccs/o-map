@@ -25,37 +25,33 @@
     </div>
   </header>
 
+  <section class="subbar" aria-label="経路の指定">
+    <div class="place-pair">
+      <form id="form-origin" class="place-row">
+        <span class="pin pin-o" aria-hidden="true">出</span>
+        <div class="combo">
+          <input id="in-origin" type="text" placeholder="駅・地名を選ぶ" autocomplete="off" aria-label="出発地"
+            role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="list-origin">
+          <ul id="list-origin" class="combo-list" role="listbox" aria-label="出発地の候補" hidden></ul>
+        </div>
+      </form>
+      <button id="swap" type="button" class="swap" aria-label="出発地と目的地を入れ替える" title="出発地と目的地を入れ替える">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg>
+      </button>
+      <form id="form-dest" class="place-row">
+        <span class="pin pin-d" aria-hidden="true">着</span>
+        <div class="combo">
+          <input id="in-dest" type="text" placeholder="駅・地名を選ぶ" autocomplete="off" aria-label="目的地"
+            role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="list-dest">
+          <ul id="list-dest" class="combo-list" role="listbox" aria-label="目的地の候補" hidden></ul>
+        </div>
+      </form>
+    </div>
+    <label class="depart-row">出発時刻 <input id="in-depart" type="time" value="11:30" step="300"></label>
+  </section>
+
   <div class="stage">
     <div class="layout">
-      <aside class="pane pane-left" aria-label="経路の指定">
-        <section class="block">
-          <h2>出発地・目的地</h2>
-          <div class="place-pair">
-            <div class="place-fields">
-              <form id="form-origin" class="place-row">
-                <span class="pin pin-o" aria-hidden="true">出</span>
-                <div class="combo">
-                  <input id="in-origin" type="text" placeholder="一覧から選ぶ（入力で絞り込み）" autocomplete="off" aria-label="出発地"
-                    role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="list-origin">
-                  <ul id="list-origin" class="combo-list" role="listbox" aria-label="出発地の候補" hidden></ul>
-                </div>
-              </form>
-              <form id="form-dest" class="place-row">
-                <span class="pin pin-d" aria-hidden="true">着</span>
-                <div class="combo">
-                  <input id="in-dest" type="text" placeholder="一覧から選ぶ（入力で絞り込み）" autocomplete="off" aria-label="目的地"
-                    role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="list-dest">
-                  <ul id="list-dest" class="combo-list" role="listbox" aria-label="目的地の候補" hidden></ul>
-                </div>
-              </form>
-            </div>
-            <button id="swap" type="button" class="swap" aria-label="出発地と目的地を入れ替える" title="出発地と目的地を入れ替える">
-              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg>
-            </button>
-          </div>
-          <label class="depart-row">出発時刻 <input id="in-depart" type="time" value="11:30" step="300"></label>
-        </section>
-      </aside>
 
       <main class="map-wrap">
         <div id="compare" class="compare">

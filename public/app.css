@@ -80,10 +80,9 @@ body {
 
 .layout {
   min-height: 0;
-  display: grid; grid-template-columns: 300px 1fr 380px;
+  display: grid; grid-template-columns: 1fr 380px;
 }
 .pane { overflow-y: auto; background: var(--panel); padding: 4px 16px 24px; }
-.pane-left { border-right: 1px solid var(--line); }
 .pane-right { border-left: 1px solid var(--line); }
 .block { padding: 14px 0; border-bottom: 1px solid var(--line); }
 .block:last-child { border-bottom: 0; }
@@ -92,15 +91,20 @@ h2.inline { display: inline; margin: 0; }
 details summary { cursor: pointer; list-style-position: outside; }
 details[open] summary { margin-bottom: 10px; }
 
-.place-pair { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-.place-fields { flex: 1; min-width: 0; }
+/* 第二ヘッダー：出発地・入れ替え・目的地・出発時刻を横一列に並べる（候補の一覧が地図の上に出るよう z-index を上げる） */
+.subbar {
+  position: relative; z-index: 40; display: flex; align-items: center; flex-wrap: wrap; gap: 8px 20px;
+  padding: 8px 20px; border-bottom: 1px solid var(--line); background: var(--panel);
+}
+.place-pair { display: flex; align-items: center; gap: 8px; flex: 1 1 520px; max-width: 760px; min-width: 0; }
+.place-pair .place-row { flex: 1; min-width: 0; margin: 0; }
+.swap svg { transform: rotate(90deg); }
 .swap {
   flex: none; width: 34px; height: 34px; display: grid; place-items: center; padding: 0; cursor: pointer;
   border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--ink-2);
 }
 .swap:hover { background: var(--bg); color: var(--ink); }
 .place-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-.place-fields .place-row:last-child { margin-bottom: 0; }
 .place-row input {
   flex: 1; min-width: 0; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px;
   background: var(--bg); color: var(--ink); font: inherit;
@@ -130,7 +134,7 @@ details[open] summary { margin-bottom: 10px; }
 }
 .pin-o { background: #3b7a4a; }
 .pin-d { background: #8a2f5c; }
-.depart-row { display: flex; align-items: center; gap: 8px; margin: 2px 0 8px; font-size: 13px; color: var(--ink-2); }
+.depart-row { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 13px; color: var(--ink-2); flex: none; }
 .depart-row input {
   padding: 5px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit;
   font-variant-numeric: tabular-nums;
@@ -251,13 +255,20 @@ button { font: inherit; cursor: pointer; }
 .attrib a { color: inherit; }
 
 @media (max-width: 1100px) {
-  .layout { grid-template-columns: 280px 1fr; }
+  .layout { grid-template-columns: 1fr; }
   .pane-right { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); max-height: none; }
   body { height: auto; }
   .layout { grid-template-rows: 70vh auto; }
 }
 @media (max-width: 720px) {
   .topbar { padding: 10px 16px; }
+  .subbar { padding: 8px 16px; }
+  /* スマホ幅では出発地・目的地を縦に積み、入れ替えボタンを右に置く */
+  .place-pair { display: grid; grid-template-columns: 1fr auto; gap: 8px; flex-basis: 100%; }
+  #form-origin { grid-row: 1; grid-column: 1; }
+  #form-dest { grid-row: 2; grid-column: 1; }
+  .swap { grid-row: 1 / 3; grid-column: 2; }
+  .swap svg { transform: none; }
   .settings-inner { padding: 12px 16px 32px; }
   .layout { display: flex; flex-direction: column; }
   .map-wrap { height: 60vh; order: -1; }
