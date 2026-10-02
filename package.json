@@ -1,0 +1,14 @@
+{
+  "name": "o-map-timetravel-navi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "タイムトラベルナビ PoC — 現在と明治18年（1885）の東京の移動を比較する",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node test/route.test.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0"
+  }
+}

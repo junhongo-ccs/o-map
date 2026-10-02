@@ -1,0 +1,245 @@
+{
+  "era": "1885",
+  "label": "明治18年（1885）",
+  "note": "座標は現在の地名・駅位置からの近似。街道の線形は主要な通過点を結んだ簡略形。",
+  "params": {
+    "walkKmh": { "value": 4.0, "basis": "旅の1日の歩行距離（通説の「1日10里（約39km）」は史料的裏付けに乏しく、近世後期の旅日記の分析では男性平均約34.9km・女性約28.6km：科研費25350784 研究成果報告書）を約9〜10時間で歩く想定。市街地の歩行速度を直接示す資料は未入手（スライダーで変更可）", "status": "仮定", "min": 3, "max": 5, "step": 0.1 },
+    "walkDetourStreet": { "value": 1.3, "basis": "街道以外の市街路は道路網が不明なため、直線距離×1.3で推定", "status": "仮定" },
+    "walkDetourKaido": { "value": 1.1, "basis": "街道は主要通過点を結んだ折れ線のため、実際の道のりとの差を×1.1で補正", "status": "仮定" },
+    "horsecarKmh": { "value": 8, "basis": "東京馬車鉄道：新橋→浅草橋経由→浅草広小路 46分（約6km）から算出", "status": "出典あり（Wikipedia）" },
+    "horsecarWaitMin": { "value": 5, "basis": "明治18年の車両は62両・馬425頭（Wikipedia「東京馬車鉄道」の統計表。出典『東京市史稿 市街篇第82』858頁）。運転間隔の資料は未入手のため、平均待ち時間は仮定値。開業当時（明治15年）は「全線に三十臺若くは四十臺の車輛を運轉」（『東京市電気局三十年史』1940、12頁）で、これをアプリの2路線（計約11km、時速8km）に均等に走らせたとすると間隔は約4〜6分・平均待ち約2〜3分になる。ただし終点での折り返し時間を入れていない粗い見積もりのため、控えめに5分とする", "status": "仮定", "min": 0, "max": 30, "step": 1 },
+    "horsecarFirstMin": { "value": 420, "basis": "始発の時刻は資料未入手（doc/tasks.md の5で調査中）のため、仮に7:00とする。これより前に停留場に着いたときは始発まで待つ", "status": "仮定", "min": 240, "max": 600, "step": 30, "unit": "time" },
+    "horsecarLastMin": { "value": 1200, "basis": "終発の時刻は資料未入手（doc/tasks.md の5で調査中）のため、仮に20:00とする。これより後は乗れない", "status": "仮定", "min": 1020, "max": 1440, "step": 30, "unit": "time" },
+    "accessRadiusKm": { "value": 5.0, "basis": "出発地・目的地から徒歩で乗り継ぎ地点に向かう最大距離（直線）", "status": "仮定" },
+    "streetLinkKm": { "value": 1.5, "basis": "近接する地点同士を市街路でつなぐ最大距離（直線）", "status": "仮定" }
+  },
+  "nodes": {
+    "nihonbashi":   { "name": "日本橋",           "lat": 35.6841, "lon": 139.7744, "kind": "place", "facts": ["gokaido"] },
+    "gofukubashi":  { "name": "呉服橋",           "lat": 35.6830, "lon": 139.7705, "kind": "waypoint" },
+    "kajibashi":    { "name": "鍛冶橋",           "lat": 35.6780, "lon": 139.7675, "kind": "waypoint" },
+    "hibiya":       { "name": "日比谷",           "lat": 35.6740, "lon": 139.7595, "kind": "waypoint" },
+    "sakuradamon":  { "name": "桜田門",           "lat": 35.6775, "lon": 139.7530, "kind": "waypoint" },
+    "miyakezaka":   { "name": "三宅坂",           "lat": 35.6800, "lon": 139.7460, "kind": "waypoint" },
+    "hanzomon":     { "name": "半蔵門",           "lat": 35.6840, "lon": 139.7450, "kind": "place" },
+    "kojimachi":    { "name": "麹町",             "lat": 35.6843, "lon": 139.7376, "kind": "waypoint" },
+    "yotsuya_mitsuke": { "name": "四谷見附",      "lat": 35.6862, "lon": 139.7305, "kind": "place" },
+    "yotsuya_okido":   { "name": "四谷大木戸",    "lat": 35.6880, "lon": 139.7190, "kind": "place", "facts": ["okido"] },
+    "naito_shinjuku":  { "name": "内藤新宿（追分）", "lat": 35.6908, "lon": 139.7050, "kind": "shuku", "facts": ["naito_shinjuku", "shishuku"] },
+
+    "kyobashi":     { "name": "京橋",             "lat": 35.6770, "lon": 139.7700, "kind": "place" },
+    "ginza":        { "name": "銀座（尾張町）",   "lat": 35.6717, "lon": 139.7650, "kind": "place", "facts": ["ginza_brick"] },
+    "shibaguchi":   { "name": "新橋（芝口）",     "lat": 35.6665, "lon": 139.7598, "kind": "place" },
+    "hamamatsucho": { "name": "浜松町",           "lat": 35.6555, "lon": 139.7570, "kind": "waypoint" },
+    "fudanotsuji":  { "name": "札の辻",           "lat": 35.6465, "lon": 139.7468, "kind": "waypoint" },
+    "takanawa_okido": { "name": "高輪大木戸",     "lat": 35.6405, "lon": 139.7425, "kind": "place", "facts": ["okido"] },
+    "shinagawa_shuku": { "name": "品川宿",        "lat": 35.6205, "lon": 139.7405, "kind": "shuku", "facts": ["shishuku"] },
+
+    "imagawabashi": { "name": "今川橋",           "lat": 35.6905, "lon": 139.7738, "kind": "waypoint" },
+    "sudacho":      { "name": "須田町",           "lat": 35.6955, "lon": 139.7705, "kind": "place" },
+    "shoheibashi":  { "name": "昌平橋",           "lat": 35.6990, "lon": 139.7685, "kind": "waypoint" },
+    "hongo":        { "name": "本郷",             "lat": 35.7075, "lon": 139.7600, "kind": "place" },
+    "hongo_oiwake": { "name": "本郷追分",         "lat": 35.7170, "lon": 139.7575, "kind": "place" },
+    "hakusan":      { "name": "白山",             "lat": 35.7215, "lon": 139.7520, "kind": "waypoint" },
+    "sugamo":       { "name": "巣鴨",             "lat": 35.7340, "lon": 139.7385, "kind": "place" },
+    "koshinzuka":   { "name": "庚申塚",           "lat": 35.7430, "lon": 139.7295, "kind": "waypoint" },
+    "itabashi_shuku": { "name": "板橋宿",         "lat": 35.7510, "lon": 139.7110, "kind": "shuku", "facts": ["shishuku"] },
+
+    "honcho":       { "name": "本町",             "lat": 35.6880, "lon": 139.7765, "kind": "waypoint" },
+    "asakusabashi": { "name": "浅草橋",           "lat": 35.6970, "lon": 139.7855, "kind": "place" },
+    "kuramae":      { "name": "蔵前",             "lat": 35.7035, "lon": 139.7910, "kind": "waypoint" },
+    "asakusa":      { "name": "浅草（雷門）",     "lat": 35.7108, "lon": 139.7963, "kind": "place" },
+    "minamisenju":  { "name": "南千住",           "lat": 35.7330, "lon": 139.7995, "kind": "waypoint" },
+    "senju_ohashi": { "name": "千住大橋",         "lat": 35.7405, "lon": 139.7975, "kind": "waypoint" },
+    "senju_shuku":  { "name": "千住宿",           "lat": 35.7490, "lon": 139.8040, "kind": "shuku", "facts": ["shishuku"] },
+
+    "toranomon":    { "name": "虎ノ門",           "lat": 35.6700, "lon": 139.7495, "kind": "waypoint" },
+    "akasaka_mitsuke": { "name": "赤坂見附",      "lat": 35.6765, "lon": 139.7375, "kind": "place", "facts": ["oyama_michi"] },
+    "aoyama":       { "name": "青山",             "lat": 35.6727, "lon": 139.7240, "kind": "waypoint" },
+    "omotesando":   { "name": "青山（表参道付近）", "lat": 35.6654, "lon": 139.7121, "kind": "waypoint" },
+    "miyamasuzaka": { "name": "宮益坂",           "lat": 35.6612, "lon": 139.7050, "kind": "waypoint" },
+    "shibuya":      { "name": "渋谷",             "lat": 35.6590, "lon": 139.7020, "kind": "place" },
+    "dogenzaka":    { "name": "道玄坂",           "lat": 35.6567, "lon": 139.6960, "kind": "waypoint" },
+    "ikejiri":      { "name": "池尻",             "lat": 35.6505, "lon": 139.6855, "kind": "waypoint" },
+    "sangenjaya":   { "name": "三軒茶屋",         "lat": 35.6434, "lon": 139.6703, "kind": "place" },
+
+    "ueno_hirokoji": { "name": "上野広小路",      "lat": 35.7078, "lon": 139.7730, "kind": "place" },
+
+    "st_shimbashi": { "name": "新橋停車場",       "lat": 35.6658, "lon": 139.7614, "kind": "station", "facts": ["rail_1872"] },
+    "st_shinagawa": { "name": "品川停車場",       "lat": 35.6285, "lon": 139.7395, "kind": "station", "facts": ["rail_1872"] },
+    "st_meguro":    { "name": "目黒停車場",       "lat": 35.6341, "lon": 139.7157, "kind": "station", "facts": ["shinagawa_line"] },
+    "st_shibuya":   { "name": "渋谷停車場",       "lat": 35.6581, "lon": 139.7018, "kind": "station", "facts": ["shinagawa_line"] },
+    "st_shinjuku":  { "name": "新宿停車場",       "lat": 35.6903, "lon": 139.7005, "kind": "station", "facts": ["shinagawa_line"] },
+    "st_mejiro":    { "name": "目白停車場",       "lat": 35.7212, "lon": 139.7065, "kind": "station", "facts": ["shinagawa_line"] },
+    "st_itabashi":  { "name": "板橋停車場",       "lat": 35.7454, "lon": 139.7195, "kind": "station", "facts": ["shinagawa_line"] },
+    "st_akabane":   { "name": "赤羽停車場",       "lat": 35.7781, "lon": 139.7208, "kind": "station", "facts": ["shinagawa_line"] },
+    "st_oji":       { "name": "王子停車場",       "lat": 35.7524, "lon": 139.7383, "kind": "station", "facts": ["nippon_railway_1883"] },
+    "st_ueno":      { "name": "上野停車場",       "lat": 35.7134, "lon": 139.7765, "kind": "station", "facts": ["nippon_railway_1883"] },
+
+    "hc_shimbashi": { "name": "新橋（鉄道馬車）", "lat": 35.6662, "lon": 139.7605, "kind": "stop", "facts": ["horsecar"] },
+    "hc_ueno":      { "name": "上野（鉄道馬車）", "lat": 35.7120, "lon": 139.7758, "kind": "stop", "facts": ["horsecar"] }
+  },
+  "ways": [
+    { "id": "koshu",   "name": "甲州街道",          "kind": "kaido",  "facts": ["koshu_kaido", "gokaido"],
+      "nodes": ["nihonbashi", "gofukubashi", "kajibashi", "hibiya", "sakuradamon", "miyakezaka", "hanzomon", "kojimachi", "yotsuya_mitsuke", "yotsuya_okido", "naito_shinjuku"],
+      "approxSegments": [["nihonbashi", "hanzomon"]] },
+    { "id": "tokaido", "name": "東海道",            "kind": "kaido",  "facts": ["tokaido", "gokaido"],
+      "nodes": ["nihonbashi", "kyobashi", "ginza", "shibaguchi", "hamamatsucho", "fudanotsuji", "takanawa_okido", "st_shinagawa", "shinagawa_shuku"] },
+    { "id": "nakasendo", "name": "中山道",          "kind": "kaido",  "facts": ["nakasendo", "gokaido"],
+      "nodes": ["nihonbashi", "imagawabashi", "sudacho", "shoheibashi", "hongo", "hongo_oiwake", "hakusan", "sugamo", "koshinzuka", "itabashi_shuku"] },
+    { "id": "nikko",   "name": "日光・奥州道中",    "kind": "kaido",  "facts": ["nikko_kaido", "gokaido"],
+      "nodes": ["nihonbashi", "honcho", "asakusabashi", "kuramae", "asakusa", "minamisenju", "senju_ohashi", "senju_shuku"] },
+    { "id": "oyama",   "name": "大山道（矢倉沢往還）", "kind": "kaido", "facts": ["oyama_michi"],
+      "nodes": ["akasaka_mitsuke", "aoyama", "omotesando", "miyamasuzaka", "shibuya", "dogenzaka", "ikejiri", "sangenjaya"] },
+    { "id": "akasaka_shimbashi", "name": "赤坂見附〜新橋の市街路", "kind": "street", "facts": [],
+      "nodes": ["akasaka_mitsuke", "toranomon", "shibaguchi"], "approxSegments": [["akasaka_mitsuke", "shibaguchi"]] },
+    { "id": "ueno_street", "name": "上野への市街路（御成道）", "kind": "street", "facts": [],
+      "nodes": ["sudacho", "ueno_hirokoji", "hc_ueno"], "approxSegments": [["sudacho", "hc_ueno"]] }
+  ],
+  "lines": [
+    {"id": "kansetsu", "name": "官設鉄道（新橋–品川）", "mode": "rail", "opened": 1872, "facts": ["rail_1872", "kansetsu_1885"],
+      "stations": ["st_shimbashi", "st_shinagawa"],
+      "timetable": {
+        "fwdFrom": "新橋発", "revFrom": "品川発", "status": "出典あり（当時の時刻表）",
+        "basis": "『鉄道汽車便覧表』（明治18年5月刊）の「新橋橫濱間滊車發着時刻表」から新橋・品川の時刻を転記（NDL pid/805377 コマ16–20）。旅客列車は1日15往復（貨物列車を除く）",
+        "source": {"label": "松永武英編『鉄道汽車便覧表』松陰堂、明治18年5月（国立国会図書館デジタルコレクション）", "url": "https://dl.ndl.go.jp/pid/805377"},
+        "fwd": [
+          ["6:45", "6:54"],
+          ["8:00", "8:09"],
+          ["9:15", "9:24"],
+          ["9:45", "9:54"],
+          ["11:00", "11:09"],
+          ["12:15", "12:24"],
+          ["13:30", "13:39"],
+          ["14:45", "14:54"],
+          ["16:00", "16:09"],
+          ["16:45", "16:54"],
+          ["18:00", "18:09"],
+          ["19:15", "19:24"],
+          ["20:30", "20:39"],
+          ["21:45", "21:54"],
+          ["23:00", "23:09"]
+        ],
+        "rev": [
+          ["7:31", "7:40"],
+          ["8:46", "8:55"],
+          ["9:26", "9:35"],
+          ["10:31", "10:40"],
+          ["11:46", "11:55"],
+          ["13:01", "13:10"],
+          ["14:16", "14:25"],
+          ["15:31", "15:40"],
+          ["16:46", "16:55"],
+          ["17:21", "17:30"],
+          ["18:46", "18:55"],
+          ["20:01", "20:10"],
+          ["21:16", "21:25"],
+          ["22:31", "22:40"],
+          ["23:42", "23:51"]
+        ]
+      } },
+    {"id": "shinagawa_line", "name": "日本鉄道 品川線（新橋–赤羽 直通）", "shortName": "品川線", "mode": "rail", "opened": 1885, "facts": ["shinagawa_line", "shinagawa_line_kanpo", "shinagawa_line_service", "shinagawa_line_1885_11"],
+      "stations": ["st_shimbashi", "st_shinagawa", "st_meguro", "st_shibuya", "st_shinjuku", "st_mejiro", "st_itabashi", "st_akabane"],
+      "timetable": {
+        "fwdFrom": "新橋発", "revFrom": "赤羽発", "status": "出典あり（当時の時刻表）",
+        "basis": "『鉄道汽車便覧表』（明治18年5月刊）の「新橋赤羽間滊車發着時刻表」から転記（NDL pid/805377 コマ14–16）。1日4往復、新橋–赤羽は75分。開業時（3月1日実施）は3往復だった（官報 第499号、明治18年3月4日）",
+        "source": {"label": "松永武英編『鉄道汽車便覧表』松陰堂、明治18年5月（国立国会図書館デジタルコレクション）", "url": "https://dl.ndl.go.jp/pid/805377"},
+        "fwd": [
+          ["7:45", "7:54", "8:05", "8:16", "8:28", "8:39", "8:49", "9:00"],
+          ["11:42", "11:51", "12:02", "12:13", "12:25", "12:36", "12:46", "12:57"],
+          ["15:45", "15:54", "16:05", "16:16", "16:28", "16:39", "16:49", "17:00"],
+          ["20:00", "20:09", "20:20", "20:31", "20:43", "20:54", "21:04", "21:15"]
+        ],
+        "rev": [
+          ["9:56", "10:09", "10:19", "10:30", "10:41", "10:52", "11:03", "11:11"],
+          ["13:20", "13:33", "13:43", "13:54", "14:05", "14:16", "14:27", "14:35"],
+          ["17:20", "17:33", "17:43", "17:54", "18:05", "18:16", "18:27", "18:35"],
+          ["21:35", "21:48", "21:58", "22:09", "22:20", "22:31", "22:42", "22:50"]
+        ]
+      } },
+    {"id": "nippon_tohoku", "name": "日本鉄道（上野–赤羽）", "mode": "rail", "opened": 1883, "facts": ["nippon_railway_1883", "nippon_railway_1885"],
+      "stations": ["st_ueno", "st_oji", "st_akabane"],
+      "timetable": {
+        "fwdFrom": "上野発", "revFrom": "赤羽発", "status": "出典あり（当時の時刻表）",
+        "basis": "『鉄道汽車便覧表』（明治18年5月刊）の「上野前橋間滊車發着時刻表」から上野・王子・赤羽の時刻を転記（NDL pid/805377 コマ12–14）。旅客列車は1日4往復（貨物列車を除く）。上野発8:45は急行で王子に停まらない",
+        "source": {"label": "松永武英編『鉄道汽車便覧表』松陰堂、明治18年5月（国立国会図書館デジタルコレクション）", "url": "https://dl.ndl.go.jp/pid/805377"},
+        "fwd": [
+          ["5:25", "5:40", "5:50"],
+          ["8:45", null, "9:06"],
+          ["12:40", "12:55", "13:06"],
+          ["16:50", "17:05", "17:16"]
+        ],
+        "rev": [
+          ["9:54", "10:03", "10:17"],
+          ["13:04", "13:13", "13:27"],
+          ["17:14", "17:23", "17:37"],
+          ["21:21", "21:30", "21:44"]
+        ]
+      } },
+    {"id": "horsecar_main", "name": "東京馬車鉄道（新橋–上野–浅草）", "mode": "horsecar", "opened": 1882, "facts": ["horsecar"],
+      "stations": ["hc_shimbashi", "ginza", "kyobashi", "nihonbashi", "imagawabashi", "sudacho", "ueno_hirokoji", "hc_ueno", "asakusa"] },
+    {"id": "horsecar_loop", "name": "東京馬車鉄道（浅草–浅草橋–日本橋）", "mode": "horsecar", "opened": 1882, "facts": ["horsecar"],
+      "stations": ["asakusa", "kuramae", "asakusabashi", "honcho", "nihonbashi"] }
+  ],
+  "fares": {
+    "classes": ["上等", "中等", "下等"],
+    "companies": {
+      "nippon": {
+        "name": "日本鉄道", "lines": ["shinagawa_line", "nippon_tohoku"],
+        "status": "出典あり（当時の運賃表）",
+        "basis": "『鉄道汽車便覧表』（明治18年5月刊）「上野及ビ新橋前橋間各驛乘車賃金表」から、アプリで使う9駅の間の運賃を転記（NDL pid/805377 コマ25–29）。照合用の一覧は doc/fares-1885.md",
+        "through": { "company": "kansetsu", "at": "st_shinagawa", "note": "品川線で新橋から乗る（新橋で降りる）ときは、新橋–品川の官設鉄道の運賃に品川から先の運賃を足す。資料に通し運賃が載っていないための仮定" },
+        "pairs": {
+        "st_ueno|st_oji": [25, 14, 7],
+        "st_ueno|st_akabane": [35, 22, 11],
+        "st_ueno|st_shinagawa": [105, 68, 34],
+        "st_ueno|st_meguro": [90, 60, 30],
+        "st_ueno|st_shibuya": [80, 52, 26],
+        "st_ueno|st_shinjuku": [70, 44, 22],
+        "st_ueno|st_mejiro": [60, 36, 18],
+        "st_ueno|st_itabashi": [50, 30, 15],
+        "st_oji|st_akabane": [10, 8, 4],
+        "st_oji|st_shinagawa": [80, 54, 27],
+        "st_oji|st_meguro": [65, 46, 23],
+        "st_oji|st_shibuya": [55, 38, 19],
+        "st_oji|st_shinjuku": [45, 30, 15],
+        "st_oji|st_mejiro": [35, 22, 11],
+        "st_oji|st_itabashi": [25, 16, 8],
+        "st_akabane|st_shinagawa": [70, 46, 23],
+        "st_akabane|st_meguro": [55, 38, 19],
+        "st_akabane|st_shibuya": [45, 30, 15],
+        "st_akabane|st_shinjuku": [35, 22, 11],
+        "st_akabane|st_mejiro": [25, 14, 7],
+        "st_akabane|st_itabashi": [15, 8, 4],
+        "st_shinagawa|st_meguro": [15, 8, 4],
+        "st_shinagawa|st_shibuya": [25, 16, 8],
+        "st_shinagawa|st_shinjuku": [35, 24, 12],
+        "st_shinagawa|st_mejiro": [45, 32, 16],
+        "st_shinagawa|st_itabashi": [55, 38, 19],
+        "st_meguro|st_shibuya": [10, 8, 4],
+        "st_meguro|st_shinjuku": [20, 16, 8],
+        "st_meguro|st_mejiro": [30, 24, 12],
+        "st_meguro|st_itabashi": [40, 30, 15],
+        "st_shibuya|st_shinjuku": [10, 8, 4],
+        "st_shibuya|st_mejiro": [20, 16, 8],
+        "st_shibuya|st_itabashi": [30, 22, 11],
+        "st_shinjuku|st_mejiro": [10, 8, 4],
+        "st_shinjuku|st_itabashi": [20, 14, 7],
+        "st_mejiro|st_itabashi": [10, 6, 3]
+        }
+      },
+      "kansetsu": {
+        "name": "官設鉄道", "lines": ["kansetsu"],
+        "status": "出典あり（当時の運賃表）",
+        "basis": "『鉄道汽車便覧表』（明治18年5月刊）「新橋横濱間汽車賃金表」の新橋–品川（NDL pid/805377 コマ35）",
+        "pairs": {
+          "st_shimbashi|st_shinagawa": [25, 10, 5]
+        }
+      }
+    },
+    "horsecar": {
+      "lines": ["horsecar_main", "horsecar_loop"], "perRide": [3, 2, 2], "atLeast": true,
+      "status": "出典あり（Wikipedia）",
+      "basis": "東京馬車鉄道の運賃は1区あたり1等車3銭、2等車2銭（Wikipedia「東京馬車鉄道」）。区の区切りが分からないため、1回乗るごとの最低額（1区分）として扱う。上等は1等、中等・下等は2等に当てる"
+    }
+  }
+}

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>タイムトラベルナビ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=directions_railway,directions_walk,payments,train,trolley_cable_car&display=block" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="https://unpkg.com/@maplibre/maplibre-gl-compare@0.5.0/dist/maplibre-gl-compare.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>タイムトラベルナビ</h1>
+      <p>もし今から、明治18年（1885）の東京を移動したら？</p>
+    </div>
+    <div class="topbar-right">
+      <nav aria-label="ページ">
+        <a id="nav-settings" class="nav-link" href="#settings">設定</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="stage">
+    <div class="layout">
+      <aside class="pane pane-left" aria-label="経路の指定">
+        <section class="block">
+          <h2>出発地・目的地</h2>
+          <div class="place-pair">
+            <div class="place-fields">
+              <form id="form-origin" class="place-row">
+                <span class="pin pin-o" aria-hidden="true">出</span>
+                <div class="combo">
+                  <input id="in-origin" type="text" placeholder="一覧から選ぶ（入力で絞り込み）" autocomplete="off" aria-label="出発地"
+                    role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="list-origin">
+                  <ul id="list-origin" class="combo-list" role="listbox" aria-label="出発地の候補" hidden></ul>
+                </div>
+              </form>
+              <form id="form-dest" class="place-row">
+                <span class="pin pin-d" aria-hidden="true">着</span>
+                <div class="combo">
+                  <input id="in-dest" type="text" placeholder="一覧から選ぶ（入力で絞り込み）" autocomplete="off" aria-label="目的地"
+                    role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="list-dest">
+                  <ul id="list-dest" class="combo-list" role="listbox" aria-label="目的地の候補" hidden></ul>
+                </div>
+              </form>
+            </div>
+            <button id="swap" type="button" class="swap" aria-label="出発地と目的地を入れ替える" title="出発地と目的地を入れ替える">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg>
+            </button>
+          </div>
+          <label class="depart-row">出発時刻 <input id="in-depart" type="time" value="11:30" step="300"></label>
+        </section>
+      </aside>
+
+      <main class="map-wrap">
+        <div id="compare" class="compare">
+          <div id="map-now" class="map"></div>
+          <div id="map-old" class="map"></div>
+        </div>
+        <div class="map-tools">
+          <div class="seg" role="tablist" aria-label="地図の比較方法">
+            <button id="mode-swipe" class="on" role="tab" aria-selected="true">スワイプ</button>
+            <button id="mode-overlay" role="tab" aria-selected="false">重ね合わせ</button>
+          </div>
+          <label id="opacity-wrap" class="opacity" hidden>
+            古地図の透過度 <input id="opacity" type="range" min="0" max="100" value="70"> <output id="opacity-out">70%</output>
+          </label>
+        </div>
+        <div class="map-labels" aria-hidden="true">
+          <span class="lbl lbl-now">現在（地理院地図）</span>
+          <span class="lbl lbl-old">明治（迅速測図 1880年代）</span>
+        </div>
+      </main>
+
+      <aside class="pane pane-right" aria-label="結果">
+        <div id="empty" class="empty">
+          <p>左の一覧から出発地と目的地を選んでください。</p>
+        </div>
+        <div id="result" hidden>
+          <section class="block">
+            <h2>所要時間の比較</h2>
+            <div id="compare-bars" class="bars"></div>
+          </section>
+          <section class="block">
+            <h2>明治18年の経路</h2>
+            <ol id="legs-old" class="legs"></ol>
+          </section>
+          <section class="block">
+            <details>
+              <summary><h2 class="inline">現在の経路（簡略モデル）</h2></summary>
+              <ol id="legs-now" class="legs"></ol>
+            </details>
+          </section>
+          <section class="block">
+            <div class="ai-head">
+              <h2>解説</h2>
+              <button id="btn-ai" class="btn-primary">AIで解説を生成</button>
+            </div>
+            <p id="ai-status" class="msg" role="status"></p>
+            <div id="explain"></div>
+          </section>
+          <section class="block">
+            <h2>根拠とした事実カード</h2>
+            <ul id="facts" class="facts"></ul>
+          </section>
+        </div>
+      </aside>
+    </div>
+
+    <div id="settings-page" class="settings" hidden>
+      <div class="settings-inner">
+        <a class="back-link" href="#">← 地図に戻る</a>
+        <h2 class="settings-title" tabindex="-1">設定</h2>
+        <section class="block">
+          <h3>計算の前提</h3>
+          <p class="note">所要時間はすべて「距離 × 係数 ÷ 速度 ＋ 待ち時間」で計算しています。汽車は明治18年5月の時刻表から、鉄道馬車は平均待ち時間から待ち時間を出します。出発時刻や仮定値を変えると、最速の経路が入れ替わることがあります。値を変えると、地図の画面の経路にもすぐ反映されます。</p>
+          <div id="assumptions"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <footer class="attrib">
+    古地図：<a href="https://habs.rad.naro.go.jp/" target="_blank" rel="noopener">迅速測図（農研機構農業環境研究部門「歴史的農業環境閲覧システム」）</a> CC BY 2.1 JP ／
+    地図：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a> ／
+    駅座標：© OpenStreetMap contributors ／ PoC：経路・所要時間は推定値です
+  </footer>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/@maplibre/maplibre-gl-compare@0.5.0/dist/maplibre-gl-compare.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

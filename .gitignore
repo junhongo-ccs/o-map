@@ -1,0 +1,6 @@
+node_modules/
+.env
+.env.*
+.claude/settings.local.json
+# 外部LLMの調査レポート（誤りを含む作業メモ。手元にだけ置く）
+doc/report-*.md
