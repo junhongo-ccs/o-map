@@ -141,5 +141,90 @@
       "source": { "label": "松永武英編『鉄道汽車便覧表』松陰堂、明治18年5月（国立国会図書館デジタルコレクション）", "url": "https://dl.ndl.go.jp/pid/805377" },
       "status": "確認済"
     }
+  ,
+    "asukayama": {
+      "title": "飛鳥山",
+      "body": "飛鳥山は、8代将軍徳川吉宗が桜を植えさせて江戸庶民の花見の名所となった。1873年（明治6年）、上野・芝・浅草・深川とともに日本で最初の公園の一つに指定された。",
+      "year": 1873,
+      "source": { "label": "Wikipedia「飛鳥山公園」", "url": "https://ja.wikipedia.org/wiki/飛鳥山公園" },
+      "status": "未照合"
+    },
+    "oji_inari": {
+      "title": "王子稲荷",
+      "body": "王子稲荷神社は関東の稲荷の総社とされ、大晦日の夜に関東中の狐が近くの装束榎に集まり、装束を整えて参詣したという言い伝えがある。歌川広重の『名所江戸百景』に「王子装束ゑの木 大晦日の狐火」として描かれた。",
+      "year": null,
+      "source": { "label": "Wikipedia「王子稲荷神社」", "url": "https://ja.wikipedia.org/wiki/王子稲荷神社" },
+      "status": "未照合"
+    },
+    "onden": {
+      "title": "穏田の水車",
+      "body": "穏田（おんでん）は渋谷川沿いの村で、川の流れを使った水車があった。葛飾北斎は『富嶽三十六景』の「穏田の水車」で、富士山を背にした水車小屋を描いた。現在の神宮前（原宿・表参道付近）にあたる。",
+      "year": null,
+      "source": { "label": "Wikipedia「富嶽三十六景」", "url": "https://ja.wikipedia.org/wiki/富嶽三十六景" },
+      "status": "未照合"
+    },
+    "hiroo_furukawa": {
+      "title": "広尾の古川",
+      "body": "古川は渋谷川の下流の呼び名で、広尾のあたりは江戸近郊の田園だった。歌川広重は『名所江戸百景』の「広尾ふる川」で、川に架かる橋とのどかな田畑を描いた。",
+      "year": null,
+      "source": { "label": "Wikipedia「渋谷川」", "url": "https://ja.wikipedia.org/wiki/渋谷川" },
+      "status": "未照合"
+    },
+    "meguro_taikobashi": {
+      "title": "目黒の太鼓橋",
+      "body": "行人坂を下った目黒川に架かっていた石造りの太鼓橋。歌川広重の『名所江戸百景』に「目黒太鼓橋夕日の岡」として、雪の積もった姿で描かれた。",
+      "year": null,
+      "source": { "label": "Wikipedia「行人坂」", "url": "https://ja.wikipedia.org/wiki/行人坂" },
+      "status": "未照合"
+    },
+    "konno_hachiman": {
+      "title": "金王八幡宮",
+      "body": "金王八幡宮は渋谷城の跡とされる地にある神社で、境内の「金王桜」は江戸の名木として知られた。",
+      "year": null,
+      "source": { "label": "Wikipedia「金王八幡宮」", "url": "https://ja.wikipedia.org/wiki/金王八幡宮" },
+      "status": "未照合"
+    },
+    "kishimojin": {
+      "title": "雑司ヶ谷鬼子母神",
+      "body": "雑司ヶ谷の鬼子母神は安産・子育ての神として江戸の人々の信仰を集め、門前には茶屋や料理屋が並んだ。歌川広重は門前の料理屋「茗荷屋」を描いている。",
+      "year": null,
+      "source": { "label": "Wikipedia「法明寺 (豊島区)」", "url": "https://ja.wikipedia.org/wiki/法明寺_(豊島区)" },
+      "status": "未照合"
+    },
+    "omokagebashi": {
+      "title": "面影橋と姿見の橋",
+      "body": "神田川に架かる面影橋は、近くの姿見の橋とともに江戸の名所として知られた。歌川広重の『名所江戸百景』に「高田姿見のはし俤の橋砂利場」として描かれた。",
+      "year": null,
+      "source": { "label": "Wikipedia「面影橋」", "url": "https://ja.wikipedia.org/wiki/面影橋" },
+      "status": "未照合"
+    },
+    "takadanobaba": {
+      "title": "高田馬場",
+      "body": "高田馬場は江戸時代の初めに旗本の馬術の稽古場として設けられた馬場で、現在の西早稲田にあった。高田馬場駅の名前の由来だが、駅とは1kmほど場所がずれている。",
+      "year": null,
+      "source": { "label": "Wikipedia「高田馬場」", "url": "https://ja.wikipedia.org/wiki/高田馬場" },
+      "status": "未照合"
+    },
+    "sekiguchi": {
+      "title": "関口の芭蕉庵と椿山",
+      "body": "神田上水の取水口があった関口には、松尾芭蕉ゆかりの芭蕉庵がある。隣の椿山は椿の名所で、現在の椿山荘のあたりにあたる。",
+      "year": null,
+      "source": { "label": "Wikipedia「関口芭蕉庵」", "url": "https://ja.wikipedia.org/wiki/関口芭蕉庵" },
+      "status": "未照合"
+    },
+    "takinogawa": {
+      "title": "滝野川",
+      "body": "滝野川は石神井川が台地を削った渓谷で、江戸時代には紅葉の名所として知られた。歌川広重の『名所江戸百景』に「王子滝の川」として描かれた。",
+      "year": null,
+      "source": { "label": "Wikipedia「石神井川」", "url": "https://ja.wikipedia.org/wiki/石神井川" },
+      "status": "未照合"
+    },
+    "otonashi_otaki": {
+      "title": "音無川の大滝",
+      "body": "石神井川は王子のあたりで音無川と呼ばれ、堰から落ちる水は「大滝」と呼ばれて行楽客でにぎわった。歌川広重の『名所江戸百景』に「王子音無川堰埭世俗大滝ト唱」として描かれた。",
+      "year": null,
+      "source": { "label": "Wikipedia「石神井川」", "url": "https://ja.wikipedia.org/wiki/石神井川" },
+      "status": "未照合"
+    }
   }
 }

@@ -1,12 +1,12 @@
 {
   "era": "now",
   "label": "現在（令和）",
-  "note": "比較用の簡略モデル。山手線・中央線快速・銀座線・丸ノ内線の4路線のみ。駅座標はOpenStreetMap（© OpenStreetMap contributors, ODbL）。",
+  "note": "比較用の簡略モデル。山手線・中央線快速・銀座線・丸ノ内線と、京浜東北線（上野–赤羽）・埼京線（池袋–赤羽）の6路線のみ。駅座標はOpenStreetMap（© OpenStreetMap contributors, ODbL）。",
   "params": {
     "walkKmh": { "value": 4.8, "basis": "不動産の表示に関する公正競争規約の徒歩所要時間（80m/分）", "status": "出典あり" },
     "walkDetourStreet": { "value": 1.3, "basis": "道路網を使わず直線距離×1.3で推定（明治側と同じ係数）", "status": "仮定" },
     "railWaitMin": { "value": 3, "basis": "都心の主要路線は日中数分間隔。乗車ごとの平均待ち時間（乗換を含む）の仮定値", "status": "仮定", "min": 0, "max": 15, "step": 1 },
-    "railFirstMin": { "value": 300, "basis": "4路線の始発はおおむね5時前後。路線・駅ごとの違いは無視した仮定値。これより前に駅に着いたときは始発まで待つ", "status": "仮定", "min": 240, "max": 420, "step": 10, "unit": "time" },
+    "railFirstMin": { "value": 300, "basis": "6路線の始発はおおむね5時前後。路線・駅ごとの違いは無視した仮定値。これより前に駅に着いたときは始発まで待つ", "status": "仮定", "min": 240, "max": 420, "step": 10, "unit": "time" },
     "railLastMin": { "value": 1440, "basis": "終電はおおむね0時台。路線・駅ごとの違いは無視し、24:00より後は乗れないとする仮定値", "status": "仮定", "min": 1320, "max": 1500, "step": 10, "unit": "time" },
     "accessRadiusKm": { "value": 2.0, "basis": "出発地・目的地から駅まで歩く最大距離（直線）", "status": "仮定" },
     "streetLinkKm": { "value": 0.5, "basis": "乗換で駅同士を歩いてつなぐ最大距離（直線）", "status": "仮定" }
@@ -15,7 +15,9 @@
     "yamanote":   { "kmh": 34, "basis": "山手線 1周約34.5kmを約60分" },
     "chuo":       { "kmh": 44, "basis": "中央線快速 東京–新宿 約10.3kmを約14分" },
     "ginza":      { "kmh": 27, "basis": "銀座線 渋谷–浅草 約14.2kmを約32分" },
-    "marunouchi": { "kmh": 31, "basis": "丸ノ内線 池袋–荻窪 約24.2kmを約47分" }
+    "marunouchi": { "kmh": 31, "basis": "丸ノ内線 池袋–荻窪 約24.2kmを約47分" },
+    "keihin_tohoku": { "kmh": 34, "basis": "京浜東北線 上野–赤羽 約9.6kmを約17分（概算）" },
+    "saikyo": { "kmh": 37, "basis": "埼京線 池袋–赤羽 約5.5kmを約9分（概算）" }
   },
   "nodes": {
     "y_shinagawa": { "name": "品川", "lat": 35.6287, "lon": 139.73913, "kind": "station" },
@@ -90,7 +92,13 @@
     "m_gyoenmae": { "name": "新宿御苑前", "lat": 35.68857, "lon": 139.71074, "kind": "station" },
     "m_shinjuku3": { "name": "新宿三丁目", "lat": 35.69074, "lon": 139.70476, "kind": "station" },
     "m_shinjuku": { "name": "新宿", "lat": 35.69223, "lon": 139.7006, "kind": "station" },
-    "m_nishishinjuku": { "name": "西新宿", "lat": 35.69443, "lon": 139.69277, "kind": "station" }
+    "m_nishishinjuku": { "name": "西新宿", "lat": 35.69443, "lon": 139.69277, "kind": "station" },
+    "k_kaminakazato": { "name": "上中里", "lat": 35.74695, "lon": 139.74639, "kind": "station" },
+    "k_oji": { "name": "王子", "lat": 35.75215, "lon": 139.73846, "kind": "station" },
+    "k_higashijujo": { "name": "東十条", "lat": 35.76386, "lon": 139.7269, "kind": "station" },
+    "k_akabane": { "name": "赤羽", "lat": 35.7781, "lon": 139.72071, "kind": "station" },
+    "s_itabashi": { "name": "板橋", "lat": 35.74527, "lon": 139.71943, "kind": "station" },
+    "s_jujo": { "name": "十条", "lat": 35.76001, "lon": 139.72231, "kind": "station" }
   },
   "ways": [],
   "lines": [
@@ -101,6 +109,10 @@
     { "id": "ginza", "name": "東京メトロ銀座線", "mode": "rail", "facts": ["now_ginza_line"],
       "stations": ["g_shibuya", "g_omotesando", "g_gaiemmae", "g_aoyama1", "g_akasakamitsuke", "g_tameikesanno", "g_toranomon", "g_shimbashi", "g_ginza", "g_kyobashi", "g_nihombashi", "g_mitsukoshimae", "g_kanda", "g_suehirocho", "g_uenohirokoji", "g_ueno", "g_inaricho", "g_tawaramachi", "g_asakusa"] },
     { "id": "marunouchi", "name": "東京メトロ丸ノ内線", "mode": "rail",
-      "stations": ["m_ikebukuro", "m_shinotsuka", "m_myogadani", "m_korakuen", "m_hongo3", "m_ochanomizu", "m_awajicho", "m_otemachi", "m_tokyo", "m_ginza", "m_kasumigaseki", "m_kokkai", "m_akasakamitsuke", "m_yotsuya", "m_yotsuya3", "m_gyoenmae", "m_shinjuku3", "m_shinjuku", "m_nishishinjuku"] }
+      "stations": ["m_ikebukuro", "m_shinotsuka", "m_myogadani", "m_korakuen", "m_hongo3", "m_ochanomizu", "m_awajicho", "m_otemachi", "m_tokyo", "m_ginza", "m_kasumigaseki", "m_kokkai", "m_akasakamitsuke", "m_yotsuya", "m_yotsuya3", "m_gyoenmae", "m_shinjuku3", "m_shinjuku", "m_nishishinjuku"] },
+    { "id": "keihin_tohoku", "name": "JR京浜東北線（上野–赤羽）", "mode": "rail",
+      "stations": ["y_ueno", "y_uguisudani", "y_nippori", "y_nishinippori", "y_tabata", "k_kaminakazato", "k_oji", "k_higashijujo", "k_akabane"] },
+    { "id": "saikyo", "name": "JR埼京線（池袋–赤羽）", "mode": "rail",
+      "stations": ["y_ikebukuro", "s_itabashi", "s_jujo", "k_akabane"] }
   ]
 }

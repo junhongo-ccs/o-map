@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=directions_railway,directions_walk,payments,settings,timer,train,trolley_cable_car&display=block" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=directions_railway,directions_walk,eco,fact_check,gate,hotel,local_florist,location_on,menu_book,mode_fan,payments,road,route,settings,shopping_bag,target,temple_buddhist,timer,train,trolley_cable_car,water&display=block" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
   <link rel="stylesheet" href="https://unpkg.com/@maplibre/maplibre-gl-compare@0.5.0/dist/maplibre-gl-compare.css">
   <link rel="stylesheet" href="app.css">
@@ -19,6 +19,15 @@
       <p>明治18年（1885）の東京を移動</p>
     </div>
     <div class="topbar-right">
+      <div class="map-tools">
+        <div class="seg" role="tablist" aria-label="地図の比較方法">
+          <button id="mode-swipe" class="on" role="tab" aria-selected="true">スワイプ</button>
+          <button id="mode-overlay" role="tab" aria-selected="false">重ね合わせ</button>
+        </div>
+        <label id="opacity-wrap" class="opacity" hidden>
+          古地図の透過度 <input id="opacity" type="range" min="0" max="100" value="70"> <output id="opacity-out">70%</output>
+        </label>
+      </div>
       <nav aria-label="ページ">
         <a id="nav-settings" class="nav-link nav-icon" href="#settings" aria-label="設定" title="設定"><span class="material-symbols-outlined" aria-hidden="true">settings</span></a>
       </nav>
@@ -58,15 +67,6 @@
           <div id="map-now" class="map"></div>
           <div id="map-old" class="map"></div>
         </div>
-        <div class="map-tools">
-          <div class="seg" role="tablist" aria-label="地図の比較方法">
-            <button id="mode-swipe" class="on" role="tab" aria-selected="true">スワイプ</button>
-            <button id="mode-overlay" role="tab" aria-selected="false">重ね合わせ</button>
-          </div>
-          <label id="opacity-wrap" class="opacity" hidden>
-            古地図の透過度 <input id="opacity" type="range" min="0" max="100" value="70"> <output id="opacity-out">70%</output>
-          </label>
-        </div>
         <div class="map-labels" aria-hidden="true">
           <span class="lbl lbl-now">現在（地理院地図）</span>
           <span class="lbl lbl-old">明治（迅速測図 1880年代）</span>
@@ -74,8 +74,9 @@
       </main>
 
       <aside class="pane pane-right" aria-label="結果">
+        <div class="sheet-handle" role="button" tabindex="0" aria-label="結果の表示を広げる・たたむ" aria-expanded="false"><span></span></div>
         <div id="empty" class="empty">
-          <p>左の一覧から出発地と目的地を選んでください。</p>
+          <p>入力欄から出発地と目的地を選んでください。</p>
         </div>
         <div id="result" hidden>
           <section class="block">
@@ -86,23 +87,33 @@
             <h2>明治18年の経路</h2>
             <ol id="legs-old" class="legs"></ol>
           </section>
+          <section id="spots-sec" class="block" hidden>
+            <details open>
+              <summary><h2 class="inline"><span class="material-symbols-outlined h2-icon" aria-hidden="true">location_on</span>沿線の見どころ</h2></summary>
+              <ol id="spots" class="spots"></ol>
+            </details>
+          </section>
           <section class="block">
             <details>
-              <summary><h2 class="inline">現在の経路（簡略モデル）</h2></summary>
+              <summary><h2 class="inline"><span class="material-symbols-outlined h2-icon" aria-hidden="true">route</span>現在の経路（簡略モデル）</h2></summary>
               <ol id="legs-now" class="legs"></ol>
             </details>
           </section>
           <section class="block">
-            <div class="ai-head">
-              <h2>解説</h2>
-              <button id="btn-ai" class="btn-primary" hidden>AIで解説を生成</button>
-            </div>
-            <p id="ai-status" class="msg" role="status"></p>
-            <div id="explain"></div>
+            <details open>
+              <summary><h2 class="inline"><span class="material-symbols-outlined h2-icon" aria-hidden="true">menu_book</span>解説</h2></summary>
+              <div class="ai-head">
+                <button id="btn-ai" class="btn-primary" hidden>AIで解説を生成</button>
+              </div>
+              <p id="ai-status" class="msg" role="status"></p>
+              <div id="explain"></div>
+            </details>
           </section>
           <section class="block">
-            <h2>根拠とした事実カード</h2>
-            <ul id="facts" class="facts"></ul>
+            <details id="facts-acc">
+              <summary><h2 class="inline"><span class="material-symbols-outlined h2-icon" aria-hidden="true">fact_check</span>根拠とした事実カード</h2></summary>
+              <ul id="facts" class="facts"></ul>
+            </details>
           </section>
         </div>
       </aside>

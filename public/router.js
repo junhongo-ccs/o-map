@@ -269,6 +269,7 @@ export function route(net, origin, dest, overrides = {}, options = {}) {
       label: line ? line.name : way ? way.name : "徒歩（市街路・推定）",
       from: name(l.from), to: name(l.to),
       viaNames: l.via.slice(1, -1).map(name).filter((n) => n && !n.startsWith("__")),
+      viaIds: l.via.filter((id) => !id.startsWith("__")), // 区間が通る地点（両端を含む）。沿線の見どころに使う
       km: round1(l.km), moveMin: Math.round(l.moveMin), waitMin: Math.round(l.waitMin),
       approx: l.approx, opened: line?.opened ?? null,
       // 時刻表のある路線と、始発を待って乗る場合だけ発車時刻を出す（平均待ち時間で乗る場合は時刻に意味がない）

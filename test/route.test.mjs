@@ -209,6 +209,23 @@ test("運賃：日本鉄道の乗り継ぎは通し運賃、品川線の新橋�
   assert.equal(route(NOW, P.shibuya, P.asakusa).fare, null);
 });
 
+test("沿線の見どころ用の地点ID：新宿→日本橋 9時発は、甲州街道で内藤新宿・四谷大木戸を通る順に並ぶ", () => {
+  const ids = route(OLD, P.shinjuku, P.nihonbashi, {}, at(9)).legs.flatMap((l) => l.viaIds);
+  const i = ids.indexOf("naito_shinjuku"), j = ids.indexOf("yotsuya_okido");
+  assert.ok(i >= 0 && j > i, ids.join(","));
+  assert.ok(ids.every((id) => OLD.nodes[id]), "出発地・目的地の仮の地点は含まない");
+});
+
+test("名所：事実カードのある宿場・名所にはすべて種類（category）と画像がある", () => {
+  const CATS = ["宿場", "門", "社寺", "川・橋", "花の名所", "紅葉の名所", "街道", "町並み", "水車", "馬場"];
+  const IMAGES = load("spot-images.json").images;
+  for (const [id, n] of Object.entries(OLD.nodes)) {
+    if (!["place", "shuku"].includes(n.kind) || !n.facts?.some((f) => FACTS.facts[f])) continue;
+    assert.ok(CATS.includes(n.category), `${id}: ${n.category}`);
+    assert.ok(IMAGES[id] && fs.existsSync(new URL(`../public/${IMAGES[id].file}`, import.meta.url)), `${id}: 画像`);
+  }
+});
+
 test("地点の候補：漢字・ひらがな・カタカナの途中入力で、現在の駅と明治の地名が出る", () => {
   const places = buildPlaces(NOW, OLD);
   const names = (q) => { const r = searchPlaces(places, q); return [r.now.map((p) => p.name), r.old.map((p) => p.name)]; };
@@ -226,12 +243,14 @@ test("地点の候補：漢字・ひらがな・カタカナの途中入力で�
   for (const p of places) assert.ok(p.keys.some((k) => /^[ぁ-ゟー]+$/.test(k)), p.name);
 });
 
-test("地点の候補：明治の地名は現在の4路線の駅から1km以内だけ（遠い地点は現在の経路が実際とずれるため）", () => {
+test("地点の候補：明治の地名は現在の6路線の駅から1km以内だけ（遠い地点は現在の経路が実際とずれるため）", () => {
   const places = buildPlaces(NOW, OLD);
   const stations = Object.values(NOW.nodes).filter((n) => n.kind === "station");
   const old = places.filter((p) => p.group === "old");
   for (const p of old) assert.ok(stations.some((s) => haversineKm(p, s) <= MAX_KM), p.name);
-  for (const name of ["三軒茶屋", "千住宿", "板橋宿", "赤羽停車場", "王子停車場"]) assert.ok(!old.some((p) => p.name === name), name);
+  for (const name of ["三軒茶屋", "千住宿", "半蔵門", "浅草橋"]) assert.ok(!old.some((p) => p.name === name), name);
+  // 京浜東北線・埼京線を足したので、赤羽・王子・板橋の周辺は選べる
+  for (const name of ["赤羽停車場", "王子停車場", "板橋宿", "飛鳥山", "王子稲荷"]) assert.ok(old.some((p) => p.name === name), name);
 });
 
 console.log(`\n${n} tests passed`);

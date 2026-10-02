@@ -4,8 +4,8 @@ import { buildPlaces, searchPlaces } from "./places.js";
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-const [NET_OLD, NET_NOW, FACTS] = await Promise.all(
-  ["data/network-1885.json", "data/network-now.json", "data/facts.json"].map((u) => fetch(u).then((r) => r.json())),
+const [NET_OLD, NET_NOW, FACTS, SPOT_IMAGES] = await Promise.all(
+  ["data/network-1885.json", "data/network-now.json", "data/facts.json", "data/spot-images.json"].map((u) => fetch(u).then((r) => r.json())),
 );
 
 const state = {
@@ -114,6 +114,71 @@ const markers = {
   origin: [new maplibregl.Marker({ element: markerEl("o", "出") }), new maplibregl.Marker({ element: markerEl("o", "出") })],
   dest: [new maplibregl.Marker({ element: markerEl("d", "着") }), new maplibregl.Marker({ element: markerEl("d", "着") })],
 };
+// 名所のラベルの先頭に付けるアイコン。名所の種類（network-1885.json の category）ごとに決める
+// （Material Symbols。index.html の icon_names に同じ名前を並べる）。鳥居・橋・馬の形のアイコンは無いので近いもので代用
+const CATEGORY_ICON = {
+  宿場: "hotel", 門: "gate", 社寺: "temple_buddhist", "川・橋": "water", 花の名所: "local_florist", 紅葉の名所: "eco",
+  街道: "road", 町並み: "shopping_bag", 水車: "mode_fan", 馬場: "target",
+};
+// 名所のピン（事実カードのある宿場・名所。経路に関係なく両方の地図にいつも置く）。押すとカードを出す
+const SPOT_KINDS = new Set(["place", "shuku"]);
+const ALL_SPOTS = Object.entries(NET_OLD.nodes)
+  .filter(([, n]) => SPOT_KINDS.has(n.kind) && n.facts?.some((f) => FACTS.facts[f]))
+  .map(([id, n]) => ({ id, name: n.name, category: n.category, lat: n.lat, lon: n.lon, facts: n.facts.filter((f) => FACTS.facts[f]) }));
+// 名所の画像（あれば）。作品名・作者・年代・所蔵・権利をクレジットとして添える
+function spotImageHTML(id) {
+  const im = SPOT_IMAGES.images[id];
+  if (!im) return "";
+  const who = [im.artist, im.date, im.holder && `${im.holder}所蔵`].filter(Boolean).join("、");
+  const lic = im.licenseUrl ? `<a href="${esc(im.licenseUrl)}" target="_blank" rel="noopener">${esc(im.license)}</a>` : esc(im.license);
+  return `<figure class="spot-fig"><a href="${esc(im.page)}" target="_blank" rel="noopener"><img src="${esc(im.file)}" width="${im.width}" height="${im.height}" alt="${esc(im.title)}" loading="lazy"></a>
+    <figcaption>${esc(im.title)}（${esc(who)}）／${lic}</figcaption></figure>`;
+}
+function spotCardHTML(sp) {
+  return `<div class="spot-card">${spotImageHTML(sp.id)}<strong>${esc(sp.name)}</strong>${sp.facts.map((id) => {
+    const f = FACTS.facts[id];
+    return `<p><span class="spot-title">${esc(f.title)}</span><br>${esc(f.body)}
+      <br><a class="spot-src" href="${esc(f.source.url)}" target="_blank" rel="noopener">出典：${esc(f.source.label)}</a></p>`;
+  }).join("")}</div>`;
+}
+let spotPopup = null; // 開いているカードは1枚だけにする
+const spotPins = ALL_SPOTS.flatMap((sp) => [mapNow, mapOld].map((m) => {
+  const el = document.createElement("button");
+  el.type = "button"; el.className = "spot-pin"; el.dataset.spot = sp.id;
+  el.setAttribute("aria-label", `${sp.name}の説明を開く`);
+  const icon = CATEGORY_ICON[sp.category];
+  el.innerHTML = `<span class="spot-pin-label">${icon ? `<span class="material-symbols-outlined" aria-hidden="true">${icon}</span>` : ""}${esc(sp.name)}</span><span class="material-symbols-outlined" aria-hidden="true">location_on</span>`;
+  el.addEventListener("click", (e) => {
+    e.stopPropagation();
+    spotPopup?.remove();
+    spotPopup = new maplibregl.Popup({ offset: 30, maxWidth: "300px", focusAfterOpen: false }).setLngLat([sp.lon, sp.lat]).setHTML(spotCardHTML(sp) + spotActionsHTML(sp)).addTo(m);
+  });
+  return new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([sp.lon, sp.lat]).addTo(m);
+}));
+// カードの「目的地にする」「出発地にする」。一覧（PLACES）にある名所だけ。
+// 一覧にない名所（現在の6路線の駅から遠い千住宿）は、現在の経路が実際とずれるので選べない
+function spotActionsHTML(sp) {
+  if (!PLACES.some((p) => p.group === "old" && p.name === sp.name)) {
+    return '<p class="spot-note">現在の路線の駅から遠いため、出発地・目的地には選べません</p>';
+  }
+  return `<div class="spot-actions">
+    <button type="button" class="btn-primary spot-set" data-spot="${sp.id}" data-role="dest">目的地にする</button>
+    <button type="button" class="btn-ghost spot-set" data-spot="${sp.id}" data-role="origin">出発地にする</button>
+  </div>`;
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest(".spot-set");
+  if (!b) return;
+  const sp = ALL_SPOTS.find((x) => x.id === b.dataset.spot);
+  spotPopup?.remove();
+  setPoint(b.dataset.role, { name: sp.name, lat: sp.lat, lon: sp.lon });
+});
+
+// 経路が通る名所のピンを強調する
+function highlightSpots(ids) {
+  for (const mk of spotPins) mk.getElement().classList.toggle("on-route", ids.has(mk.getElement().dataset.spot));
+}
+
 function placeMarkers() {
   for (const k of ["origin", "dest"]) {
     const p = state[k];
@@ -163,7 +228,7 @@ $("#opacity").addEventListener("input", (e) => {
 });
 
 // ---------- 地点の指定 ----------
-// 候補（現在の駅・明治の地名）から選ぶ。自由入力・地図クリックでの指定はしない（現在側の4路線モデルで経路が実際とずれる地点を避けるため）
+// 候補（現在の駅・明治の地名）から選ぶ。自由入力・地図クリックでの指定はしない（現在側の6路線モデルで経路が実際とずれる地点を避けるため）
 const PLACES = buildPlaces(NET_NOW, NET_OLD);
 
 for (const k of ["origin", "dest"]) {
@@ -181,12 +246,12 @@ for (const k of ["origin", "dest"]) {
   // q が空なら全件の一覧、入力があれば絞り込み
   const render = (q = input.value) => {
     const r = searchPlaces(PLACES, q);
-    opts = [...r.now, ...r.old];
+    opts = [...r.old, ...r.now]; // 明治の地名を先に出す（知らない地名に目が行くように）
     let i = 0;
     const group = (g, label, items) => (items.length ? `<li class="combo-group ${g}" role="presentation">${label}</li>` : "")
       + items.map((p) => `<li id="opt-${k}-${i}" class="combo-opt" role="option" aria-selected="false" data-i="${i++}">${esc(p.name)}<small>${esc(p.tag)}</small></li>`).join("");
-    list.innerHTML = opts.length ? group("now", "現在の駅（4路線）", r.now) + group("old", "明治の地名（4路線の駅から1km以内）", r.old)
-      : '<li class="combo-empty" role="presentation">候補がありません。候補は現在の4路線の駅と、その近くの明治の地名だけです</li>';
+    list.innerHTML = opts.length ? group("old", "明治の地名（6路線の駅から1km以内）", r.old) + group("now", "現在の駅（6路線）", r.now)
+      : '<li class="combo-empty" role="presentation">候補がありません。候補は現在の6路線の駅と、その近くの明治の地名だけです</li>';
     list.hidden = false;
     input.setAttribute("aria-expanded", "true");
     highlight(q.trim() && opts.length ? 0 : -1);
@@ -310,6 +375,66 @@ function renderAssumptions() {
 }
 renderAssumptions();
 
+// ---------- ボトムシート（幅1100px以下） ----------
+// 結果の欄を地図の上に下からかぶせ、つまみのドラッグ・タップで「少し見える／半分／全体」の3段階に止める
+const sheet = $(".pane-right"), handle = $(".sheet-handle");
+const mqSheet = matchMedia("(max-width: 1100px)");
+const SHEET_ORDER = ["peek", "half", "full"];
+const sheetHeight = { peek: () => 140, half: () => sheet.parentElement.clientHeight * 0.5, full: () => sheet.parentElement.clientHeight - 12 };
+let sheetState = "peek";
+function setSheet(name) {
+  sheetState = name;
+  if (!mqSheet.matches) { sheet.style.removeProperty("--sheet-h"); return; }
+  sheet.style.setProperty("--sheet-h", `${Math.round(sheetHeight[name]())}px`);
+  handle.setAttribute("aria-expanded", String(name !== "peek"));
+  if (name === "peek") sheet.scrollTop = 0;
+}
+const stepSheet = (dir) => setSheet(SHEET_ORDER[Math.min(2, Math.max(0, SHEET_ORDER.indexOf(sheetState) + dir))]);
+
+let drag = null;
+handle.addEventListener("pointerdown", (e) => {
+  if (!mqSheet.matches) return;
+  drag = { y0: e.clientY, h0: sheet.getBoundingClientRect().height, y: e.clientY, t: e.timeStamp, v: 0, moved: false };
+  handle.setPointerCapture(e.pointerId);
+  sheet.classList.add("dragging");
+});
+handle.addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  const dt = e.timeStamp - drag.t;
+  if (dt > 0) drag.v = (drag.y - e.clientY) / dt; // 上向きが正（px/ms）
+  drag.y = e.clientY; drag.t = e.timeStamp;
+  if (Math.abs(drag.y0 - e.clientY) > 4) drag.moved = true;
+  const h = Math.min(sheetHeight.full(), Math.max(60, drag.h0 + drag.y0 - e.clientY));
+  sheet.style.setProperty("--sheet-h", `${h}px`);
+});
+const endDrag = () => {
+  if (!drag) return;
+  sheet.classList.remove("dragging");
+  if (!drag.moved) setSheet(sheetState === "full" ? "peek" : SHEET_ORDER[SHEET_ORDER.indexOf(sheetState) + 1]); // タップ
+  else if (Math.abs(drag.v) > 0.5) {
+    // 素早く払ったら、その向きで今の高さの次の段階へ
+    const h = sheet.getBoundingClientRect().height;
+    const up = drag.v > 0;
+    const next = up ? SHEET_ORDER.find((n) => sheetHeight[n]() > h + 1) : [...SHEET_ORDER].reverse().find((n) => sheetHeight[n]() < h - 1);
+    setSheet(next || (up ? "full" : "peek"));
+  } else {
+    // ゆっくり動かしたら、いちばん近い段階に止める
+    const h = sheet.getBoundingClientRect().height;
+    setSheet(SHEET_ORDER.reduce((a, b) => (Math.abs(sheetHeight[b]() - h) < Math.abs(sheetHeight[a]() - h) ? b : a)));
+  }
+  drag = null;
+};
+handle.addEventListener("pointerup", endDrag);
+handle.addEventListener("pointercancel", endDrag);
+handle.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowUp") { e.preventDefault(); stepSheet(1); }
+  else if (e.key === "ArrowDown") { e.preventDefault(); stepSheet(-1); }
+  else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSheet(sheetState === "full" ? "peek" : SHEET_ORDER[SHEET_ORDER.indexOf(sheetState) + 1]); }
+});
+mqSheet.addEventListener("change", () => setSheet(sheetState));
+window.addEventListener("resize", () => { if (!drag) setSheet(sheetState); });
+setSheet("peek");
+
 // ---------- 設定ページ（#settings） ----------
 // 同じページ内で表示を切り替える（仮定値の変更をそのまま地図の画面の経路に反映するため）。
 // 地図の画面は隠さずに設定ページを上に重ね、操作できないよう inert にする（隠すと地図の大きさが0になり、戻っても描画されない）
@@ -317,6 +442,7 @@ function showPage() {
   const settings = location.hash === "#settings";
   $(".layout").inert = settings;
   $("#settings-page").hidden = !settings;
+  $(".map-tools").hidden = settings; // 設定ページでは地図が見えないので、地図の切り替えも隠す
   if (settings) { $("#nav-settings").setAttribute("aria-current", "page"); $(".settings-title").focus(); }
   else $("#nav-settings").removeAttribute("aria-current");
 }
@@ -352,7 +478,7 @@ function drawRoutes(fit) {
 }
 
 function renderBars({ old, oldWalk, now }) {
-  const max = Math.max(old.totalMin, oldWalk.totalMin, now.totalMin, 1);
+  const max = Math.max(old.totalMin, now.totalMin, 1);
   const row = (cls, title, r, sub, extra = "") => `<div class="bar-row">
       <div class="bar-label"><span>${title} <span class="sub">${sub}</span></span><strong>${formatMin(r.totalMin)}</strong></div>
       <div class="bar ${cls}"><i style="width:${(r.totalMin / max) * 100}%"></i></div>${extra}
@@ -362,9 +488,8 @@ function renderBars({ old, oldWalk, now }) {
   const walkSame = oldWalk.totalMin === old.totalMin;
   const ratio = now.totalMin > 0 ? (old.totalMin / now.totalMin).toFixed(1) : null;
   $("#compare-bars").innerHTML =
-    row("now", "現在", now, modesOf(now)) +
-    row("old", "明治18年", old, modesOf(old), fare) +
-    (walkSame ? "" : row("walk", "明治18年・徒歩のみ", oldWalk, "街道・市街路")) +
+    row("now", "現在", now, modeIcons(now, true)) +
+    row("old", "明治18年", old, modeIcons(old, false), fare) +
     (ratio === null ? `<p class="ratio">出発地と目的地がほぼ同じ地点です。</p>`
       : `<p class="ratio">明治18年の最速経路は、現在の約<strong>${ratio}倍</strong>の時間がかかります。${walkSame ? "この区間では、乗り物を使っても歩いた方が早く着きます。" : ""}</p>`);
 }
@@ -382,6 +507,17 @@ function fareText(f, atLeast = false) {
   const t = (n) => `${formatSen(n)}${atLeast ? "〜" : ""}`;
   return `下等 ${t(f.sen[2])}（中等 ${t(f.sen[1])}・上等 ${t(f.sen[0])}）`;
 }
+// 使う手段のアイコンを経路の順に並べる（Google マップ風。同じ手段が続くときは1つにまとめる）。読み上げ用に手段名も入れる
+function modeIcons(r, isNow) {
+  const seq = [];
+  for (const l of r.legs) {
+    const k = isNow && l.mode !== "walk" ? "now-rail" : l.mode;
+    if (seq[seq.length - 1] !== k) seq.push(k);
+  }
+  return seq.map((k) => `<span class="material-symbols-outlined leg-icon ${k}" aria-hidden="true">${LEG_ICON[k]}</span>`)
+    .join('<span class="mode-sep" aria-hidden="true">›</span>') + `<span class="sr-only">${modesOf(r)}</span>`;
+}
+
 function modesOf(r) {
   return [...new Set(r.legs.map((l) => (r === state.result.now && l.mode === "rail" ? "電車" : MODE_LABEL[l.mode])))].join("・");
 }
@@ -427,12 +563,29 @@ function renderResult() {
   const { old, now } = state.result;
   $("#empty").hidden = true;
   $("#result").hidden = false;
+  if (sheetState === "peek") setSheet("half"); // 経路が出たら、結果を半分まで広げる
   renderBars(state.result);
   renderLegs($("#legs-old"), old, false);
   renderLegs($("#legs-now"), now, true);
+  renderSpots(old);
   const ids = [...new Set([...factsUsed(old), ...factsUsed(now)])];
   renderFacts(ids);
   renderTemplateExplain(ids);
+}
+
+// ---------- 沿線の見どころ ----------
+// 明治の経路が通る名所（ALL_SPOTS のうち経路上のもの）を、通る順に並べる
+function spotsOf(r) {
+  const byId = new Map(ALL_SPOTS.map((sp) => [sp.id, sp]));
+  return [...new Set(r.legs.flatMap((l) => l.viaIds || []))].filter((id) => byId.has(id)).map((id) => byId.get(id));
+}
+function renderSpots(r) {
+  const spots = spotsOf(r);
+  $("#spots-sec").hidden = !spots.length;
+  $("#spots").innerHTML = spots.map((sp) => `<li class="spot">
+      <span class="material-symbols-outlined spot-icon" aria-hidden="true">location_on</span>${spotCardHTML(sp)}
+    </li>`).join("");
+  highlightSpots(new Set(spots.map((sp) => sp.id)));
 }
 
 // ---------- 解説 ----------
@@ -452,7 +605,6 @@ function renderTemplateExplain(ids) {
   const sections = [
     { heading: "なぜこの経路か", text: why, factIds: [] },
     { heading: "当時の交通事情", items: bodies((id) => oldLineFacts.has(id)) },
-    { heading: "沿線の見どころ", items: bodies((id) => !oldLineFacts.has(id) && !nowLineFacts.has(id)) },
     { heading: "現在の路線", items: bodies((id) => nowLineFacts.has(id)) },
   ];
   $("#explain").innerHTML = sections.map((s) => {
@@ -499,6 +651,9 @@ function aiInput() {
 // GitHub Pages などの静的な公開では /api/status が無いので、ボタンは隠したまま（定型解説だけ）
 fetch("api/status").then((r) => (r.ok ? r.json() : null)).catch(() => null)
   .then((s) => { if (s?.ai) $("#btn-ai").hidden = false; });
+
+// 解説の [id] を押したら、たたまれている事実カードの欄を開いてからそのカードへ移る
+document.addEventListener("click", (e) => { if (e.target.closest("a.cite")) $("#facts-acc").open = true; });
 
 $("#btn-ai").addEventListener("click", async () => {
   if (!state.result) return;

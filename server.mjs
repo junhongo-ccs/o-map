@@ -16,7 +16,7 @@ const MAX_BODY = 64 * 1024;
 const FACTS = JSON.parse(await fs.readFile(path.join(PUBLIC, "data", "facts.json"), "utf8")).facts;
 
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
-  ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png" };
+  ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg" };
 
 let client = null;
 try { client = new Anthropic(); } catch (e) { console.warn("[ai] Anthropic クライアントを初期化できません。定型解説のみで動作します:", e.message); }

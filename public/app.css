@@ -12,6 +12,7 @@
   --walk: #7a6a52;
   --rail: #2b2620;
   --horse: #a0681f;
+  --spot: #5c3b1e;
   --ok: #3b7a4a;
   --warn: #9a6a12;
   --radius: 10px;
@@ -34,6 +35,7 @@
     --walk: #c7b393;
     --rail: #efe8dc;
     --horse: #e0a454;
+    --spot: #c99a6b;
     --ok: #7cc48d;
     --warn: #e2b456;
     color-scheme: dark;
@@ -59,7 +61,7 @@ body {
 }
 .brand h1 { font-family: "Shippori Mincho", serif; font-size: 22px; margin: 0; letter-spacing: 0.04em; }
 .brand p { margin: 0; color: var(--ink-2); font-size: 13px; }
-.topbar-right { display: flex; align-items: center; gap: 16px; }
+.topbar-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: flex-end; }
 .nav-link {
   padding: 5px 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 13px; font-weight: 500;
 }
@@ -88,7 +90,7 @@ body {
 .block:last-child { border-bottom: 0; }
 h2, .settings h3 { font-size: 13px; font-weight: 700; color: var(--ink-2); margin: 0 0 10px; letter-spacing: 0.04em; }
 h2.inline { display: inline; margin: 0; }
-details summary { cursor: pointer; list-style-position: outside; }
+details summary { cursor: pointer; list-style-position: inside; } /* 三角を行頭に入れて、ほかの見出しと左端を揃える */
 details[open] summary { margin-bottom: 10px; }
 
 /* 第二ヘッダー：出発地・入れ替え・目的地・出発時刻を横一列に並べる（候補の一覧が地図の上に出るよう z-index を上げる） */
@@ -173,10 +175,8 @@ button { font: inherit; cursor: pointer; }
 
 .map-wrap { position: relative; min-width: 0; min-height: 0; }
 .compare, .map { position: absolute; inset: 0; }
-.map-tools {
-  position: absolute; top: 12px; left: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
-  background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow); padding: 6px;
-}
+/* 地図の比較方法（ヘッダー右側） */
+.map-tools { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .seg { display: flex; background: var(--bg); border-radius: 8px; padding: 2px; }
 .seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; color: var(--ink-2); font-size: 12px; }
 .seg button.on { background: var(--panel); color: var(--ink); font-weight: 700; box-shadow: var(--shadow); }
@@ -196,6 +196,37 @@ button { font: inherit; cursor: pointer; }
 }
 .marker.o { background: #3b7a4a; }
 .marker.d { background: #8a2f5c; }
+/* 名所のピン（いつも表示）と、押すと出るカード。経路が通る名所は強調する */
+.spot-pin {
+  display: flex; flex-direction: column; align-items: center; padding: 0; border: 0; background: none; cursor: pointer;
+  color: #5c3b1e; opacity: 0.8; /* 地図（明るい色）の上に乗るので、ダークモードでも濃茶のまま */
+}
+.spot-pin.on-route { opacity: 1; }
+.spot-pin.on-route > .material-symbols-outlined { font-size: 32px; }
+.spot-pin > .material-symbols-outlined { font-size: 26px; line-height: 1; text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
+.spot-pin-label {
+  font-size: 11px; font-weight: 700; color: #fff; background: #5c3b1e; padding: 0 5px; border-radius: 4px;
+  box-shadow: var(--shadow); white-space: nowrap; margin-bottom: 1px;
+}
+.spot-pin-label .material-symbols-outlined { font-size: 13px; line-height: 1; vertical-align: -2px; margin-right: 2px; }
+.maplibregl-popup-content { background: var(--panel); color: var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px 14px; }
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip { border-top-color: var(--panel); }
+.maplibregl-popup-anchor-top .maplibregl-popup-tip { border-bottom-color: var(--panel); }
+.maplibregl-popup-close-button { color: var(--ink-2); font-size: 18px; }
+.spot-fig { margin: 0 0 8px; }
+.spot-fig img { display: block; width: 100%; height: auto; max-height: 200px; object-fit: contain; background: var(--bg); border-radius: 6px; }
+.spot-fig figcaption { margin-top: 3px; font-size: 10.5px; line-height: 1.4; color: var(--ink-3); }
+.spot-fig figcaption a { color: inherit; }
+.spot-card strong { font-size: 13px; }
+.spot-card p { margin: 4px 0 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
+.spot-src { font-size: 11px; color: var(--ink-3); }
+.spot-actions { display: flex; gap: 8px; margin-top: 10px; }
+.spot-actions button { flex: 1; padding: 6px 8px; font-size: 12.5px; }
+.spot-note { margin: 8px 0 0; font-size: 11.5px; color: var(--ink-3); }
+.spots { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.spot { display: grid; grid-template-columns: 22px 1fr; gap: 6px; }
+.spot-icon { font-size: 20px; color: var(--spot); line-height: 1.2; }
+.spot-title { font-weight: 700; color: var(--ink); margin-right: 4px; }
 
 .empty { padding: 40px 8px; color: var(--ink-2); }
 
@@ -204,6 +235,9 @@ button { font: inherit; cursor: pointer; }
 .bar-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 12.5px; }
 .bar-label strong { font-size: 20px; font-variant-numeric: tabular-nums; }
 .bar-label .sub { color: var(--ink-3); font-size: 11.5px; }
+.bar-label .sub .leg-icon { font-size: 18px; margin-right: 0; vertical-align: -4px; }
+.mode-sep { margin: 0 2px; color: var(--ink-3); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .bar { height: 10px; border-radius: 5px; background: var(--bg); overflow: hidden; }
 .bar > i { display: block; height: 100%; border-radius: 5px; }
 .bar.now > i { background: var(--now); }
@@ -237,8 +271,8 @@ button { font: inherit; cursor: pointer; }
 .leg-end::before { content: ""; position: absolute; left: 3px; top: 5px; width: 13px; height: 13px; border-radius: 50%; background: #8a2f5c; }
 .end-icon { font-size: 16px; line-height: 1; vertical-align: -3px; margin-right: 2px; color: var(--ink-2); font-weight: 400; }
 
-.ai-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-.ai-head h2 { margin: 0; }
+.ai-head { display: flex; justify-content: flex-end; margin-bottom: 4px; }
+.ai-head:has(> [hidden]:only-child) { display: none; }
 .explain-sec { margin: 10px 0 0; }
 .explain-sec h3 { font-size: 13px; margin: 0 0 4px; color: var(--old); }
 .explain-sec p { margin: 0; font-size: 13.5px; }
@@ -254,11 +288,22 @@ button { font: inherit; cursor: pointer; }
 .attrib { font-size: 11px; color: var(--ink-3); padding: 4px 16px; border-top: 1px solid var(--line); background: var(--panel); }
 .attrib a { color: inherit; }
 
+.sheet-handle { display: none; }
 @media (max-width: 1100px) {
-  .layout { grid-template-columns: 1fr; }
-  .pane-right { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); max-height: none; }
-  body { height: auto; }
-  .layout { grid-template-rows: 70vh auto; }
+  /* スマホ・タブレット：地図を全面に出し、結果は下からかぶさるボトムシートにする（高さは app.js が --sheet-h で決める） */
+  .layout { display: block; position: relative; height: 100%; }
+  .map-wrap { position: absolute; inset: 0; }
+  .pane-right {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 10; height: var(--sheet-h, 140px); padding-top: 0;
+    border: 0; border-radius: 16px 16px 0 0; box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.18);
+    transition: height 0.25s ease; overscroll-behavior: contain;
+  }
+  .pane-right.dragging { transition: none; }
+  .sheet-handle {
+    display: grid; place-items: center; position: sticky; top: 0; z-index: 1; height: 28px; margin: 0 -16px;
+    background: var(--panel); cursor: grab; touch-action: none;
+  }
+  .sheet-handle span { width: 40px; height: 5px; border-radius: 3px; background: var(--ink-3); opacity: 0.5; }
 }
 @media (max-width: 720px) {
   .topbar { padding: 10px 16px; }
@@ -270,7 +315,5 @@ button { font: inherit; cursor: pointer; }
   .swap { grid-row: 1 / 3; grid-column: 2; }
   .swap svg { transform: none; }
   .settings-inner { padding: 12px 16px 32px; }
-  .layout { display: flex; flex-direction: column; }
-  .map-wrap { height: 60vh; order: -1; }
-  .pane { padding: 4px 16px 16px; border: 0; }
+  .pane { padding: 0 16px 16px; }
 }
