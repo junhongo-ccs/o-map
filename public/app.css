@@ -229,6 +229,7 @@ button { font: inherit; cursor: pointer; }
 .badge-approx { font-size: 10.5px; color: var(--warn); border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; margin-left: 4px; }
 .leg-end { padding-left: 26px; position: relative; font-weight: 700; font-size: 13px; }
 .leg-end::before { content: ""; position: absolute; left: 3px; top: 5px; width: 13px; height: 13px; border-radius: 50%; background: #8a2f5c; }
+.end-icon { font-size: 16px; line-height: 1; vertical-align: -3px; margin-right: 2px; color: var(--ink-2); font-weight: 400; }
 
 .ai-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
 .ai-head h2 { margin: 0; }

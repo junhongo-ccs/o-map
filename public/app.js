@@ -401,8 +401,9 @@ function renderLegs(el, r, isNow) {
       <div class="leg-sub">${esc(l.from)} → ${esc(l.to)}　${dep}${wait}移動 ${l.moveMin}分 ・ ${l.km}km</div>${via}${fare}
     </li>`;
   });
-  const fareTotal = !isNow && r.fare && r.legs.some((l) => l.mode !== "walk") ? `・運賃 下等 ${formatSen(r.fare.sen[2])}${r.fare.atLeast ? "〜" : ""}` : "";
-  items.push(`<li class="leg-end">${esc(state.dest.name)}（合計 ${formatMin(r.totalMin)}${fareTotal}）</li>`);
+  const icon = (name) => `<span class="material-symbols-outlined end-icon" aria-hidden="true">${name}</span>`;
+  const fareTotal = !isNow && r.fare && r.legs.some((l) => l.mode !== "walk") ? `・${icon("payments")}運賃 下等 ${formatSen(r.fare.sen[2])}${r.fare.atLeast ? "〜" : ""}` : "";
+  items.push(`<li class="leg-end">${esc(state.dest.name)}（${icon("timer")}合計 ${formatMin(r.totalMin)}${fareTotal}）</li>`);
   el.innerHTML = items.join("");
 }
 
