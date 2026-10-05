@@ -28,4 +28,4 @@ http.createServer(async (req, res) => {
   } catch {
     send(res, 404, "not found", "text/plain");
   }
-}).listen(PORT, () => console.log(`今昔東京往来便覧: http://localhost:${PORT}`));
+}).listen(PORT, () => console.log(`今昔往来便覧: http://localhost:${PORT}`));

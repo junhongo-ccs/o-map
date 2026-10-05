@@ -75,6 +75,7 @@ body {
   padding: 5px 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 13px; font-weight: 500;
 }
 .nav-link:hover { background: var(--bg); }
+button.nav-link { background: transparent; cursor: pointer; font: inherit; }
 .nav-icon { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; }
 .nav-icon .material-symbols-outlined { font-size: 22px; }
 .nav-link[aria-current="page"] { border-color: var(--old); color: var(--old); }
@@ -372,6 +373,7 @@ button { font: inherit; cursor: pointer; }
   }
   .sheet-handle span { width: 40px; height: 5px; border-radius: 3px; background: var(--ink-3); opacity: 0.5; }
   .nav-gear { display: none; }
+  .nav-fs { display: none; } /* 全画面表示は PC 幅だけ */
   .nav-menu { display: grid; }
   /* スマホ・タブレット：歯車の代わりにハンバーガーを出し、設定は右から出すパネルにして、ヘッダー・ボトムシートより上に重ねる */
   .settings {

@@ -8,8 +8,8 @@
     "walkDetourKaido": { "value": 1.1, "basis": "街道は主要通過点を結んだ折れ線のため、実際の道のりとの差を×1.1で補正", "status": "仮定" },
     "horsecarKmh": { "value": 8, "basis": "東京馬車鉄道：新橋→浅草橋経由→浅草広小路 46分（約6km）から算出", "status": "出典あり（Wikipedia）" },
     "horsecarWaitMin": { "value": 5, "basis": "明治18年の車両は62両・馬425頭（Wikipedia「東京馬車鉄道」の統計表。出典『東京市史稿 市街篇第82』858頁）。運転間隔の資料は未入手のため、平均待ち時間は仮定値。開業当時（明治15年）は「全線に三十臺若くは四十臺の車輛を運轉」（『東京市電気局三十年史』1940、12頁）で、これをアプリの2路線（計約11km、時速8km）に均等に走らせたとすると間隔は約4〜6分・平均待ち約2〜3分になる。ただし終点での折り返し時間を入れていない粗い見積もりのため、控えめに5分とする", "status": "仮定", "min": 0, "max": 30, "step": 1 },
-    "horsecarFirstMin": { "value": 420, "basis": "始発の時刻は資料未入手（doc/tasks.md の5で調査中）のため、仮に7:00とする。これより前に停留場に着いたときは始発まで待つ", "status": "仮定", "min": 240, "max": 600, "step": 30, "unit": "time" },
-    "horsecarLastMin": { "value": 1200, "basis": "終発の時刻は資料未入手（doc/tasks.md の5で調査中）のため、仮に20:00とする。これより後は乗れない", "status": "仮定", "min": 1020, "max": 1440, "step": 30, "unit": "time" },
+    "horsecarFirstMin": { "value": 420, "basis": "始発の時刻は資料未入手（調査中）のため、仮に7:00とする。これより前に停留場に着いたときは始発まで待つ", "status": "仮定", "min": 240, "max": 600, "step": 30, "unit": "time" },
+    "horsecarLastMin": { "value": 1200, "basis": "終発の時刻は資料未入手（調査中）のため、仮に20:00とする。これより後は乗れない", "status": "仮定", "min": 1020, "max": 1440, "step": 30, "unit": "time" },
     "accessRadiusKm": { "value": 5.0, "basis": "出発地・目的地から徒歩で乗り継ぎ地点に向かう最大距離（直線）", "status": "仮定" },
     "streetLinkKm": { "value": 1.5, "basis": "近接する地点同士を市街路でつなぐ最大距離（直線）", "status": "仮定" }
   },

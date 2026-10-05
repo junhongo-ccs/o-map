@@ -2,7 +2,7 @@
   "name": "o-map-timetravel-navi",
   "version": "0.1.0",
   "private": true,
-  "description": "今昔東京往来便覧 PoC — 現在と明治18年（1885）の東京の移動を比較する",
+  "description": "今昔往来便覧 PoC — 現在と明治18年（1885）の東京・横浜の移動を比較する",
   "type": "module",
   "scripts": {
     "start": "node server.mjs",

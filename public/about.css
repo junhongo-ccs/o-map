@@ -76,3 +76,49 @@ html:has(body.about) { height: auto; }
   .about-title { font-size: 26px; }
   .about-row { grid-template-columns: 84px 1fr auto; gap: 8px; }
 }
+
+/* 目次（つかう／くわしい資料の2列。狭い画面では縦に積む） */
+.about-toc {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px 24px; margin: 24px 0 0;
+  padding: 16px 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); font-size: 13.5px;
+}
+.about-toc-label { margin: 0 0 4px !important; font-size: 12px; font-weight: 700; color: var(--ink-3); letter-spacing: 0.08em; }
+.about-toc ol { margin: 0; padding-left: 1.4em; }
+.about-toc li { margin: 2px 0; }
+.about-toc a { text-decoration: none; }
+.about-toc a:hover { text-decoration: underline; }
+.about-sec, .about-part { scroll-margin-top: 72px; } /* 目次から飛んだとき、貼りついたヘッダーに隠れないように */
+.about-more { font-size: 13.5px; color: var(--ink-2); }
+
+/* 後半「くわしい資料」の扉 */
+.about-part { margin-top: 48px; padding: 20px 0 4px; border-top: 3px double var(--line); }
+.about-part-label { margin: 0 0 6px !important; font-family: "Shippori Mincho", serif; font-size: 26px; font-weight: 700; letter-spacing: 0.06em; color: var(--ink); }
+.about-part p { color: var(--ink-2); }
+
+/* 表（横に長いときは表だけ横にスクロール） */
+.about-table-wrap { overflow-x: auto; margin: 8px 0 16px; border: 1px solid var(--line); border-radius: var(--radius); }
+.about-table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.6; background: var(--panel); }
+.about-table th, .about-table td { padding: 8px 10px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+.about-table thead th { font-size: 12px; color: var(--ink-3); background: var(--bg); white-space: nowrap; }
+.about-table tbody tr:last-child th, .about-table tbody tr:last-child td { border-bottom: 0; }
+.about-table tbody th { font-weight: 700; color: var(--ink); white-space: nowrap; }
+.about-table tbody th small { font-weight: 400; color: var(--ink-3); }
+.about-table .num { white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* 前提の値：1項目ずつ「項目名・値・状態」の行の下に根拠を書く */
+.about-params { list-style: none; margin: 8px 0 16px; padding: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+.about-param { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.about-param:last-child { border-bottom: 0; }
+.about-param-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.about-param-head strong { font-size: 14px; }
+.about-param-val { font-weight: 700; font-variant-numeric: tabular-nums; }
+.about-param-slider { font-size: 11px; color: var(--ink-3); }
+.about-param p { margin: 4px 0 0 !important; font-size: 12.5px; line-height: 1.7; color: var(--ink-2); }
+.about-era { display: inline-block; margin-right: 6px; font-size: 11px; font-weight: 700; }
+.about-era.old { color: #3b7a4a; }
+.about-era.now { color: var(--now); }
+.about-status { display: inline-block; font-size: 11px; padding: 0 6px; border-radius: 4px; border: 1px solid currentColor; white-space: nowrap; }
+.about-status.ok { color: var(--ok); }
+.about-status.warn { color: var(--warn); }
+@media (max-width: 720px) {
+  .about-table tbody th { white-space: normal; }
+}

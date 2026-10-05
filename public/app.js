@@ -266,6 +266,23 @@ $("#opacity").addEventListener("input", (e) => {
   if (mapsReady) mapNow.setPaintProperty("rapid", "raster-opacity", v / 100);
 });
 
+// ---------- 全画面表示（PC 幅だけ。ヘッダーの歯車の右） ----------
+const fsBtn = $("#nav-fullscreen");
+if (!document.fullscreenEnabled) fsBtn.hidden = true; // iPhone の Safari など、全画面の機能がないブラウザでは出さない
+fsBtn.addEventListener("click", () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen().catch(() => {});
+});
+// Esc などで全画面が終わったときも、アイコンと読み上げの名前を合わせる（地図は画面の大きさの変化に自動で追従する）
+document.addEventListener("fullscreenchange", () => {
+  const on = !!document.fullscreenElement;
+  fsBtn.querySelector(".material-symbols-outlined").textContent = on ? "fullscreen_exit" : "fullscreen";
+  fsBtn.setAttribute("aria-pressed", String(on));
+  const label = on ? "全画面表示を終了" : "全画面表示";
+  fsBtn.title = label;
+  fsBtn.setAttribute("aria-label", label);
+});
+
 // ---------- 地点の指定 ----------
 // 候補（明治の地名）から選ぶ。今の駅は出さない（明治の地名で探す不便さを楽しんでもらう）。
 // 自由入力・地図クリックでの指定もしない。明治の地名は今の駅から1km以内のものだけ（現在側は限られた路線の簡略モデルなので、経路が実際とずれる地点を避けるため）
@@ -566,11 +583,21 @@ function renderBars({ old, oldWalk, now, fastest, preferred, noRide }) {
     ? `<div class="bar-fare">${FARE_ICON}運賃 ${esc(fareText(old.fare, old.fare.atLeast))}</div>` : "";
   const walkSame = oldWalk.totalMin === old.totalMin;
   const ratio = now.totalMin > 0 ? (old.totalMin / now.totalMin).toFixed(1) : null;
+  // 明治の方が早いとき（時刻がうまく合った短い区間など）は「倍」ではなく、早い理由を添える
+  const oldFaster = ratio !== null && old.totalMin < now.totalMin;
+  const walked = (r) => r.legs.filter((l) => l.mode === "walk").reduce((a, l) => a + l.moveMin, 0);
+  const firstRide = old.legs.find((l) => l.mode !== "walk");
+  const why = [
+    firstRide?.departAt && firstRide.waitMin <= 1 ? "ちょうど汽車が出る時刻で、ほとんど待たずに乗れる" : "",
+    walked(now) >= walked(old) + 5 ? "今の駅が明治の停車場から離れていて、今の方が長く歩く" : "",
+  ].filter(Boolean);
+  const fasterText = `明治18年の方が<strong>${formatMin(now.totalMin - old.totalMin)}</strong>早く着きます（${
+    (why.length ? why : ["明治の汽車は駅が少なく、短い区間では今の電車と速さがあまり変わらない"]).join("。また、")}ため）。`;
   $("#compare-bars").innerHTML =
     row("now", "現在", now, modeIcons(now, true)) +
     row("old", "明治18年", old, modeIcons(old, false), fare) +
     (ratio === null ? `<p class="ratio">出発地と目的地がほぼ同じ地点です。</p>`
-      : `<p class="ratio">明治18年の${preferred ? "汽車・馬車を使う経路" : "最速経路"}は、現在の約<strong>${ratio}倍</strong>の時間がかかります。${
+      : `<p class="ratio">${oldFaster ? fasterText : `明治18年の${preferred ? "汽車・馬車を使う経路" : "最速経路"}は、現在の約<strong>${ratio}倍</strong>の時間がかかります。`}${
         preferred && old.totalMin > fastest.totalMin ? `汽車・馬車を優先しています（${fastest.legs.every((l) => l.mode === "walk") ? "歩くだけ" : "最速の経路"}なら${formatMin(fastest.totalMin)}）。`
         : noRide ? "この区間・時刻では、汽車や馬車を待つより歩く方がよいため、歩く経路を表示しています。"
         : walkSame ? "この区間では、汽車や馬車を使うより歩いた方が早く着きます。" : ""}</p>${laterDepartHTML(old)}`);
