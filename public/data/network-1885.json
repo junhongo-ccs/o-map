@@ -31,7 +31,7 @@
     "shibaguchi":   { "name": "新橋（芝口）",     "lat": 35.6665, "lon": 139.7598, "kind": "place" },
     "hamamatsucho": { "name": "浜松町",           "lat": 35.6555, "lon": 139.7570, "kind": "waypoint" },
     "fudanotsuji":  { "name": "札の辻",           "lat": 35.6465, "lon": 139.7468, "kind": "waypoint" },
-    "takanawa_okido": { "name": "高輪大木戸",     "lat": 35.6405, "lon": 139.7425, "kind": "place", "category": "門", "facts": ["okido"] },
+    "takanawa_okido": { "name": "高輪大木戸",     "lat": 35.6405, "lon": 139.7425, "kind": "place", "category": "門", "facts": ["okido", "takanawa_chikutei"] },
     "shinagawa_shuku": { "name": "品川宿",        "lat": 35.6205, "lon": 139.7405, "kind": "shuku", "category": "宿場", "facts": ["shishuku"] },
 
     "imagawabashi": { "name": "今川橋",           "lat": 35.6905, "lon": 139.7738, "kind": "waypoint" },

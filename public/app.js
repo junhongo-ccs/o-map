@@ -1,4 +1,4 @@
-import { route, formatMin, formatClock, parseClock } from "./router.js";
+import { route, formatMin, formatClock, parseClock, haversineKm } from "./router.js";
 import { buildPlaces, searchPlaces } from "./places.js";
 
 const $ = (s) => document.querySelector(s);
@@ -635,7 +635,7 @@ function renderLegs(el, r, isNow) {
     </li>`;
   });
   const icon = (name) => `<span class="material-symbols-outlined end-icon" aria-hidden="true">${name}</span>`;
-  const fareTotal = !isNow && r.fare && r.legs.some((l) => l.mode !== "walk") ? `・${icon("payments")}運賃 下等 ${formatSen(r.fare.sen[2])}${r.fare.atLeast ? "〜" : ""}` : "";
+  const fareTotal = !isNow && r.fare && r.legs.some((l) => l.mode !== "walk") ? `・${icon("payments")}運賃合計 下等 ${formatSen(r.fare.sen[2])}${r.fare.atLeast ? "〜" : ""}` : "";
   items.push(`<li class="leg-end">${esc(state.dest.name)}（${icon("timer")}合計 ${formatMin(r.totalMin)}${fareTotal}）</li>`);
   el.innerHTML = items.join("");
 }
@@ -717,9 +717,12 @@ new ResizeObserver(updateTabArrows).observe(tabBar); // 結果が出たとき・
 
 // ---------- 沿線の見どころ ----------
 // 明治の経路が通る名所（ALL_SPOTS のうち経路上のもの）を、通る順に並べる
+// 出発地・目的地そのものの名所（100m以内）は「沿線」ではないので入れない
+const END_SPOT_KM = 0.1;
 function spotsOf(r) {
   const byId = new Map(ALL_SPOTS.map((sp) => [sp.id, sp]));
-  return [...new Set(r.legs.flatMap((l) => l.viaIds || []))].filter((id) => byId.has(id)).map((id) => byId.get(id));
+  const atEnd = (sp) => [state.origin, state.dest].some((p) => p && haversineKm(p, sp) <= END_SPOT_KM);
+  return [...new Set(r.legs.flatMap((l) => l.viaIds || []))].filter((id) => byId.has(id)).map((id) => byId.get(id)).filter((sp) => !atEnd(sp));
 }
 function renderSpots(r) {
   const spots = spotsOf(r);

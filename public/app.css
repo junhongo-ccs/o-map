@@ -64,6 +64,8 @@ body {
   padding: 10px 20px; border-bottom: 1px solid var(--line); background: var(--panel);
 }
 .brand h1 { font-family: "Shippori Mincho", serif; font-size: 22px; margin: 0; letter-spacing: 0.04em; }
+/* タイトルの前のアイコン。色はタイトルと同じ（ダークモードでは白、ライトモードでは墨色） */
+.brand-icon { font-size: 1.15em; line-height: 1; vertical-align: -0.2em; margin-right: 0.25em; letter-spacing: 0; }
 .brand { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 14px; } /* 副題はタイトルの右に。狭い画面では下に回る */
 .brand p { margin: 0; color: var(--ink-2); font-size: 13px; }
 .era-pair { white-space: nowrap; }
@@ -77,6 +79,7 @@ body {
 .nav-icon .material-symbols-outlined { font-size: 22px; }
 .nav-link[aria-current="page"] { border-color: var(--old); color: var(--old); }
 .nav-menu { display: none; } /* スマホ・タブレット幅では歯車の代わりにハンバーガーを出す */
+.topbar-right nav { display: flex; gap: 8px; } /* 説明（i）と設定を横に並べる */
 
 /* 設定ページは地図の画面の上に重ねる（地図を display:none にすると、戻ったときに描画されないため） */
 .stage { flex: 1; min-height: 0; display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); }

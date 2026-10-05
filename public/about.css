@@ -1,0 +1,78 @@
+/* 「このアプリについて」のページ。色・文字は app.css の決まり（:root の変数）をそのまま使い、読み物用の並びだけ足す */
+body.about { display: block; height: auto; min-height: 100%; }
+html:has(body.about) { height: auto; }
+
+.about .topbar { position: sticky; top: 0; z-index: 10; }
+.about-brand { margin: 0; font-family: "Shippori Mincho", serif; font-size: 20px; font-weight: 700; letter-spacing: 0.04em; }
+.about-brand a { color: var(--ink); text-decoration: none; }
+.about-back { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.about-back .material-symbols-outlined { font-size: 18px; }
+
+.about-main { max-width: 720px; margin: 0 auto; padding: 24px 20px 64px; font-size: 15px; line-height: 1.85; }
+.about-main p { margin: 0 0 12px; }
+.about-main a { color: var(--now); }
+
+.about-hero { margin: 0 0 28px; }
+.about-hero img, .about-fig img { display: block; width: 100%; height: auto; border-radius: var(--radius); box-shadow: var(--shadow); }
+.about-hero figcaption, .about-fig figcaption { margin-top: 6px; font-size: 11.5px; line-height: 1.5; color: var(--ink-3); }
+.about-fig { margin: 4px 0 16px; }
+
+.about-title { font-family: "Shippori Mincho", serif; font-size: 30px; line-height: 1.4; letter-spacing: 0.04em; margin: 0 0 12px; }
+.about-lead { font-size: 16.5px; }
+.about-cta { margin: 20px 0 8px; }
+.about-cta-end { margin-top: 40px; text-align: center; }
+.about-open {
+  display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 999px; font-size: 14px; text-decoration: none;
+}
+.about-main a.about-open { color: var(--panel); }
+.about-open .material-symbols-outlined { font-size: 20px; }
+
+.about-sec { padding: 28px 0 8px; border-top: 1px solid var(--line); margin-top: 28px; }
+.about-sec h2 { font-family: "Shippori Mincho", serif; font-size: 22px; color: var(--ink); letter-spacing: 0.04em; margin: 0 0 14px; }
+.about-sec h3 { font-size: 15px; color: var(--ink); margin: 20px 0 6px; }
+
+/* できること：3枚のカード（狭い画面では縦に積む） */
+.about-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.about-cards li { padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+.about-cards .material-symbols-outlined { display: block; font-size: 28px; color: #3b7a4a; margin-bottom: 6px; }
+.about-cards strong { display: block; font-size: 15px; margin-bottom: 4px; }
+.about-cards p { margin: 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-2); }
+
+/* つかいかた：番号つきの手順 */
+.about-steps { margin: 0 0 12px; padding: 0; list-style: none; counter-reset: step; }
+.about-steps li { position: relative; padding: 0 0 14px 44px; counter-increment: step; }
+.about-steps li::before {
+  content: counter(step); position: absolute; left: 0; top: 2px; width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--ink); color: var(--panel); font-weight: 700; font-size: 14px; line-height: 1;
+}
+.about-steps strong { color: var(--ink); }
+.about-note { display: flex; gap: 8px; align-items: flex-start; padding: 12px 14px; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--line); font-size: 13.5px; color: var(--ink-2); }
+.about-note .material-symbols-outlined { font-size: 20px; line-height: 1.4; }
+
+/* たとえば：アプリの「所要時間の比較」と同じ棒グラフ */
+.about-compare { display: grid; gap: 10px; margin: 8px 0 16px; padding: 16px; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--line); }
+.about-row { display: grid; grid-template-columns: 96px 1fr auto; align-items: center; gap: 12px; }
+.about-label { font-size: 13px; line-height: 1.3; }
+.about-label small { display: block; font-size: 11.5px; color: var(--ink-3); }
+.about-row strong { font-size: 17px; font-variant-numeric: tabular-nums; min-width: 5.5em; text-align: right; }
+.about-bar { height: 10px; border-radius: 5px; background: var(--bg); overflow: hidden; }
+.about-bar > i { display: block; height: 100%; border-radius: 5px; }
+.about-bar.now > i { background: var(--now); }
+.about-bar.walk > i { background: var(--walk); opacity: 0.6; }
+.about-bar.old > i { background: var(--old-bar); }
+
+/* 明治の移動：汽車・鉄道馬車・徒歩 */
+.about-modes { margin: 0; display: grid; gap: 14px; }
+.about-modes dt { display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--ink); }
+.about-modes dt .material-symbols-outlined { font-size: 22px; color: #3b7a4a; }
+.about-modes dd { margin: 2px 0 0 28px; color: var(--ink-2); }
+
+.about-list { margin: 0; padding-left: 1.2em; }
+.about-list li { margin-bottom: 8px; }
+.about .credits { font-size: 13px; gap: 6px; }
+
+@media (max-width: 720px) {
+  .about-main { padding: 16px 16px 48px; font-size: 14.5px; }
+  .about-title { font-size: 26px; }
+  .about-row { grid-template-columns: 84px 1fr auto; gap: 8px; }
+}
