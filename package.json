@@ -7,8 +7,5 @@
   "scripts": {
     "start": "node server.mjs",
     "test": "node test/route.test.mjs"
-  },
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.131.0"
   }
 }

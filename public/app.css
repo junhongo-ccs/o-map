@@ -335,8 +335,6 @@ button { font: inherit; cursor: pointer; }
 .leg-end::before { content: ""; position: absolute; left: 3px; top: 5px; width: 13px; height: 13px; border-radius: 50%; background: #fff; border: 3px solid #3b7a4a; }
 .end-icon { font-size: 16px; line-height: 1; vertical-align: -3px; margin-right: 2px; color: var(--ink-2); font-weight: 400; }
 
-.ai-head { display: flex; justify-content: flex-end; margin-bottom: 4px; }
-.ai-head:has(> [hidden]:only-child) { display: none; }
 .explain-sec { margin: 10px 0 0; }
 .explain-sec h3 { font-size: 13px; margin: 0 0 4px; color: var(--old); }
 .explain-sec p { margin: 0; font-size: 13.5px; }

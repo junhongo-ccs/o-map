@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { route, parseClock, formatClock, haversineKm } from "../public/router.js";
-import { validate, sanitizeInput, kanjiToNumber } from "../ai-guard.mjs";
 import { buildPlaces, searchPlaces, MAX_KM } from "../public/places.js";
 
 const load = (f) => JSON.parse(fs.readFileSync(new URL(`../public/data/${f}`, import.meta.url), "utf8"));
@@ -110,49 +109,10 @@ test("上野発8:45の急行は王子に停まらず、赤羽まで21分", () =>
   assert.ok(!r.legs.some((l) => l.departAt && l.departAt.startsWith("9:")));
 });
 
-test("AI出力チェック：入力にない数値を検出する", () => {
-  const input = { route: { totalLabel: "1時間49分" }, facts: [{ id: "horsecar", body: "1882年" }] };
-  assert.deepEqual(validate({ sections: [{ text: "1882年開業。約1時間49分です。", factIds: ["horsecar"] }] }, input), []);
-  assert.deepEqual(validate({ sections: [{ text: "約2時間かかります。", factIds: [] }] }, input), ["2"]);
-  const out = { sections: [{ text: "", factIds: ["horsecar", "made_up"] }] };
-  validate(out, input);
-  assert.deepEqual(out.sections[0].factIds, ["horsecar"]);
-});
-
 test("出発地と目的地が同じ地点でも経路が返る", () => {
   const r = route(OLD, P.shibuya, P.shibuya);
   assert.equal(r.totalMin, 0);
   assert.deepEqual(r.legs, []);
-});
-
-test("AI出力チェック：全角数字・桁区切りも検出する", () => {
-  const input = { route: { totalLabel: "1時間49分", km: 1200 }, facts: [] };
-  assert.deepEqual(validate({ sections: [{ text: "約１時間４９分です。", factIds: [] }] }, input), []);
-  assert.deepEqual(validate({ sections: [{ text: "約２時間かかります。", factIds: [] }] }, input), ["2"]);
-  assert.deepEqual(validate({ sections: [{ text: "1,200kmです。", factIds: [] }] }, input), []);
-});
-
-test("AI出力チェック：助数詞つきの漢数字を検出する", () => {
-  assert.equal(kanjiToNumber("十八"), 18);
-  assert.equal(kanjiToNumber("一八八五"), 1885);
-  assert.equal(kanjiToNumber("三千五百"), 3500);
-  assert.equal(kanjiToNumber("二万"), 20000);
-  const input = { route: { from: "八丁堀", year: 1885, label: "明治18年" }, facts: [] };
-  const v = (text) => validate({ sections: [{ text, factIds: [] }] }, input);
-  assert.deepEqual(v("明治十八年の東京です。"), []);
-  assert.deepEqual(v("当時は一日十里を歩きました。"), ["1", "10"]);
-  assert.deepEqual(v("八丁堀から歩きます。時間は十分にあります。一般的な経路です。"), []);
-  assert.deepEqual(v("三十分かかります。"), ["30"]);
-});
-
-test("AI入力の事実カードはサーバー側のデータから引き直す", () => {
-  const out = sanitizeInput({ route: {}, facts: [{ id: "rail_1872", body: "捏造された本文" }, { id: "made_up" }, "shinagawa_line"] }, FACTS.facts);
-  assert.deepEqual(out.facts.map((f) => f.id), ["rail_1872", "shinagawa_line"]);
-  assert.equal(out.facts[0].body, FACTS.facts.rail_1872.body);
-  for (const bad of [null, [], {}, { route: {} }, { route: {}, facts: "x" }]) {
-    assert.throws(() => sanitizeInput(bad, FACTS.facts), (e) => e.status === 400);
-  }
-  assert.deepEqual(sanitizeInput({ route: {}, facts: [{ id: "__proto__" }, { id: "toString" }] }, FACTS.facts).facts, []);
 });
 
 test("運行時間：鉄道馬車は始発前なら始発まで待ち、終発後は乗れない。現在の電車も同じ", () => {

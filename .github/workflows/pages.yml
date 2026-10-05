@@ -1,5 +1,4 @@
 # main に push すると、テストを通したうえで public/ を GitHub Pages に公開する。
-# 静的な公開なので AI 解説（server.mjs の /api/explain）は使えず、画面は定型解説だけになる。
 name: Deploy to GitHub Pages
 
 on:

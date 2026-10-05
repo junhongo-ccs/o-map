@@ -533,7 +533,6 @@ function recompute(fit) {
   const oldWalk = route(NET_OLD, state.origin, state.dest, state.overrides.old, { ...opt, vehicles: false });
   const now = route(NET_NOW, state.origin, state.dest, state.overrides.now, opt);
   state.result = { old, oldWalk, now, fastest, preferred: rides, noRide: !!ride && !rides };
-  state.resultGen = (state.resultGen || 0) + 1;
   renderResult();
   drawRoutes(fit);
 }
@@ -645,11 +644,11 @@ function factsUsed(r) {
   return [...ids].filter((id) => FACTS.facts[id]);
 }
 
-function renderFacts(ids, cited = new Set()) {
+function renderFacts(ids) {
   $("#facts").innerHTML = ids.map((id) => {
     const f = FACTS.facts[id];
     return `<li class="fact" id="fact-${id}">
-      <div class="fact-head"><span>${esc(f.title)} <span class="fid">[${id}]</span>${cited.has(id) ? " ✓" : ""}</span><span class="status ${statusClass(f.status)}">${esc(f.status)}</span></div>
+      <div class="fact-head"><span>${esc(f.title)} <span class="fid">[${id}]</span></span><span class="status ${statusClass(f.status)}">${esc(f.status)}</span></div>
       <p>${esc(f.body)}</p>
       <a href="${esc(f.source.url)}" target="_blank" rel="noopener">${esc(f.source.label)}</a>
     </li>`;
@@ -736,7 +735,7 @@ function renderSpots(r) {
 }
 
 // ---------- 解説 ----------
-// AIを使わない定型解説。数値は経路計算の結果、文章は事実カードのみから組み立てる
+// 解説（定型文）。数値は経路計算の結果、文章は事実カードのみから組み立てる
 function renderTemplateExplain(ids) {
   const { old, oldWalk, now, preferred } = state.result;
   const rides = old.legs.filter((l) => l.mode !== "walk");
@@ -761,70 +760,11 @@ function renderTemplateExplain(ids) {
     }
     return `<div class="explain-sec"><h3>${s.heading}</h3><p>${esc(s.text)}</p></div>`;
   }).join("");
-  $("#ai-status").textContent = "定型解説（事実カードと計算結果のみから作成）";
+  $("#explain-note").textContent = "事実カードと経路の計算結果だけから組み立てた解説です。";
 }
 
-function aiInput() {
-  const { old, oldWalk, now } = state.result;
-  const strip = (r) => ({
-    totalMin: r.totalMin, totalLabel: formatMin(r.totalMin), totalKm: r.totalKm,
-    legs: r.legs.map(({ mode, label, from, to, km, moveMin, waitMin, departAt, opened, approx, viaNames, fare }) =>
-      ({ mode, label, from, to, km, moveMin, waitMin, ...(departAt && { departAt }), opened, routeIsEstimated: approx, via: viaNames,
-        ...(fare && { fareSen: fare.through ? "前の区間の通し運賃に含む" : fare.unknown ? "不明" : { 上等: fare.sen[0], 中等: fare.sen[1], 下等: fare.sen[2], atLeast: !!fare.atLeast } }) })),
-    ...(r.fare && { fareTotalSen: { 上等: r.fare.sen[0], 中等: r.fare.sen[1], 下等: r.fare.sen[2], atLeast: r.fare.atLeast } }),
-  });
-  const p = (net, era, keys) => keys.map((k) => {
-    const v = state.overrides[era === "明治18年" ? "old" : "now"][k] ?? net.params[k].value;
-    return { era, name: k, value: net.params[k].unit === "time" ? formatClock(v) : v, basis: net.params[k].basis, status: net.params[k].status };
-  });
-  const ids = [...new Set([...factsUsed(old), ...factsUsed(now)])];
-  return {
-    origin: state.origin.name, destination: state.dest.name, departTime: formatClock(state.departMin),
-    route: { meiji1885: strip(old), meiji1885WalkOnly: { totalMin: oldWalk.totalMin, totalLabel: formatMin(oldWalk.totalMin) }, now: strip(now) },
-    assumptions: [
-      ...p(NET_OLD, "明治18年", ["walkKmh", "walkDetourStreet", "horsecarKmh", "horsecarWaitMin", "horsecarFirstMin", "horsecarLastMin"]),
-      ...p(NET_NOW, "現在", ["walkKmh", "railWaitMin", "railFirstMin", "railLastMin"]),
-      ...Object.values(NET_OLD.fares.companies).map((c) => ({ era: "明治18年", name: `${c.name}の運賃`, value: "運賃表（単位：銭、100銭＝1円）", basis: c.basis + (c.through ? `。${c.through.note}` : ""), status: c.status })),
-      { era: "明治18年", name: "鉄道馬車の運賃", value: `1回${NET_OLD.fares.horsecar.perRide[2]}銭以上（1等${NET_OLD.fares.horsecar.perRide[0]}銭以上）`, basis: NET_OLD.fares.horsecar.basis, status: NET_OLD.fares.horsecar.status },
-      ...NET_OLD.lines.filter((l) => l.timetable).map((l) => ({ era: "明治18年", name: `${l.name}の発車時刻`,
-        value: `${l.timetable.fwdFrom} ${firstDepartures(l.timetable.fwd).join("・")} / ${l.timetable.revFrom} ${firstDepartures(l.timetable.rev).join("・")}`,
-        basis: l.timetable.basis, status: l.timetable.status })),
-    ],
-    facts: ids.map((id) => ({ id, title: FACTS.facts[id].title, body: FACTS.facts[id].body, status: FACTS.facts[id].status })),
-  };
-}
-
-// AI解説は、server.mjs で動かしていて AI が設定されているときだけ使える。
-// GitHub Pages などの静的な公開では /api/status が無いので、ボタンは隠したまま（定型解説だけ）
-fetch("api/status").then((r) => (r.ok ? r.json() : null)).catch(() => null)
-  .then((s) => { if (s?.ai) $("#btn-ai").hidden = false; });
 
 // 解説の [id] を押したら、「根拠」のタブに切り替えてからそのカードへ移る
 document.addEventListener("click", (e) => { if (e.target.closest("a.cite")) selectTab("facts", false); });
 
-$("#btn-ai").addEventListener("click", async () => {
-  if (!state.result) return;
-  const btn = $("#btn-ai");
-  const gen = state.resultGen;
-  btn.disabled = true;
-  $("#ai-status").textContent = "AIが解説を書いています…";
-  try {
-    const input = aiInput();
-    const r = await fetch("api/explain", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(input) });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
-    // 応答を待つ間に経路が変わっていたら、古い経路の解説なので表示しない
-    if (gen !== state.resultGen) return;
-    const cited = new Set(data.sections.flatMap((s) => s.factIds));
-    $("#explain").innerHTML = data.sections.map((s) => `<div class="explain-sec"><h3>${esc(s.heading)}</h3>
-      <p>${esc(s.text)}${s.factIds.map((id) => `<a class="cite" href="#fact-${id}">[${id}]</a>`).join("")}</p></div>`).join("");
-    renderFacts(input.facts.map((f) => f.id), cited);
-    $("#ai-status").textContent = `AI解説（${data.model}）— 入力にない数値が含まれていないことを自動チェック済み`;
-  } catch (e) {
-    if (gen !== state.resultGen) return;
-    $("#ai-status").textContent = `AI解説を表示できませんでした：${e.message}。定型解説を表示しています。`;
-  } finally {
-    btn.disabled = false;
-  }
-});
 
