@@ -417,7 +417,18 @@ renderAssumptions();
 const sheet = $(".pane-right"), handle = $(".sheet-handle");
 const mqSheet = matchMedia("(max-width: 1100px)");
 const SHEET_ORDER = ["peek", "half", "full"];
-const sheetHeight = { peek: () => 140, half: () => sheet.parentElement.clientHeight * 0.5, full: () => sheet.parentElement.clientHeight - 12 };
+// 「半分」は、結果があるときは所要時間の比較の下のチップの列まで必ず見える高さにする（タブがあることに気づけるように）
+function tabsBottom() {
+  const bar = $(".tabs-wrap");
+  if ($("#result").hidden) return 0;
+  const sum = bar.previousElementSibling;
+  return sum.offsetTop + sum.offsetHeight + bar.offsetHeight;
+}
+const sheetHeight = {
+  peek: () => 140,
+  half: () => Math.min(sheetHeight.full(), Math.max(sheet.parentElement.clientHeight * 0.5, tabsBottom())),
+  full: () => sheet.parentElement.clientHeight - 12,
+};
 let sheetState = "peek";
 function setSheet(name) {
   sheetState = name;
@@ -624,7 +635,6 @@ function renderResult() {
   const { old, now } = state.result;
   $("#empty").hidden = true;
   $("#result").hidden = false;
-  if (sheetState === "peek") setSheet("half"); // 経路が出たら、結果を半分まで広げる
   renderBars(state.result);
   renderLegs($("#legs-old"), old, false);
   renderLegs($("#legs-now"), now, true);
@@ -632,7 +642,53 @@ function renderResult() {
   const ids = [...new Set([...factsUsed(old), ...factsUsed(now)])];
   renderFacts(ids);
   renderTemplateExplain(ids);
+  // 経路が出たら結果を半分まで広げる（半分の高さは所要時間の比較の高さで変わるので、描き終えてから決める）
+  setSheet(sheetState === "peek" ? "half" : sheetState);
 }
+
+// ---------- 結果のタブ ----------
+// 所要時間の比較の下のチップで、当時の経路・現在の経路・沿線の見どころ・解説・根拠を切り替える（WAI-ARIA のタブの作法）
+const tabs = [...document.querySelectorAll(".tabs .tab")];
+const tabBar = $(".tabs");
+function selectTab(name, scroll = true) {
+  for (const t of tabs) {
+    const on = t.id === `tab-${name}`;
+    t.setAttribute("aria-selected", String(on));
+    t.tabIndex = on ? 0 : -1;
+    $(`#${t.getAttribute("aria-controls")}`).hidden = !on;
+  }
+  // 選んだチップが列の外（端の ‹ › の下を含む）にはみ出していたら、見える位置まで列を横に送る
+  const t = $(`#tab-${name}`), EDGE = 52;
+  if (t.offsetLeft < tabBar.scrollLeft + EDGE || t.offsetLeft + t.offsetWidth > tabBar.scrollLeft + tabBar.clientWidth - EDGE)
+    tabBar.scrollTo({ left: t.offsetLeft - EDGE, behavior: "smooth" });
+  // 下までスクロールした状態で切り替えたら、新しい中身を先頭から見せる（チップの列が上に貼りついている位置まで戻す）
+  // （チップの列は貼りつくと offsetTop が動くので、すぐ上の「所要時間の比較」の下端で位置を測る）
+  const wrap = $(".tabs-wrap"), sum = wrap.previousElementSibling;
+  const top = sum.offsetTop + sum.offsetHeight - (parseFloat(getComputedStyle(wrap).top) || 0);
+  if (scroll && sheet.scrollTop > top) sheet.scrollTop = top;
+}
+for (const t of tabs) t.addEventListener("click", () => selectTab(t.id.slice(4)));
+tabBar.addEventListener("keydown", (e) => {
+  const shown = tabs.filter((t) => !t.hidden);
+  const i = shown.indexOf(document.activeElement);
+  if (i < 0) return;
+  const j = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: shown.length - 1 }[e.key];
+  if (j === undefined) return;
+  e.preventDefault();
+  const next = shown[(j + shown.length) % shown.length];
+  selectTab(next.id.slice(4));
+  next.focus();
+});
+// はみ出している側にだけ ‹ › を出す。押すと列の幅の7割ずつ横に送る（マウスでは横にスクロールできないため）
+const tabPrev = $(".tabs-arrow.prev"), tabNext = $(".tabs-arrow.next");
+function updateTabArrows() {
+  tabPrev.hidden = tabBar.scrollLeft <= 1;
+  tabNext.hidden = tabBar.scrollLeft + tabBar.clientWidth >= tabBar.scrollWidth - 1;
+}
+tabPrev.addEventListener("click", () => tabBar.scrollBy({ left: -tabBar.clientWidth * 0.7, behavior: "smooth" }));
+tabNext.addEventListener("click", () => tabBar.scrollBy({ left: tabBar.clientWidth * 0.7, behavior: "smooth" }));
+tabBar.addEventListener("scroll", updateTabArrows, { passive: true });
+new ResizeObserver(updateTabArrows).observe(tabBar); // 結果が出たとき・幅が変わったときに測り直す
 
 // ---------- 沿線の見どころ ----------
 // 明治の経路が通る名所（ALL_SPOTS のうち経路上のもの）を、通る順に並べる
@@ -642,7 +698,9 @@ function spotsOf(r) {
 }
 function renderSpots(r) {
   const spots = spotsOf(r);
-  $("#spots-sec").hidden = !spots.length;
+  $("#tab-spots").hidden = !spots.length;
+  updateTabArrows();
+  if (!spots.length && $("#tab-spots").getAttribute("aria-selected") === "true") selectTab("old");
   $("#spots").innerHTML = spots.map((sp) => `<li class="spot">
       <span class="material-symbols-outlined spot-icon" aria-hidden="true">location_on</span>${spotCardHTML(sp)}
     </li>`).join("");
@@ -713,8 +771,8 @@ function aiInput() {
 fetch("api/status").then((r) => (r.ok ? r.json() : null)).catch(() => null)
   .then((s) => { if (s?.ai) $("#btn-ai").hidden = false; });
 
-// 解説の [id] を押したら、たたまれている事実カードの欄を開いてからそのカードへ移る
-document.addEventListener("click", (e) => { if (e.target.closest("a.cite")) $("#facts-acc").open = true; });
+// 解説の [id] を押したら、「根拠」のタブに切り替えてからそのカードへ移る
+document.addEventListener("click", (e) => { if (e.target.closest("a.cite")) selectTab("facts", false); });
 
 $("#btn-ai").addEventListener("click", async () => {
   if (!state.result) return;

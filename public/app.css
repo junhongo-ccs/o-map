@@ -89,13 +89,38 @@ body {
   display: grid; grid-template-columns: 1fr 380px;
 }
 .pane { overflow-y: auto; background: var(--panel); padding: 4px 16px 24px; }
-.pane-right { border-left: 1px solid var(--line); }
+.pane-right { position: relative; border-left: 1px solid var(--line); } /* relative：タブの位置（offsetTop）をこの欄の中で測るため */
 .block { padding: 14px 0; border-bottom: 1px solid var(--line); }
 .block:last-child { border-bottom: 0; }
 h2, .settings h3 { font-size: 13px; font-weight: 700; color: var(--ink-2); margin: 0 0 10px; letter-spacing: 0.04em; }
-h2.inline { display: inline; margin: 0; }
-details summary { cursor: pointer; list-style-position: inside; } /* 三角を行頭に入れて、ほかの見出しと左端を揃える */
-details[open] summary { margin-bottom: 10px; }
+/* 結果のタブ：所要時間の比較の下に、楕円のチップを横一列に並べる。入りきらない分は横にスクロールし、
+   中身を下へスクロールしてもチップの列は上に貼りつく（スマホではボトムシートのつまみの下に貼りつく） */
+.tabs-wrap {
+  position: sticky; top: var(--tabs-top, 0px); z-index: 2; margin: 0 -16px; background: var(--panel); border-bottom: 1px solid var(--line);
+}
+.tabs { position: relative; display: flex; gap: 8px; padding: 10px 16px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+/* はみ出した側にだけ出す小さな ‹ ›（マウスでは横にスクロールできないため）。端はパネルの色でぼかしてチップに重ねる */
+.tabs-arrow {
+  position: absolute; top: 0; bottom: 0; z-index: 1; width: 52px; display: flex; align-items: center; padding: 0 6px; border: 0;
+}
+.tabs-arrow.prev { left: 0; justify-content: flex-start; background: linear-gradient(to right, var(--panel) 55%, transparent); }
+.tabs-arrow.next { right: 0; justify-content: flex-end; background: linear-gradient(to left, var(--panel) 55%, transparent); }
+.tabs-arrow span {
+  display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line);
+  background: var(--panel); color: var(--ink-2); font-size: 18px; box-shadow: var(--shadow);
+}
+.tabs-arrow:hover span { background: var(--bg); color: var(--ink); }
+@media (hover: none) { .tabs-arrow { display: none; } } /* タッチの端末は指で横に送れるので出さない */
+.tab {
+  flex: none; display: inline-flex; align-items: center; gap: 4px; padding: 5px 14px 5px 10px; white-space: nowrap;
+  border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--ink-2); font-size: 13px; font-weight: 500;
+}
+.tab:hover { background: var(--bg); color: var(--ink); }
+.tab[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--panel); }
+.tab-icon { font-size: 18px; line-height: 1; }
+.tab-panel { border-bottom: 0; }
+.fact { scroll-margin-top: 64px; } /* 解説の [id] から移ったとき、貼りついたチップの列に隠れないように */
 
 /* 第二ヘッダー：出発地・入れ替え・目的地・出発時刻を横一列に並べる（候補の一覧が地図の上に出るよう z-index を上げる） */
 .subbar {
@@ -322,6 +347,11 @@ button { font: inherit; cursor: pointer; }
     transition: height 0.25s ease; overscroll-behavior: contain;
   }
   .pane-right.dragging { transition: none; }
+  /* スクロールバーは角丸で切り取られず、右上の角を四角く埋めてしまうので隠す（シートは指で送る） */
+  .pane-right { scrollbar-width: none; }
+  .pane-right::-webkit-scrollbar { display: none; }
+  .pane-right { --tabs-top: 28px; } /* つまみ（高さ28px）の下に貼りつける */
+  .fact { scroll-margin-top: 92px; }
   .sheet-handle {
     display: grid; place-items: center; position: sticky; top: 0; z-index: 1; height: 28px; margin: 0 -16px;
     background: var(--panel); cursor: grab; touch-action: none;

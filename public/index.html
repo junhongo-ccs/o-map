@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=directions_railway,directions_walk,eco,fact_check,gate,hotel,local_florist,location_on,menu_book,mode_fan,park,payments,road,route,settings,shopping_bag,target,temple_buddhist,timer,train,trolley_cable_car,water&display=block" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=chevron_left,chevron_right,directions_railway,directions_walk,eco,fact_check,gate,history,hotel,local_florist,location_on,menu_book,mode_fan,park,payments,road,route,settings,shopping_bag,target,temple_buddhist,timer,train,trolley_cable_car,water&display=block" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
   <link rel="stylesheet" href="https://unpkg.com/@maplibre/maplibre-gl-compare@0.5.0/dist/maplibre-gl-compare.css">
   <link rel="stylesheet" href="app.css">
@@ -88,37 +88,41 @@
             <h2><span class="material-symbols-outlined h2-icon" aria-hidden="true">timer</span>所要時間の比較</h2>
             <div id="compare-bars" class="bars"></div>
           </section>
-          <section class="block">
+          <!-- 所要時間の比較の下は、横に並ぶチップで中身を切り替える（Google マップの店の画面のタブと同じ形）。はみ出したチップは横にスクロールする -->
+          <div class="tabs-wrap">
+            <button type="button" class="tabs-arrow prev" aria-hidden="true" tabindex="-1" hidden><span class="material-symbols-outlined">chevron_left</span></button>
+            <div class="tabs" role="tablist" aria-label="結果の内容">
+              <button id="tab-old" class="tab" role="tab" aria-selected="true" aria-controls="panel-old"><span class="material-symbols-outlined tab-icon" aria-hidden="true">history</span>当時の経路</button>
+              <button id="tab-now" class="tab" role="tab" aria-selected="false" aria-controls="panel-now" tabindex="-1"><span class="material-symbols-outlined tab-icon" aria-hidden="true">route</span>現在の経路</button>
+              <button id="tab-spots" class="tab" role="tab" aria-selected="false" aria-controls="panel-spots" tabindex="-1" hidden><span class="material-symbols-outlined tab-icon" aria-hidden="true">location_on</span>沿線の見どころ</button>
+              <button id="tab-explain" class="tab" role="tab" aria-selected="false" aria-controls="panel-explain" tabindex="-1"><span class="material-symbols-outlined tab-icon" aria-hidden="true">menu_book</span>解説</button>
+              <button id="tab-facts" class="tab" role="tab" aria-selected="false" aria-controls="panel-facts" tabindex="-1"><span class="material-symbols-outlined tab-icon" aria-hidden="true">fact_check</span>根拠</button>
+            </div>
+            <button type="button" class="tabs-arrow next" aria-hidden="true" tabindex="-1" hidden><span class="material-symbols-outlined">chevron_right</span></button>
+          </div>
+          <section id="panel-old" class="block tab-panel" role="tabpanel" aria-labelledby="tab-old">
             <h2>明治18年の経路</h2>
             <ol id="legs-old" class="legs"></ol>
           </section>
-          <section id="spots-sec" class="block" hidden>
-            <details open>
-              <summary><h2 class="inline"><span class="material-symbols-outlined h2-icon" aria-hidden="true">location_on</span>沿線の見どころ</h2></summary>
-              <ol id="spots" class="spots"></ol>
-            </details>
+          <section id="panel-now" class="block tab-panel" role="tabpanel" aria-labelledby="tab-now" hidden>
+            <h2>現在の経路（簡略モデル）</h2>
+            <ol id="legs-now" class="legs"></ol>
           </section>
-          <section class="block">
-            <details>
-              <summary><h2 class="inline"><span class="material-symbols-outlined h2-icon" aria-hidden="true">route</span>現在の経路（簡略モデル）</h2></summary>
-              <ol id="legs-now" class="legs"></ol>
-            </details>
+          <section id="panel-spots" class="block tab-panel" role="tabpanel" aria-labelledby="tab-spots" hidden>
+            <h2>沿線の見どころ</h2>
+            <ol id="spots" class="spots"></ol>
           </section>
-          <section class="block">
-            <details open>
-              <summary><h2 class="inline"><span class="material-symbols-outlined h2-icon" aria-hidden="true">menu_book</span>解説</h2></summary>
-              <div class="ai-head">
-                <button id="btn-ai" class="btn-primary" hidden>AIで解説を生成</button>
-              </div>
-              <p id="ai-status" class="msg" role="status"></p>
-              <div id="explain"></div>
-            </details>
+          <section id="panel-explain" class="block tab-panel" role="tabpanel" aria-labelledby="tab-explain" hidden>
+            <h2>解説</h2>
+            <div class="ai-head">
+              <button id="btn-ai" class="btn-primary" hidden>AIで解説を生成</button>
+            </div>
+            <p id="ai-status" class="msg" role="status"></p>
+            <div id="explain"></div>
           </section>
-          <section class="block">
-            <details id="facts-acc">
-              <summary><h2 class="inline"><span class="material-symbols-outlined h2-icon" aria-hidden="true">fact_check</span>根拠とした事実カード</h2></summary>
-              <ul id="facts" class="facts"></ul>
-            </details>
+          <section id="panel-facts" class="block tab-panel" role="tabpanel" aria-labelledby="tab-facts" hidden>
+            <h2>根拠とした事実カード</h2>
+            <ul id="facts" class="facts"></ul>
           </section>
         </div>
       </aside>
