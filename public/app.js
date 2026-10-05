@@ -195,7 +195,7 @@ const spotPins = ALL_SPOTS.flatMap((sp) => [mapNow, mapOld].map((m) => {
   return new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([sp.lon, sp.lat]).addTo(m);
 }));
 // カードの「目的地にする」「出発地にする」。一覧（PLACES）にある名所だけ。
-// 一覧にない名所（現在の6路線の駅から遠い千住宿）は、現在の経路が実際とずれるので選べない
+// 一覧にない名所（現在の路線の駅から遠い千住宿など）は、現在の経路が実際とずれるので選べない
 function spotActionsHTML(sp) {
   if (!PLACES.some((p) => p.group === "old" && p.name === sp.name)) {
     return '<p class="spot-note">現在の路線の駅から遠いため、出発地・目的地には選べません</p>';
@@ -267,7 +267,7 @@ $("#opacity").addEventListener("input", (e) => {
 });
 
 // ---------- 地点の指定 ----------
-// 候補（現在の駅・明治の地名）から選ぶ。自由入力・地図クリックでの指定はしない（現在側の6路線モデルで経路が実際とずれる地点を避けるため）
+// 候補（現在の駅・明治の地名）から選ぶ。自由入力・地図クリックでの指定はしない（現在側は限られた路線の簡略モデルなので、経路が実際とずれる地点を避けるため）
 const PLACES = buildPlaces(NET_NOW, NET_OLD);
 
 for (const k of ["origin", "dest"]) {
@@ -289,8 +289,8 @@ for (const k of ["origin", "dest"]) {
     let i = 0;
     const group = (g, label, items) => (items.length ? `<li class="combo-group ${g}" role="presentation">${label}</li>` : "")
       + items.map((p) => `<li id="opt-${k}-${i}" class="combo-opt" role="option" aria-selected="false" data-i="${i++}">${esc(p.name)}<small>${esc(p.tag)}</small></li>`).join("");
-    list.innerHTML = opts.length ? group("old", "明治の地名（6路線の駅から1km以内）", r.old) + group("now", "現在の駅（6路線）", r.now)
-      : '<li class="combo-empty" role="presentation">候補がありません。候補は現在の6路線の駅と、その近くの明治の地名だけです</li>';
+    list.innerHTML = opts.length ? group("old", "明治の地名（現在の駅から1km以内）", r.old) + group("now", "現在の駅", r.now)
+      : '<li class="combo-empty" role="presentation">候補がありません。候補は現在の路線（山手線の内側と、赤羽・横浜方面）の駅と、その近くの明治の地名だけです</li>';
     list.hidden = false;
     input.setAttribute("aria-expanded", "true");
     highlight(q.trim() && opts.length ? 0 : -1);

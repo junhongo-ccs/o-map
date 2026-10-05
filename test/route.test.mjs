@@ -195,6 +195,30 @@ test("汽車・馬車を優先（walkWeight）：新宿→日本橋 11:30発は�
   assert.equal(route(OLD, P.shinjuku, P.nihonbashi, {}, { ...at(11, 30), walkWeight: 0 }).totalMin, fastest.totalMin);
 });
 
+test("官設鉄道 新橋→横浜：9時発は9:15発の急行（第四列車）で45分、運賃は下等30銭", () => {
+  const shimbashi = OLD.nodes.st_shimbashi, yokohama = OLD.nodes.st_yokohama;
+  const r = route(OLD, shimbashi, yokohama, {}, at(9));
+  const train = r.legs.find((l) => l.mode === "rail");
+  assert.deepEqual([train.from, train.to, train.departAt, train.moveMin, train.viaNames], ["新橋停車場", "横浜停車場", "9:15", 45, ["品川停車場", "神奈川停車場"]]);
+  assert.deepEqual(r.fare.sen, [100, 60, 30]);
+});
+
+test("官設鉄道の急行は大森・川崎・鶴見に停まらない：川崎から9時に乗ると、次の各駅停車（川崎10:15発）を待つ", () => {
+  const r = route(OLD, OLD.nodes.st_kawasaki, OLD.nodes.st_yokohama, {}, at(9));
+  const train = r.legs.find((l) => l.mode === "rail");
+  assert.equal(train.departAt, "10:15");
+});
+
+test("運賃表：官設鉄道7駅の全21組がそろい、上等≧中等≧下等。下等は1駅ごとに5銭", () => {
+  const k = OLD.fares.companies.kansetsu, st = OLD.lines.find((l) => l.id === "kansetsu").stations;
+  assert.equal(Object.keys(k.pairs).length, 21);
+  st.forEach((a, i) => st.slice(i + 1).forEach((b, j) => {
+    const f = k.pairs[`${a}|${b}`];
+    assert.ok(f && f[0] >= f[1] && f[1] >= f[2], `${a}|${b}`);
+    assert.equal(f[2], 5 * (j + 1), `${a}|${b} 下等`);
+  }));
+});
+
 test("沿線の見どころ用の地点ID：新宿→日本橋 9時発は、甲州街道で内藤新宿・四谷大木戸を通る順に並ぶ", () => {
   const ids = route(OLD, P.shinjuku, P.nihonbashi, {}, at(9)).legs.flatMap((l) => l.viaIds);
   const i = ids.indexOf("naito_shinjuku"), j = ids.indexOf("yotsuya_okido");
@@ -226,7 +250,10 @@ test("地点の候補：漢字・ひらがな・カタカナの途中入力で�
   assert.deepEqual(names("品川駅"), names("品川"));
   assert.ok(names("しんじゅく")[1].includes("内藤新宿（追分）"));
   assert.ok(names("雷門")[1].includes("浅草（雷門）"));
-  assert.deepEqual(names("大井町"), [[], []]);
+  assert.deepEqual(names("吉祥寺"), [[], []]); // モデルにない路線の駅は出ない
+  // 横浜方面：今の駅と、明治の停車場・宿場
+  assert.deepEqual(names("かわさき"), [["川崎駅"], ["川崎宿", "川崎停車場"]]);
+  assert.ok(names("よこはま")[1].includes("横浜停車場"));
   // 空の入力では全件を一覧表示する
   assert.equal(names("")[0].length + names("")[1].length, places.length);
   assert.equal(searchPlaces(places, "しんばし").now[0].tag, "山手線・銀座線");
@@ -234,7 +261,7 @@ test("地点の候補：漢字・ひらがな・カタカナの途中入力で�
   for (const p of places) assert.ok(p.keys.some((k) => /^[ぁ-ゟー]+$/.test(k)), p.name);
 });
 
-test("地点の候補：明治の地名は現在の6路線の駅から1km以内だけ（遠い地点は現在の経路が実際とずれるため）", () => {
+test("地点の候補：明治の地名は現在の路線の駅から1km以内だけ（遠い地点は現在の経路が実際とずれるため）", () => {
   const places = buildPlaces(NOW, OLD);
   const stations = Object.values(NOW.nodes).filter((n) => n.kind === "station");
   const old = places.filter((p) => p.group === "old");

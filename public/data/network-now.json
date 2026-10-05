@@ -1,7 +1,7 @@
 {
   "era": "now",
   "label": "現在（令和）",
-  "note": "比較用の簡略モデル。山手線・中央線快速・銀座線・丸ノ内線と、京浜東北線（上野–赤羽）・埼京線（池袋–赤羽）の6路線のみ。駅座標はOpenStreetMap（© OpenStreetMap contributors, ODbL）。",
+  "note": "比較用の簡略モデル。山手線・中央線快速・銀座線・丸ノ内線と、京浜東北線（上野–赤羽、品川–桜木町）・埼京線（池袋–赤羽）・東海道線（品川–横浜）の8路線のみ。駅座標はOpenStreetMap（© OpenStreetMap contributors, ODbL）。",
   "params": {
     "walkKmh": { "value": 4.8, "basis": "不動産の表示に関する公正競争規約の徒歩所要時間（80m/分）", "status": "出典あり" },
     "walkDetourStreet": { "value": 1.3, "basis": "道路網を使わず直線距離×1.3で推定（明治側と同じ係数）", "status": "仮定" },
@@ -17,7 +17,9 @@
     "ginza":      { "kmh": 27, "basis": "銀座線 渋谷–浅草 約14.2kmを約32分" },
     "marunouchi": { "kmh": 31, "basis": "丸ノ内線 池袋–荻窪 約24.2kmを約47分" },
     "keihin_tohoku": { "kmh": 34, "basis": "京浜東北線 上野–赤羽 約9.6kmを約17分（概算）" },
-    "saikyo": { "kmh": 37, "basis": "埼京線 池袋–赤羽 約5.5kmを約9分（概算）" }
+    "saikyo": { "kmh": 37, "basis": "埼京線 池袋–赤羽 約5.5kmを約9分（概算）" },
+    "keihin_tohoku_south": { "kmh": 44, "basis": "京浜東北線 品川–横浜 約22kmを約28分（概算）" },
+    "tokaido": { "kmh": 72, "basis": "東海道線 品川–横浜 約22kmを約17分（概算）" }
   },
   "nodes": {
     "y_shinagawa": { "name": "品川", "lat": 35.6287, "lon": 139.73913, "kind": "station" },
@@ -97,6 +99,15 @@
     "k_oji": { "name": "王子", "lat": 35.75215, "lon": 139.73846, "kind": "station" },
     "k_higashijujo": { "name": "東十条", "lat": 35.76386, "lon": 139.7269, "kind": "station" },
     "k_akabane": { "name": "赤羽", "lat": 35.7781, "lon": 139.72071, "kind": "station" },
+    "k_oimachi": { "name": "大井町", "lat": 35.6066, "lon": 139.7349, "kind": "station" },
+    "k_omori": { "name": "大森", "lat": 35.5884, "lon": 139.7279, "kind": "station" },
+    "k_kamata": { "name": "蒲田", "lat": 35.5625, "lon": 139.7160, "kind": "station" },
+    "k_kawasaki": { "name": "川崎", "lat": 35.5313, "lon": 139.6970, "kind": "station" },
+    "k_tsurumi": { "name": "鶴見", "lat": 35.5085, "lon": 139.6766, "kind": "station" },
+    "k_shinkoyasu": { "name": "新子安", "lat": 35.4869, "lon": 139.6542, "kind": "station" },
+    "k_higashikanagawa": { "name": "東神奈川", "lat": 35.4779, "lon": 139.6334, "kind": "station" },
+    "k_yokohama": { "name": "横浜", "lat": 35.4660, "lon": 139.6226, "kind": "station" },
+    "k_sakuragicho": { "name": "桜木町", "lat": 35.4510, "lon": 139.6310, "kind": "station" },
     "s_itabashi": { "name": "板橋", "lat": 35.74527, "lon": 139.71943, "kind": "station" },
     "s_jujo": { "name": "十条", "lat": 35.76001, "lon": 139.72231, "kind": "station" }
   },
@@ -113,6 +124,10 @@
     { "id": "keihin_tohoku", "name": "JR京浜東北線（上野–赤羽）", "mode": "rail",
       "stations": ["y_ueno", "y_uguisudani", "y_nippori", "y_nishinippori", "y_tabata", "k_kaminakazato", "k_oji", "k_higashijujo", "k_akabane"] },
     { "id": "saikyo", "name": "JR埼京線（池袋–赤羽）", "mode": "rail",
-      "stations": ["y_ikebukuro", "s_itabashi", "s_jujo", "k_akabane"] }
+      "stations": ["y_ikebukuro", "s_itabashi", "s_jujo", "k_akabane"] },
+    { "id": "keihin_tohoku_south", "name": "JR京浜東北線（品川–桜木町）", "mode": "rail",
+      "stations": ["y_shinagawa", "k_oimachi", "k_omori", "k_kamata", "k_kawasaki", "k_tsurumi", "k_shinkoyasu", "k_higashikanagawa", "k_yokohama", "k_sakuragicho"] },
+    { "id": "tokaido", "name": "JR東海道線（品川–横浜）", "mode": "rail",
+      "stations": ["y_shinagawa", "k_kawasaki", "k_yokohama"] }
   ]
 }
