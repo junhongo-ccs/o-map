@@ -12,8 +12,9 @@ const state = {
   origin: null,
   dest: null,
   overrides: { old: {}, now: {} },
-  departMin: 11 * 60 + 30,
-  preferVehicle: false, // 明治の経路で、乗り物を少なくとも1回使う経路を出す
+  // 出発時刻：ページを読み込んだ時刻に最も近い5分刻み（入力欄の step と同じ）。23:58 などは 0:00 に回す
+  departMin: (Math.round((new Date().getHours() * 60 + new Date().getMinutes()) / 5) * 5) % (24 * 60),
+  preferVehicle: true, // 汽車・馬車を優先（既定でオン）：駅で待っても、歩く時間がなるべく短い経路を出す
   result: null,
   mode: "swipe",
 };
@@ -40,8 +41,10 @@ function baseStyle(kind) {
 }
 
 const view = { center: [139.745, 35.69], zoom: 12 };
-const mapNow = new maplibregl.Map({ container: "map-now", style: baseStyle("now"), ...view, maxZoom: 17, minZoom: 10 });
-const mapOld = new maplibregl.Map({ container: "map-old", style: baseStyle("old"), ...view, maxZoom: 17, minZoom: 10 });
+const mapNow = new maplibregl.Map({ container: "map-now", style: baseStyle("now"), ...view, maxZoom: 17, minZoom: 10, attributionControl: false });
+const mapOld = new maplibregl.Map({ container: "map-old", style: baseStyle("old"), ...view, maxZoom: 17, minZoom: 10, attributionControl: false });
+// 地図の出典は MapLibre の表示を使わず、index.html の .map-attrib で地図の右上に出す
+// （地図の中に置くとスワイプの境目で切れ、右下はスマホ・タブレットでボトムシートに隠れるため）
 mapNow.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
 let compare = new maplibregl.Compare(mapNow, mapOld, "#compare");
 
@@ -336,39 +339,28 @@ $("#in-depart").addEventListener("change", (e) => {
   state.departMin = parseClock(e.target.value);
   recompute(false);
 });
+$("#in-depart").value = formatClock(state.departMin).padStart(5, "0");
+$("#in-prefer").checked = state.preferVehicle; // 再読み込みでブラウザが前のチェック状態を戻しても、既定（オン）に揃える
 $("#in-prefer").addEventListener("change", (e) => {
   state.preferVehicle = e.target.checked;
   recompute(false);
 });
 
-// ---------- 前提条件 ----------
+// ---------- 計算設定 ----------
+// 設定ページには、スライダーで変えられる仮定値だけを出す（時刻表・運賃・固定の係数は出さない）
 function statusClass(s) { return s.startsWith("出典") || s === "確認済" ? "ok" : "warn"; }
 
-// value は HTML として埋め込む（呼び出し側でデータ由来の値だけを渡す）
 // 時刻表の各列車の始発駅の時刻
 const firstDepartures = (trips) => trips.map((t) => t.find((x) => x != null));
-
-// block=true なら値を見出しの右ではなく次の行に出す（時刻表など長い値用）
-function fixedRow(era, label, value, status, basis, block = false) {
-  return `<div class="assume">
-      <div class="assume-head">
-        <span class="assume-name"><span class="era ${era}">${era === "old" ? "明治" : "現在"}</span>${esc(label)}<span class="status ${statusClass(status)}">${esc(status)}</span></span>
-        ${block ? "" : `<output>${value}</output>`}
-      </div>
-      ${block ? `<div class="assume-val">${value}</div>` : ""}
-      <p>${esc(basis)}</p>
-    </div>`;
-}
 
 function renderAssumptions() {
   const rows = [];
   const add = (era, net, key, label, unit) => {
     const p = net.params[key];
+    if (p.min === undefined) return;
     const cur = state.overrides[era][key] ?? p.value;
     const fmt = (v) => (unit === "time" ? formatClock(v) : `${v}${unit}`);
-    const slider = p.min !== undefined
-      ? `<input type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${cur}" data-era="${era}" data-key="${key}" data-unit="${unit}" aria-label="${esc(label)}">`
-      : "";
+    const slider = `<input type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${cur}" data-era="${era}" data-key="${key}" data-unit="${unit}" aria-label="${esc(label)}">`;
     rows.push(`<div class="assume">
       <div class="assume-head">
         <span class="assume-name"><span class="era ${era}">${era === "old" ? "明治" : "現在"}</span>${esc(label)}<span class="status ${statusClass(p.status)}">${esc(p.status)}</span></span>
@@ -378,20 +370,6 @@ function renderAssumptions() {
       <p>${esc(p.basis)}</p>
     </div>`);
   };
-  // 時刻表のある路線（汽車）
-  for (const line of NET_OLD.lines) {
-    const tt = line.timetable;
-    if (tt) rows.push(fixedRow("old", `${line.shortName || line.name}の発車時刻`,
-      `${esc(tt.fwdFrom)} ${firstDepartures(tt.fwd).map(esc).join("・")}<br>${esc(tt.revFrom)} ${firstDepartures(tt.rev).map(esc).join("・")}`,
-      tt.status, tt.basis, true));
-  }
-  // 運賃（汽車は会社ごと、鉄道馬車は1回あたり）
-  const F = NET_OLD.fares;
-  for (const c of Object.values(F.companies)) {
-    const n = Object.keys(c.pairs).length;
-    rows.push(fixedRow("old", `${c.name}の運賃`, `${n}区間の運賃表（上等・中等・下等）`, c.status, `${c.basis}${c.through ? `。${c.through.note}` : ""}`, true));
-  }
-  rows.push(fixedRow("old", "鉄道馬車の運賃", `1回 ${F.horsecar.perRide[2]}銭〜（1等は${F.horsecar.perRide[0]}銭〜）`, F.horsecar.status, F.horsecar.basis));
   add("old", NET_OLD, "horsecarWaitMin", "鉄道馬車の平均待ち時間", "分");
   add("old", NET_OLD, "horsecarFirstMin", "鉄道馬車の始発", "time");
   add("old", NET_OLD, "horsecarLastMin", "鉄道馬車の終発", "time");
@@ -486,28 +464,72 @@ setSheet("peek");
 // ---------- 設定ページ（#settings） ----------
 // 同じページ内で表示を切り替える（仮定値の変更をそのまま地図の画面の経路に反映するため）。
 // 地図の画面は隠さずに設定ページを上に重ね、操作できないよう inert にする（隠すと地図の大きさが0になり、戻っても描画されない）
+// スマホ・タブレット幅（1100px以下、結果がボトムシートになる幅）では、設定を右から出すパネルにし、地図の比較方法（.map-tools）もヘッダーからその中の「表示方法」へ移す
+const mqDrawer = matchMedia("(max-width: 1100px)");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+function placeMapTools() {
+  const tools = $(".map-tools");
+  if (mqDrawer.matches) $("#view-slot").append(tools);
+  else $(".topbar-right").prepend(tools);
+  $("#view-sec").hidden = !mqDrawer.matches;
+}
 function showPage() {
   const settings = location.hash === "#settings";
+  const page = $("#settings-page"), drawer = mqDrawer.matches;
   $(".layout").inert = settings;
-  $("#settings-page").hidden = !settings;
-  $(".map-tools").hidden = settings; // 設定ページでは地図が見えないので、地図の切り替えも隠す
-  if (settings) { $("#nav-settings").setAttribute("aria-current", "page"); $(".settings-title").focus(); }
-  else $("#nav-settings").removeAttribute("aria-current");
+  // スマホでは設定がヘッダーまで覆うので、ヘッダーと入力欄も操作できないようにする
+  $(".topbar").inert = $(".subbar").inert = settings && drawer;
+  $(".map-tools").hidden = settings && !drawer; // パソコンの設定ページでは地図が見えないので、地図の切り替えも隠す
+  $("#nav-menu").setAttribute("aria-expanded", String(settings));
+  if (settings) {
+    page.classList.remove("closing");
+    page.hidden = false;
+    $("#nav-settings").setAttribute("aria-current", "page");
+    $(".settings-title").focus();
+    return;
+  }
+  $("#nav-settings").removeAttribute("aria-current");
+  if (page.hidden) return;
+  if (!drawer || reduceMotion.matches) { page.hidden = true; return; }
+  // スマホでは右へ滑って消えてから隠し、ハンバーガーにフォーカスを戻す
+  // （画面が裏に回っていると animationend が来ないので、0.3秒後にも必ず隠す）
+  page.classList.add("closing");
+  const done = () => {
+    if (!page.classList.contains("closing")) return;
+    page.classList.remove("closing");
+    if (location.hash !== "#settings") page.hidden = true;
+  };
+  page.addEventListener("animationend", done, { once: true });
+  setTimeout(done, 300);
+  $("#nav-menu").focus();
 }
+mqDrawer.addEventListener("change", () => { placeMapTools(); showPage(); });
 window.addEventListener("hashchange", showPage);
+// パネルの外（暗くした地図など）を押したら閉じる。開いている間は外側が inert なので、押した先は body などになる
+document.addEventListener("click", (e) => {
+  if (mqDrawer.matches && location.hash === "#settings" && !e.target.closest("#settings-page, #nav-menu")) location.hash = "";
+});
+// Esc で設定を閉じる（入力欄の候補の一覧を閉じる Esc は除く）
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && location.hash === "#settings" && !e.target.closest?.(".combo")) location.hash = "";
+});
+placeMapTools();
 showPage();
 
 // ---------- 計算と表示 ----------
+const WALK_WEIGHT = 3; // 汽車・馬車を優先するとき、歩く1分に足す重み（待つ1分の何倍つらいか − 1）
 function recompute(fit) {
   if (!state.origin || !state.dest) return;
   const opt = { departMin: state.departMin };
   const fastest = route(NET_OLD, state.origin, state.dest, state.overrides.old, opt);
-  // 汽車・馬車を優先：汽車か鉄道馬車を使う経路のうち最も早いもの。その時刻以降になければ、最速の経路のまま
-  const ride = state.preferVehicle ? route(NET_OLD, state.origin, state.dest, state.overrides.old, { ...opt, requireVehicle: true }) : null;
+  // 汽車・馬車を優先：駅で長く待っても、歩く時間がなるべく短い経路（歩く1分を、待つ分を含めて4分ぶんと数える）。
+  // 出発時刻は変えず、待ち時間は所要時間に入る。最初の駅で長く待つときは、出発を遅らせてよいことを laterDepartHTML で伝える
+  const ride = state.preferVehicle ? route(NET_OLD, state.origin, state.dest, state.overrides.old, { ...opt, walkWeight: WALK_WEIGHT }) : null;
+  const rides = !!ride && ride.legs.some((l) => l.mode !== "walk");
   const old = ride || fastest;
   const oldWalk = route(NET_OLD, state.origin, state.dest, state.overrides.old, { ...opt, vehicles: false });
   const now = route(NET_NOW, state.origin, state.dest, state.overrides.now, opt);
-  state.result = { old, oldWalk, now, fastest, preferred: !!ride, noRide: state.preferVehicle && !ride };
+  state.result = { old, oldWalk, now, fastest, preferred: rides, noRide: !!ride && !rides };
   state.resultGen = (state.resultGen || 0) + 1;
   renderResult();
   drawRoutes(fit);
@@ -544,7 +566,7 @@ function renderBars({ old, oldWalk, now, fastest, preferred, noRide }) {
     (ratio === null ? `<p class="ratio">出発地と目的地がほぼ同じ地点です。</p>`
       : `<p class="ratio">明治18年の${preferred ? "汽車・馬車を使う経路" : "最速経路"}は、現在の約<strong>${ratio}倍</strong>の時間がかかります。${
         preferred && old.totalMin > fastest.totalMin ? `汽車・馬車を優先しています（${fastest.legs.every((l) => l.mode === "walk") ? "歩くだけ" : "最速の経路"}なら${formatMin(fastest.totalMin)}）。`
-        : noRide ? "この時刻からは汽車も馬車もないため、最速の経路を表示しています。"
+        : noRide ? "この区間・時刻では、汽車や馬車を待つより歩く方がよいため、歩く経路を表示しています。"
         : walkSame ? "この区間では、汽車や馬車を使うより歩いた方が早く着きます。" : ""}</p>${laterDepartHTML(old)}`);
 }
 
@@ -716,7 +738,7 @@ function renderTemplateExplain(ids) {
   const ttNote = "汽車の発着時刻と運賃は明治18年5月刊の『鉄道汽車便覧表』によります";
   const fareNote = rides.length && old.fare ? `運賃は下等で${formatSen(old.fare.sen[2])}${old.fare.atLeast ? "以上（鉄道馬車は区の区切りが分からないため1区分で計算）" : ""}、上等なら${formatSen(old.fare.sen[0])}${old.fare.atLeast ? "以上" : ""}です。` : "";
   const why = rides.length
-    ? `${depart}に出発すると、明治18年の${preferred ? "汽車・馬車を使う経路のうち最も早いもの" : "最速経路"}は${rides.map((l) => `${l.label}（${l.from}→${l.to}${l.departAt ? `、${l.firstRun ? "始発" : ""}${l.departAt}発` : ""}）`).join("、")}を乗り継ぎ、合計${formatMin(old.totalMin)}です。${fareNote}歩くだけなら${formatMin(oldWalk.totalMin)}かかります。${ttNote}。鉄道馬車の待ち時間と運行時間（始発・終発）は仮定値で、「設定」ページの「計算の前提」で変えられます。`
+    ? `${depart}に出発すると、明治18年の${preferred ? "歩く時間がなるべく短い経路" : "最速経路"}は${rides.map((l) => `${l.label}（${l.from}→${l.to}${l.departAt ? `、${l.firstRun ? "始発" : ""}${l.departAt}発` : ""}）`).join("、")}を乗り継ぎ、合計${formatMin(old.totalMin)}です。${fareNote}歩くだけなら${formatMin(oldWalk.totalMin)}かかります。${ttNote}。鉄道馬車の待ち時間と運行時間（始発・終発）は仮定値で、「設定」の「計算設定」で変えられます。`
     : `${depart}に出発すると、明治18年のこの区間では、汽車や鉄道馬車を待つより歩く方が早く、${old.legs.filter((l) => l.mode === "walk" && l.label !== "徒歩（市街路・推定）").map((l) => l.label).join("・") || "市街路"}を通って${formatMin(old.totalMin)}です。現在は${formatMin(now.totalMin)}です。${ttNote}。`;
   const bodies = (pred) => ids.filter((id) => pred(id)).map((id) => ({ id, text: FACTS.facts[id].body }));
   const oldLineFacts = new Set(NET_OLD.lines.flatMap((l) => l.facts || []));

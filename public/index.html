@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=chevron_left,chevron_right,directions_railway,directions_walk,eco,fact_check,gate,history,hotel,local_florist,location_on,menu_book,mode_fan,park,payments,road,route,settings,shopping_bag,target,temple_buddhist,timer,train,trolley_cable_car,water&display=block" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=chevron_left,chevron_right,directions_railway,directions_walk,eco,fact_check,gate,history,hotel,local_florist,location_on,menu,menu_book,mode_fan,park,payments,road,route,settings,shopping_bag,target,temple_buddhist,timer,train,trolley_cable_car,water&display=block" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
   <link rel="stylesheet" href="https://unpkg.com/@maplibre/maplibre-gl-compare@0.5.0/dist/maplibre-gl-compare.css">
   <link rel="stylesheet" href="app.css">
@@ -16,7 +16,8 @@
   <header class="topbar">
     <div class="brand">
       <h1>今昔東京往来便覧</h1>
-      <p>明治18年（1885）の東京を移動</p>
+      <!-- 地図と同じ並び（左が現在、右が明治）。矢印はスワイプの境目のつまみと同じ形 -->
+      <p class="era-pair">現在<svg class="era-arrows" viewBox="14 22 32 16" aria-hidden="true"><path fill="currentColor" d="M25 24 16 30 25 36zM35 24v12l9-6z"/></svg><span class="sr-only">と</span>明治18年</p>
     </div>
     <div class="topbar-right">
       <div class="map-tools">
@@ -29,7 +30,9 @@
         </label>
       </div>
       <nav aria-label="ページ">
-        <a id="nav-settings" class="nav-link nav-icon" href="#settings" aria-label="設定" title="設定"><span class="material-symbols-outlined" aria-hidden="true">settings</span></a>
+        <a id="nav-settings" class="nav-link nav-icon nav-gear" href="#settings" aria-label="設定" title="設定"><span class="material-symbols-outlined" aria-hidden="true">settings</span></a>
+        <!-- スマホ・タブレット幅では歯車の代わりにハンバーガーを出し、設定を右から出す -->
+        <a id="nav-menu" class="nav-link nav-icon nav-menu" href="#settings" aria-label="メニュー" aria-controls="settings-page" aria-expanded="false"><span class="material-symbols-outlined" aria-hidden="true">menu</span></a>
       </nav>
     </div>
   </header>
@@ -56,8 +59,8 @@
         </div>
       </form>
     </div>
-    <label class="depart-row">出発時刻 <input id="in-depart" type="time" value="11:30" step="300"></label>
-    <label class="prefer-row" title="歩いた方が早くても、汽車や鉄道馬車を使う経路を出す（駅での待ち時間を含めて最も早いもの）"><input id="in-prefer" type="checkbox"> 汽車・馬車を優先</label>
+    <label class="depart-row">出発時刻 <input id="in-depart" type="time" step="300"></label>
+    <label class="prefer-row" title="駅で長く待っても、歩く時間がなるべく短い経路を出す（汽車や鉄道馬車に乗る。待ち時間は所要時間に入る）"><input id="in-prefer" type="checkbox" checked> 汽車・馬車を優先</label>
   </section>
 
   <div class="stage">
@@ -72,6 +75,10 @@
           <button type="button" class="spot-popup-close" aria-label="閉じる">×</button>
           <div class="spot-popup-body"></div>
         </div>
+        <p class="map-attrib">
+          <a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a> ｜
+          迅速測図：<a href="https://habs.rad.naro.go.jp/" target="_blank" rel="noopener">農研機構農業環境研究部門</a>
+        </p>
         <div class="map-labels" aria-hidden="true">
           <span class="lbl lbl-now">現在（地理院地図）</span>
           <span class="lbl lbl-old">明治（迅速測図 1880年代）</span>
@@ -131,21 +138,32 @@
     <div id="settings-page" class="settings" hidden>
       <div class="settings-inner">
         <a class="back-link" href="#">← 地図に戻る</a>
-        <h2 class="settings-title" tabindex="-1">設定</h2>
+        <div class="settings-head">
+          <h2 class="settings-title" tabindex="-1">設定</h2>
+          <a class="drawer-close" href="#" aria-label="閉じる"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></a>
+        </div>
+        <!-- スマホ・タブレット幅のときだけ、ヘッダーの地図の比較方法（.map-tools）を app.js がここへ移す -->
+        <section id="view-sec" class="block" hidden>
+          <h3>表示方法</h3>
+          <div id="view-slot"></div>
+        </section>
         <section class="block">
-          <h3>計算の前提</h3>
-          <p class="note">所要時間はすべて「距離 × 係数 ÷ 速度 ＋ 待ち時間」で計算しています。汽車は明治18年5月の時刻表から、鉄道馬車は平均待ち時間から待ち時間を出します。出発時刻や仮定値を変えると、最速の経路が入れ替わることがあります。値を変えると、地図の画面の経路にもすぐ反映されます。</p>
+          <h3>計算設定</h3>
+          <p class="note">値を変えると、経路と所要時間をすぐ計算し直します。</p>
           <div id="assumptions"></div>
+        </section>
+        <section class="block">
+          <h3>出典</h3>
+          <ul class="credits">
+            <li>古地図：<a href="https://habs.rad.naro.go.jp/" target="_blank" rel="noopener">迅速測図（農研機構農業環境研究部門「歴史的農業環境閲覧システム」）</a> CC BY 2.1 JP</li>
+            <li>地図：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a></li>
+            <li>駅座標：<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a></li>
+          </ul>
+          <p class="note">PoC：経路・所要時間は推定値です。</p>
         </section>
       </div>
     </div>
   </div>
-
-  <footer class="attrib">
-    古地図：<a href="https://habs.rad.naro.go.jp/" target="_blank" rel="noopener">迅速測図（農研機構農業環境研究部門「歴史的農業環境閲覧システム」）</a> CC BY 2.1 JP ／
-    地図：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a> ／
-    駅座標：© OpenStreetMap contributors ／ PoC：経路・所要時間は推定値です
-  </footer>
 
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <script src="https://unpkg.com/@maplibre/maplibre-gl-compare@0.5.0/dist/maplibre-gl-compare.js"></script>

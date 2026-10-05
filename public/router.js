@@ -153,6 +153,8 @@ class Heap {
  * origin / dest: {lat, lon, name}
  * options.vehicles=false で徒歩のみ。options.departMin は出発時刻（0時からの分、既定 9:00）
  * options.requireVehicle=true なら、乗り物（汽車・鉄道馬車など）を少なくとも1回使う経路のうち最も早いものを返す（なければ null）
+ * options.walkWeight=w（>0）なら、所要時間ではなく「所要分 ＋ 歩いた分 × w」が最小の経路を返す。
+ *   駅で待つ1分より歩く1分を重く数えるので、長く待っても汽車・鉄道馬車に乗る経路が選ばれる（出発時刻は変えず、待ち時間は所要時間に入る）
  * 戻り値: { totalMin, totalKm, departMin, legs[], params }
  */
 export function route(net, origin, dest, overrides = {}, options = {}) {
@@ -183,22 +185,29 @@ export function route(net, origin, dest, overrides = {}, options = {}) {
     return extra ? [...list, extra] : list;
   };
 
-  // 状態 = (地点, 乗車中の列車／路線と向き)。乗車には待ち時間を足す。
-  // 時刻表の路線は、駅に早く着いて損をすることがない（遅れて着けば同じか後の列車になる）ので、Dijkstra 法のままで最短になる
-  // 優先度 pri = 所要分 + 徒歩分 × ごく小さい係数。同着なら、歩き回るより駅で待つ経路を選ぶ（所要時間 cost は変えない）
-  const WALK_TIE = 1e-6;
-  // 状態には「乗り物をもう使ったか」も含める（requireVehicle のとき、使っていない状態で目的地に着いても終わりにしない）
+  // 状態 = (地点, 乗車中の列車／路線と向き, 乗り物をもう使ったか)。乗車には待ち時間を足す。
+  // 経路の良さ pri = 所要分 + 歩いた分 × 係数。係数は walkWeight（既定は、同着なら歩き回るより駅で待つ経路を選ぶためのごく小さい値）
+  // 各状態には「着いた時刻（cost）と歩いた分（walk）の両方で負けている」途中経路だけを捨て、ほかは残す。
+  // 時刻表の路線は早く着いて損をすることがなく、pri は辺をたどると減らないので、pri の小さい順に取り出して最初に目的地に着いたものが最良になる
+  // （requireVehicle のときは、乗り物を使っていない状態で目的地に着いても終わりにしない）
+  const walkW = options.walkWeight > 0 ? options.walkWeight : 1e-6;
   const sKey = (n, l, v) => `${n}#${l || ""}#${v ? 1 : 0}`;
-  const best = new Map([[sKey(O, null, false), 0]]);
-  const prev = new Map();
+  const labels = new Map(); // 状態 → 残している途中経路の一覧
   const heap = new Heap();
-  heap.push({ cost: 0, pri: 0, node: O, line: null, used: false });
+  const add = (lab) => {
+    const k = sKey(lab.node, lab.line, lab.used);
+    const list = labels.get(k) || [];
+    if (list.some((o) => o.cost <= lab.cost + 1e-9 && o.walk <= lab.walk + 1e-9)) return;
+    for (const o of list) if (lab.cost <= o.cost + 1e-9 && lab.walk <= o.walk + 1e-9) o.dead = true;
+    labels.set(k, [...list.filter((o) => !o.dead), lab]);
+    heap.push(lab);
+  };
+  add({ cost: 0, walk: 0, pri: 0, node: O, line: null, used: false, parent: null });
   let goal = null;
 
   while (heap.size) {
     const cur = heap.pop();
-    const ck = sKey(cur.node, cur.line, cur.used);
-    if (cur.pri > best.get(ck)) continue;
+    if (cur.dead) continue;
     if (cur.node === D) {
       if (requireVehicle && !cur.used) continue;
       goal = cur; break;
@@ -218,25 +227,17 @@ export function route(net, origin, dest, overrides = {}, options = {}) {
           ({ wait, first: firstRun } = w);
         }
       }
-      const cost = cur.cost + e.min + wait;
-      const pri = cur.pri + e.min + wait + (e.mode === "walk" ? e.min * WALK_TIE : 0);
-      const used = cur.used || e.mode !== "walk";
-      const nk = sKey(e.to, nextLine, used);
-      if (pri < (best.get(nk) ?? Infinity)) {
-        best.set(nk, pri);
-        prev.set(nk, { from: ck, edge: e, wait, firstRun, boardAt: cur.cost + wait });
-        heap.push({ cost, pri, node: e.to, line: nextLine, used });
-      }
+      const walked = e.mode === "walk" ? e.min : 0;
+      add({ cost: cur.cost + e.min + wait, walk: cur.walk + walked, pri: cur.pri + e.min + wait + walked * walkW,
+        node: e.to, line: nextLine, used: cur.used || e.mode !== "walk",
+        parent: cur, step: { edge: e, wait, firstRun, boardAt: cur.cost + wait, fromNode: cur.node } });
     }
   }
   if (!goal) return null;
 
   // 経路を復元し、同じ手段・同じ路線（または同じ街道）の連続区間を1区間にまとめる
   const steps = [];
-  for (let k = sKey(goal.node, goal.line, goal.used); prev.has(k); k = prev.get(k).from) {
-    const s = prev.get(k);
-    steps.unshift({ ...s, fromNode: s.from.split("#")[0] });
-  }
+  for (let lab = goal; lab.parent; lab = lab.parent) steps.unshift(lab.step);
 
   const lineById = Object.fromEntries(net.lines.map((l) => [l.id, l]));
   const wayById = Object.fromEntries(net.ways.map((w) => [w.id, w]));

@@ -221,6 +221,20 @@ test("乗り物を優先：歩いた方が早い時刻でも、駅で待って�
   assert.equal(route(OLD, shibuyaSt, shinagawaSt, {}, { ...at(23, 30), requireVehicle: true }), null);
 });
 
+test("汽車・馬車を優先（walkWeight）：新宿→日本橋 11:30発は、2時間歩かず、新宿停車場で待って汽車に乗る", () => {
+  const fastest = route(OLD, P.shinjuku, P.nihonbashi, {}, at(11, 30));
+  assert.ok(fastest.legs.every((l) => l.mode === "walk")); // 最速は歩くだけ（約2時間）
+  const r = route(OLD, P.shinjuku, P.nihonbashi, {}, { ...at(11, 30), walkWeight: 3 });
+  const walkMin = r.legs.filter((l) => l.mode === "walk").reduce((s, l) => s + l.moveMin, 0);
+  assert.ok(walkMin <= 10, `歩くのは${walkMin}分`);
+  const first = r.legs.find((l) => l.mode !== "walk");
+  assert.deepEqual([first.mode, first.from, first.departAt], ["rail", "新宿停車場", "12:25"]);
+  assert.ok(first.waitMin >= 50); // 駅での待ち時間は所要時間に入る（出発時刻はそのまま）
+  assert.ok(r.totalMin > fastest.totalMin);
+  // 重みなし（0）なら、最速の経路と同じ
+  assert.equal(route(OLD, P.shinjuku, P.nihonbashi, {}, { ...at(11, 30), walkWeight: 0 }).totalMin, fastest.totalMin);
+});
+
 test("沿線の見どころ用の地点ID：新宿→日本橋 9時発は、甲州街道で内藤新宿・四谷大木戸を通る順に並ぶ", () => {
   const ids = route(OLD, P.shinjuku, P.nihonbashi, {}, at(9)).legs.flatMap((l) => l.viaIds);
   const i = ids.indexOf("naito_shinjuku"), j = ids.indexOf("yotsuya_okido");
