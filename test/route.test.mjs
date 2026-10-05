@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { route, parseClock, formatClock, haversineKm } from "../public/router.js";
-import { buildPlaces, searchPlaces, MAX_KM } from "../public/places.js";
+import { buildPlaces, searchPlaces, MAX_KM, AREAS } from "../public/places.js";
 
 const load = (f) => JSON.parse(fs.readFileSync(new URL(`../public/data/${f}`, import.meta.url), "utf8"));
 const OLD = load("network-1885.json"), NOW = load("network-now.json"), FACTS = load("facts.json");
@@ -260,6 +260,20 @@ test("地点の候補：漢字・ひらがな・カタカナの途中入力で�
   assert.equal(searchPlaces(places, "しんばし").now[0].tag, "山手線・銀座線");
   // すべての候補に読みがある（読みの登録漏れがない）
   for (const p of places) assert.ok(p.keys.some((k) => /^[ぁ-ゟー]+$/.test(k)), p.name);
+});
+
+test("地点の候補：明治の地名はすべてエリアに入り、名所には種類（社寺・茶屋など）を添える", () => {
+  const old = buildPlaces(NOW, OLD).filter((p) => p.group === "old");
+  const names = new Set(AREAS.map((a) => a.name));
+  assert.ok(old.every((p) => names.has(p.area)), "エリアのない地点がある");
+  const area = (n) => old.find((p) => p.name === n).area;
+  assert.equal(area("日本橋"), "日本橋・銀座・新橋");
+  assert.equal(area("上野東照宮"), "上野・浅草・本郷");
+  assert.equal(area("横浜停車場"), "川崎・横浜");
+  assert.equal(old.find((p) => p.name === "台町の茶屋（神奈川宿）").tag, "茶屋");
+  assert.equal(old.find((p) => p.name === "品川停車場").tag, "停車場");
+  // どのエリアにも1件以上ある
+  for (const a of AREAS) assert.ok(old.some((p) => p.area === a.name), a.name);
 });
 
 test("地点の候補：明治の地名は現在の路線の駅から1km以内だけ（遠い地点は現在の経路が実際とずれるため）", () => {

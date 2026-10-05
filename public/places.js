@@ -5,6 +5,20 @@ import { haversineKm } from "./router.js";
 
 export const MAX_KM = 1.0;
 
+// 入力欄の一覧で明治の地名をまとめるエリア。各地点は、いちばん近い中心のエリアに入れる（地点を足してもここは直さなくてよい）。
+// 並びは都心から外へ。境目で気になる地点は、地点の area に名前を書けばそちらが優先される
+export const AREAS = [
+  { name: "日本橋・銀座・新橋", lat: 35.674, lon: 139.770 },
+  { name: "上野・浅草・本郷", lat: 35.708, lon: 139.782 },
+  { name: "巣鴨・雑司ヶ谷・目白", lat: 35.720, lon: 139.735 },
+  { name: "王子・板橋・赤羽", lat: 35.760, lon: 139.725 },
+  { name: "四谷・新宿・赤坂", lat: 35.687, lon: 139.715 },
+  { name: "渋谷・目黒", lat: 35.648, lon: 139.705 },
+  { name: "芝・品川・大森", lat: 35.640, lon: 139.745 },
+  { name: "川崎・横浜", lat: 35.490, lon: 139.660 },
+];
+export const areaOf = (n) => n.area || AREAS.reduce((a, b) => (haversineKm(n, b) < haversineKm(n, a) ? b : a)).name;
+
 // 読み（ひらがな）。キーは地名から「（…）」と末尾の「宿」「停車場」を除いたもの
 const YOMI = {
   品川: "しながわ", 高輪ゲートウェイ: "たかなわげーとうぇい", 田町: "たまち", 浜松町: "はままつちょう", 新橋: "しんばし",
@@ -62,7 +76,8 @@ export function buildPlaces(netNow, netOld, maxKm = MAX_KM) {
   for (const n of Object.values(netOld.nodes)) {
     if (!OLD_KIND[n.kind]) continue;
     if (!stations.some((s) => haversineKm(n, s) <= maxKm)) continue;
-    out.push({ group: "old", name: n.name, tag: OLD_KIND[n.kind], lat: n.lat, lon: n.lon,
+    // 右に添える小さな文字は、名所なら種類（社寺・茶屋など）、そうでなければ地点の種類（地名・停車場など）
+    out.push({ group: "old", name: n.name, tag: n.category || OLD_KIND[n.kind], area: areaOf(n), lat: n.lat, lon: n.lon,
       keys: [n.name, ...[...n.name.matchAll(/（(.*?)）/g)].map((x) => x[1]), ...yomiOf(n.name)].map(norm) });
   }
   return out;

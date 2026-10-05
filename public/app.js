@@ -1,5 +1,5 @@
 import { route, formatMin, formatClock, parseClock, haversineKm } from "./router.js";
-import { buildPlaces, searchPlaces } from "./places.js";
+import { buildPlaces, searchPlaces, AREAS } from "./places.js";
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -267,8 +267,10 @@ $("#opacity").addEventListener("input", (e) => {
 });
 
 // ---------- 地点の指定 ----------
-// 候補（現在の駅・明治の地名）から選ぶ。自由入力・地図クリックでの指定はしない（現在側は限られた路線の簡略モデルなので、経路が実際とずれる地点を避けるため）
-const PLACES = buildPlaces(NET_NOW, NET_OLD);
+// 候補（明治の地名）から選ぶ。今の駅は出さない（明治の地名で探す不便さを楽しんでもらう）。
+// 自由入力・地図クリックでの指定もしない。明治の地名は今の駅から1km以内のものだけ（現在側は限られた路線の簡略モデルなので、経路が実際とずれる地点を避けるため）
+const PLACES = buildPlaces(NET_NOW, NET_OLD).filter((p) => p.group === "old");
+const SEARCH_LIMIT = 8;
 
 for (const k of ["origin", "dest"]) {
   const input = $(`#in-${k}`), list = $(`#list-${k}`);
@@ -282,15 +284,17 @@ for (const k of ["origin", "dest"]) {
     else input.removeAttribute("aria-activedescendant");
   };
   const choose = (p) => { close(); setPoint(k, { name: p.name, lat: p.lat, lon: p.lon }); };
-  // q が空なら全件の一覧、入力があれば絞り込み
+  // q が空ならエリアごとに全件の一覧、入力があれば近いものから絞り込み
   const render = (q = input.value) => {
-    const r = searchPlaces(PLACES, q);
-    opts = [...r.old, ...r.now]; // 明治の地名を先に出す（知らない地名に目が行くように）
+    const found = searchPlaces(PLACES, q, SEARCH_LIMIT).old;
+    const sections = q.trim() ? [["", found]]
+      : AREAS.map((a) => [a.name, found.filter((p) => p.area === a.name)]).filter(([, items]) => items.length);
+    opts = sections.flatMap(([, items]) => items);
     let i = 0;
-    const group = (g, label, items) => (items.length ? `<li class="combo-group ${g}" role="presentation">${label}</li>` : "")
-      + items.map((p) => `<li id="opt-${k}-${i}" class="combo-opt" role="option" aria-selected="false" data-i="${i++}">${esc(p.name)}<small>${esc(p.tag)}</small></li>`).join("");
-    list.innerHTML = opts.length ? group("old", "明治の地名（現在の駅から1km以内）", r.old) + group("now", "現在の駅", r.now)
-      : '<li class="combo-empty" role="presentation">候補がありません。候補は現在の路線（山手線の内側と、赤羽・横浜方面）の駅と、その近くの明治の地名だけです</li>';
+    const head = (label) => (label ? `<li class="combo-group old" role="presentation">${esc(label)}</li>` : "");
+    const item = (p) => `<li id="opt-${k}-${i}" class="combo-opt" role="option" aria-selected="false" data-i="${i++}">${esc(p.name)}<small>${esc(p.tag)}</small></li>`;
+    list.innerHTML = opts.length ? sections.map(([label, items]) => head(label) + items.map(item).join("")).join("")
+      : '<li class="combo-empty" role="presentation">候補がありません。選べるのは、今の駅から1km以内の明治の地名だけです</li>';
     list.hidden = false;
     input.setAttribute("aria-expanded", "true");
     highlight(q.trim() && opts.length ? 0 : -1);
