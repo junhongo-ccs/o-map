@@ -227,10 +227,11 @@ test("沿線の見どころ用の地点ID：新宿→日本橋 9時発は、甲�
 });
 
 test("名所：事実カードのある宿場・名所にはすべて種類（category）と画像がある", () => {
-  const CATS = ["宿場", "門", "社寺", "川・橋", "花の名所", "紅葉の名所", "庭園", "街道", "町並み", "水車", "馬場", "茶屋", "料理屋"];
+  const CATS = ["宿場", "門", "社寺", "川・橋", "花の名所", "紅葉の名所", "庭園", "街道", "町並み", "水車", "馬場", "茶屋", "料理屋", "史跡", "停車場", "ビール"];
   const IMAGES = load("spot-images.json").images;
   for (const [id, n] of Object.entries(OLD.nodes)) {
-    if (!["place", "shuku"].includes(n.kind) || !n.facts?.some((f) => FACTS.facts[f])) continue;
+    // 地名・宿場で事実カードのあるものと、種類の付いた地点（名所にした停車場など）は、どれも名所になる
+    if (!(["place", "shuku"].includes(n.kind) || n.category) || !n.facts?.some((f) => FACTS.facts[f])) continue;
     assert.ok(CATS.includes(n.category), `${id}: ${n.category}`);
     assert.ok(IMAGES[id] && fs.existsSync(new URL(`../public/${IMAGES[id].file}`, import.meta.url)), `${id}: 画像`);
   }

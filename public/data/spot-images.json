@@ -396,6 +396,90 @@
       "license": "パブリックドメイン",
       "licenseUrl": null,
       "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1303613-Utagawa_Kunisada_Hiroshige_II-%E6%B1%9F%E6%88%B8%E8%87%AA%E6%85%A2%E4%B8%89%E5%8D%81%E5%85%AD%E8%88%88_%E7%9B%AE%E9%BB%92%E4%B8%8D%E5%8B%95%E9%A4%85%E8%8A%B1-crd.jpg"
+    },
+    "kawasaki_shuku": {
+      "file": "img/spots/kawasaki_shuku.jpg",
+      "width": 760,
+      "height": 511,
+      "title": "東海道五拾三次 川崎・六郷渡舟",
+      "artist": "歌川広重",
+      "date": "1833〜34年ごろ刊の揃物",
+      "holder": "国立国会図書館",
+      "license": "パブリックドメイン",
+      "licenseUrl": null,
+      "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1309887-Utagawa_Hiroshige-%E6%9D%B1%E6%B5%B7%E9%81%93%E4%BA%94%E6%8B%BE%E4%B8%89%E6%AC%A1_%E5%B7%9D%E5%B4%8E%E3%83%BB%E5%85%AD%E9%83%B7%E6%B8%A1%E8%88%9F-crd.jpg"
+    },
+    "kawasaki_daishi": {
+      "file": "img/spots/kawasaki_daishi.jpg",
+      "width": 532,
+      "height": 760,
+      "title": "東海道 大師河原",
+      "artist": "二代歌川広重",
+      "date": "1863年（文久3年）",
+      "holder": "国立国会図書館",
+      "license": "パブリックドメイン",
+      "licenseUrl": null,
+      "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1309462-Utagawa_Hiroshige_II-%E6%9D%B1%E6%B5%B7%E9%81%93_%E5%A4%A7%E5%B8%AB%E6%B2%B3%E5%8E%9F-%E6%96%87%E4%B9%853-crd.jpg"
+    },
+    "namamugi": {
+      "file": "img/spots/namamugi.jpg",
+      "width": 760,
+      "height": 382,
+      "title": "生麦之発殺",
+      "artist": "早川松山",
+      "date": "1877年（明治10年）",
+      "holder": null,
+      "license": "パブリックドメイン",
+      "licenseUrl": null,
+      "page": "https://commons.wikimedia.org/wiki/File:Namamugi_incident.jpg"
+    },
+    "kanagawa_daimachi": {
+      "file": "img/spots/kanagawa_daimachi.jpg",
+      "width": 760,
+      "height": 511,
+      "title": "東海道五拾三次 神奈川・台之景",
+      "artist": "歌川広重",
+      "date": "1833〜34年ごろ刊の揃物",
+      "holder": "国立国会図書館",
+      "license": "パブリックドメイン",
+      "licenseUrl": null,
+      "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1309883-Utagawa_Hiroshige-%E6%9D%B1%E6%B5%B7%E9%81%93%E4%BA%94%E6%8B%BE%E4%B8%89%E6%AC%A1_%E7%A5%9E%E5%A5%88%E5%B7%9D%E3%83%BB%E5%8F%B0%E4%B9%8B%E6%99%AF-crd.jpg"
+    },
+    "st_yokohama": {
+      "file": "img/spots/st_yokohama.jpg",
+      "width": 760,
+      "height": 391,
+      "title": "横浜海岸鉄道蒸気車図",
+      "artist": "三代歌川広重",
+      "date": "1874年（明治7年）",
+      "holder": null,
+      "license": "パブリックドメイン",
+      "licenseUrl": null,
+      "page": "https://commons.wikimedia.org/wiki/File:Steam-Locomotive-on-the-coast-in-Yokohama-1874-Utagawa-Hiroshige-III.png"
+    },
+    "ohta_nawanoren": {
+      "file": "img/spots/ohta_nawanoren.jpg",
+      "width": 760,
+      "height": 570,
+      "title": "太田なわのれん（現在）",
+      "artist": "撮影：妖精書士",
+      "date": "2018年",
+      "holder": null,
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.ja",
+      "page": "https://commons.wikimedia.org/wiki/File:Ohta_Nawanoren.jpg"
+    },
+    "amanuma_brewery": {
+      "file": "img/spots/amanuma_brewery.jpg",
+      "width": 570,
+      "height": 760,
+      "title": "キリン園公園と麒麟麦酒開源記念碑（現在）",
+      "artist": "撮影：妖精書士",
+      "date": "2013年",
+      "holder": null,
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/deed.ja",
+      "page": "https://commons.wikimedia.org/wiki/File:Kirin-En_Park.JPG"
     }
   },
   "factImages": {

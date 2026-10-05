@@ -123,12 +123,12 @@ const markers = {
 const CATEGORY_ICON = {
   宿場: "hotel", 門: "gate", 社寺: "temple_buddhist", "川・橋": "water", 花の名所: "local_florist", 紅葉の名所: "eco", 庭園: "park",
   街道: "road", 町並み: "shopping_bag", 水車: "mode_fan", 馬場: "target", 茶屋: "local_cafe", 料理屋: "restaurant",
+  史跡: "history_edu", 停車場: "train", ビール: "sports_bar",
   // 酒の店（銘酒店・バーなど）を足すときは "local_bar"（カクテルグラス）
 };
-// 名所のピン（事実カードのある宿場・名所。経路に関係なく両方の地図にいつも置く）。押すとカードを出す
-const SPOT_KINDS = new Set(["place", "shuku"]);
+// 名所のピン（種類 category と事実カードのある地点。停車場も種類を付ければ名所になる。経路に関係なく両方の地図にいつも置く）。押すとカードを出す
 const ALL_SPOTS = Object.entries(NET_OLD.nodes)
-  .filter(([, n]) => SPOT_KINDS.has(n.kind) && n.facts?.some((f) => FACTS.facts[f]))
+  .filter(([, n]) => n.category && n.facts?.some((f) => FACTS.facts[f]))
   .map(([id, n]) => ({ id, name: n.name, category: n.category, lat: n.lat, lon: n.lon, facts: n.facts.filter((f) => FACTS.facts[f]) }));
 // 名所の画像（あれば）。作品名・作者・年代・所蔵・権利をクレジットとして添える
 // im を渡せば、その画像を出す（事実カードに添える画像 factImages 用）
