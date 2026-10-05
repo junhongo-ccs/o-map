@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>このアプリについて｜今昔往来便覧</title>
-  <meta name="description" content="今昔往来便覧の使い方と、明治18年（1885）の移動の計算のしかた、名所の絵、データの出典をまとめたページです。">
+  <meta name="description" content="今昔往来便覧の使い方、明治18年（1885）の所要時間の算出方法、名所の図版、データの出典をまとめたページです。">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta property="og:type" content="article">
   <meta property="og:locale" content="ja_JP">
   <meta property="og:site_name" content="今昔往来便覧">
   <meta property="og:title" content="このアプリについて｜今昔往来便覧">
-  <meta property="og:description" content="明治18年（1885）の東京・横浜を、当時の汽車・鉄道馬車・徒歩で移動したら？ 使い方と計算のしかた、名所の絵、出典をまとめました。">
+  <meta property="og:description" content="明治18年（1885）の東京・横浜を、汽車・鉄道馬車・徒歩で移動した場合の経路と所要時間を現在と比較するアプリの説明です。使い方、算出方法、名所の図版、出典を掲載しています。">
   <meta property="og:url" content="https://junhongo-ccs.github.io/o-map/about.html">
   <meta property="og:image" content="https://junhongo-ccs.github.io/o-map/ogp.png">
   <meta property="og:image:width" content="1200">
@@ -34,79 +34,79 @@
 
   <main class="about-main">
     <figure class="about-hero">
-      <img src="ogp.png" width="1200" height="630" alt="三代歌川広重「東京高輪海岸蒸気車鉄道図」の一部。海の上の堤を走る汽車と、馬車・人力車・歩く人">
+      <img src="ogp.png" width="1200" height="630" alt="三代歌川広重「東京高輪海岸蒸気車鉄道図」の一部。海上の堤を走る汽車と、馬車・人力車・歩行者">
       <figcaption>三代歌川広重「東京高輪海岸蒸気車鉄道図」（部分）／パブリックドメイン</figcaption>
     </figure>
 
     <h1 class="about-title">このアプリについて</h1>
-    <p class="about-lead">明治18年（1885）の東京・横浜を、当時の汽車や鉄道馬車、そして自分の足で移動したら、どれくらいかかったのでしょう。今昔往来便覧は、出発地と目的地を選ぶだけで、<strong>今の電車</strong>と<strong>明治18年の移動</strong>を並べて見比べられる地図です。</p>
-    <p class="about-cta"><a class="btn-primary about-open" href="./"><span class="material-symbols-outlined" aria-hidden="true">map</span>地図をひらく</a></p>
+    <p class="about-lead">今昔往来便覧は、出発地と目的地を選択すると、<strong>現在の電車</strong>と<strong>明治18年（1885）の汽車・鉄道馬車・徒歩</strong>による経路・所要時間・運賃を並べて比較できる地図アプリです。対象範囲は、東京（山手線の内側と赤羽方面）と横浜方面です。</p>
+    <p class="about-cta"><a class="btn-primary about-open" href="./"><span class="material-symbols-outlined" aria-hidden="true">map</span>地図を開く</a></p>
 
     <nav class="about-toc" aria-label="目次">
       <div>
-        <p class="about-toc-label">つかう</p>
+        <p class="about-toc-label">概要</p>
         <ol>
-          <li><a href="#s-can">できること</a></li>
-          <li><a href="#s-how">つかいかた</a></li>
-          <li><a href="#s-example">たとえば、新宿駅から日本橋へ</a></li>
-          <li><a href="#s-calc">明治の移動の計算</a></li>
-          <li><a href="#s-spots">名所と絵</a></li>
-          <li><a href="#s-notes">知っておいてほしいこと</a></li>
+          <li><a href="#s-can">主な機能</a></li>
+          <li><a href="#s-how">使い方</a></li>
+          <li><a href="#s-example">利用例：新宿駅から日本橋へ</a></li>
+          <li><a href="#s-calc">所要時間の算出方法（概要）</a></li>
+          <li><a href="#s-spots">名所と図版</a></li>
+          <li><a href="#s-notes">ご利用上の注意</a></li>
         </ol>
       </div>
       <div>
-        <p class="about-toc-label">くわしい資料</p>
+        <p class="about-toc-label">詳細資料</p>
         <ol>
-          <li><a href="#d-model">明治18年の交通のモデル</a></li>
-          <li><a href="#d-params">前提の値の一覧</a></li>
-          <li><a href="#d-route">経路の探し方</a></li>
-          <li><a href="#d-fare">運賃の決まり</a></li>
-          <li><a href="#d-now">今の電車の計算</a></li>
-          <li><a href="#d-data">データの確かさ</a></li>
-          <li><a href="#d-ai">解説とAI</a></li>
-          <li><a href="#d-make">つくり</a></li>
-          <li><a href="#d-limits">制約と今後</a></li>
+          <li><a href="#d-model">明治18年の交通モデル</a></li>
+          <li><a href="#d-params">前提条件の一覧</a></li>
+          <li><a href="#d-route">経路探索の方法</a></li>
+          <li><a href="#d-fare">運賃の算出方法</a></li>
+          <li><a href="#d-now">現在の電車の算出方法</a></li>
+          <li><a href="#d-data">データの信頼性</a></li>
+          <li><a href="#d-ai">解説とAIの扱い</a></li>
+          <li><a href="#d-make">技術構成</a></li>
+          <li><a href="#d-limits">制約事項と今後の課題</a></li>
           <li><a href="#d-credits">出典</a></li>
         </ol>
       </div>
     </nav>
 
     <section class="about-sec" id="s-can">
-      <h2>できること</h2>
+      <h2>主な機能</h2>
       <ul class="about-cards">
         <li>
           <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-          <strong>今と明治の所要時間を比べる</strong>
-          <p>経路と所要時間を、今の電車と明治18年とで並べて出します。明治の汽車は当時の時刻表どおりに走るので、何時に出るかで経路が変わります。</p>
+          <strong>所要時間の比較</strong>
+          <p>経路と所要時間を、現在の電車と明治18年の交通手段で並べて表示します。明治の汽車は当時の時刻表に基づいて運行するため、出発時刻によって経路が変わります。</p>
         </li>
         <li>
           <span class="material-symbols-outlined" aria-hidden="true">payments</span>
-          <strong>当時の運賃がわかる</strong>
-          <p>汽車と鉄道馬車の運賃を、当時の運賃表から計算します。単位は銭（100銭で1円）。下等・中等・上等の3つを出します。</p>
+          <strong>当時の運賃の表示</strong>
+          <p>汽車と鉄道馬車の運賃を、当時の運賃表に基づいて算出します。単位は銭（100銭＝1円）で、下等・中等・上等の3等級を表示します。</p>
         </li>
         <li>
           <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
-          <strong>名所を浮世絵・錦絵で</strong>
-          <p>沿線の名所40か所を、歌川広重や明治の小林清親の絵とともに紹介します。当時の茶屋や料理屋、横浜の牛鍋屋やビール醸造所の跡もあります。</p>
+          <strong>名所の紹介</strong>
+          <p>沿線の名所40か所を、歌川広重や小林清親の浮世絵・錦絵とともに紹介します。当時の茶屋・料理屋、横浜の牛鍋店やビール醸造所跡も含みます。</p>
         </li>
       </ul>
     </section>
 
     <section class="about-sec" id="s-how">
-      <h2>つかいかた</h2>
+      <h2>使い方</h2>
       <ol class="about-steps">
-        <li><strong>出発地と目的地を選ぶ</strong>　選べるのは明治の地名だけで、今の駅名では選べません。入力欄を開くと「日本橋・銀座・新橋」「川崎・横浜」などのエリアごとに一覧が出ます。「しんじゅく」「にほんばし」のように入れて探すこともできます。明治の地名で行き先を探す不便さも、楽しんでみてください。</li>
-        <li><strong>出発時刻を決める</strong>　はじめは、ページを開いた時刻になっています。汽車は1日に数本しかないので、時刻を変えると結果が大きく変わることがあります。</li>
-        <li><strong>結果を見る</strong>　いちばん上に所要時間の比較、その下のタブで「当時の経路」「現在の経路」「沿線の見どころ」「解説」「根拠」を切り替えます。スマホでは、結果は画面の下から出てきます。</li>
-        <li><strong>地図を見比べる</strong>　左が今の地図、右が明治の地図（迅速測図）です。真ん中のつまみを左右に動かすか、「重ね合わせ」にして透かして見られます。</li>
-        <li><strong>名所の吹き出しを押す</strong>　絵と説明のカードが開きます。「目的地にする」で、そこまでの経路も出せます。</li>
+        <li><strong>出発地と目的地を選択</strong>　選択できるのは明治の地名のみで、現在の駅名では選択できません。入力欄を開くと「日本橋・銀座・新橋」「川崎・横浜」などのエリア別に一覧が表示されます。読み（例：「しんじゅく」「にほんばし」）を入力して絞り込むこともできます。</li>
+        <li><strong>出発時刻を設定</strong>　初期値はページを開いた時刻です。汽車は1日に数本のため、出発時刻によって結果が大きく変わる場合があります。</li>
+        <li><strong>結果を確認</strong>　上部に所要時間の比較、その下のタブで「当時の経路」「現在の経路」「沿線の見どころ」「解説」「根拠」を切り替えて表示します。スマートフォンでは、結果は画面下部に表示されます。</li>
+        <li><strong>地図を比較</strong>　左が現在の地図、右が明治の地図（迅速測図）です。中央の境界を左右に動かして比較するほか、「重ね合わせ」で透過表示もできます。</li>
+        <li><strong>名所を確認</strong>　地図上の名所のラベルを選択すると、図版と説明を表示します。「目的地にする」で、その名所までの経路を表示できます。</li>
       </ol>
-      <p class="about-note"><span class="material-symbols-outlined" aria-hidden="true">settings</span>右上の設定（スマホではメニュー）から、地図の表示方法や、鉄道馬車の待ち時間などの仮定の値を変えられます。PC では、設定の右のボタンで全画面表示にできます。</p>
+      <p class="about-note"><span class="material-symbols-outlined" aria-hidden="true">settings</span>画面右上の設定（スマートフォンではメニュー）から、地図の表示方法や、鉄道馬車の待ち時間などの仮定値を変更できます。PC では、画面右上の「全画面表示する」で全画面に切り替えられます。解除は「全画面を解除」または Esc キーで行えます。</p>
     </section>
 
     <section class="about-sec" id="s-example">
-      <h2>たとえば、新宿駅から日本橋へ</h2>
-      <p>11時30分に新宿駅を出ると、こうなります。</p>
+      <h2>利用例：新宿駅から日本橋へ</h2>
+      <p>11時30分に新宿駅を出発した場合の比較です。</p>
       <div class="about-compare" role="table" aria-label="新宿駅から日本橋への所要時間の比較">
         <div class="about-row" role="row">
           <span role="cell" class="about-label">現在<small>電車</small></span>
@@ -114,7 +114,7 @@
           <strong role="cell">26分</strong>
         </div>
         <div class="about-row" role="row">
-          <span role="cell" class="about-label">明治18年<small>歩くだけ</small></span>
+          <span role="cell" class="about-label">明治18年<small>徒歩のみ</small></span>
           <span role="cell" class="about-bar walk"><i style="width: 81%"></i></span>
           <strong role="cell">2時間1分</strong>
         </div>
@@ -124,86 +124,85 @@
           <strong role="cell">2時間30分</strong>
         </div>
       </div>
-      <p>明治の汽車・馬車の経路は、新宿停車場で55分待って12時25分発の品川線に乗り、赤羽で日本鉄道に乗り換えて上野へ。上野から鉄道馬車で日本橋に着きます。運賃は下等で<strong>24銭〜</strong>（上等なら73銭〜）。歩いた方が少し早いのに、待ってでも乗りたくなる。そんな当時の移動の感覚を味わってみてください。</p>
+      <p>汽車・馬車を利用する経路では、新宿停車場で55分待ち、12時25分発の品川線で赤羽へ向かい、日本鉄道に乗り換えて上野へ、上野から鉄道馬車で日本橋に到着します。運賃は下等で<strong>24銭〜</strong>（上等は73銭〜）です。この区間では、徒歩のみの経路の方がわずかに早く到着します。</p>
     </section>
 
     <section class="about-sec" id="s-calc">
-      <h2>明治の移動は、こう計算しています</h2>
+      <h2>所要時間の算出方法（概要）</h2>
       <dl class="about-modes">
         <div>
           <dt><span class="material-symbols-outlined" aria-hidden="true">directions_railway</span>汽車</dt>
-          <dd>官設鉄道（新橋–横浜）、品川線（新橋–赤羽）、日本鉄道（上野–赤羽）の3路線。日本で最初の鉄道（1872年開業）で横浜まで行けます。明治18年5月に出た時刻表『鉄道汽車便覧表』（国立国会図書館）から、列車ごとの発車時刻を写しました。出発時刻より後に出る列車にだけ乗れます。運賃も同じ本の運賃表からとっています。</dd>
+          <dd>官設鉄道（新橋–横浜）、品川線（新橋–赤羽）、日本鉄道（上野–赤羽）の3路線です。明治18年5月刊の時刻表『鉄道汽車便覧表』（国立国会図書館所蔵）から列車ごとの発着時刻を転記し、出発時刻以降に発車する列車のみを利用できる設定としています。運賃も同書の運賃表に基づきます。</dd>
         </div>
         <div>
           <dt><span class="material-symbols-outlined" aria-hidden="true">trolley_cable_car</span>鉄道馬車</dt>
-          <dd>東京馬車鉄道（新橋–上野–浅草、浅草–日本橋）。速さは、新橋から浅草まで46分という記録から出しました。何分おきに走っていたかは資料が見つかっていないので、待ち時間は5分、運行は7時から20時と仮に決めています。運賃は1回2銭〜です。</dd>
+          <dd>東京馬車鉄道（新橋–上野–浅草、浅草–日本橋）です。速度は新橋–浅草間46分の記録から算出しています。運転間隔の資料が未入手のため、待ち時間5分、運行時間7時〜20時を仮定値としています。運賃は1乗車2銭〜です。</dd>
         </div>
         <div>
           <dt><span class="material-symbols-outlined" aria-hidden="true">directions_walk</span>徒歩</dt>
-          <dd>東海道・中山道・甲州街道などの街道と、町の道を歩きます。速さは時速4kmと仮に決めています。</dd>
+          <dd>東海道・中山道・甲州街道などの街道と市街路を歩く想定です。速度は時速4kmを仮定値としています。</dd>
         </div>
       </dl>
       <h3>「汽車・馬車を優先」について</h3>
-      <p>はじめからオンになっています。オンのときは、駅で長く待つことになっても、<strong>歩く時間がなるべく短い経路</strong>を選びます（歩く1分を、待つ4分ぶんと数えています）。最初の駅で長く待つときは、「出発を何時に遅らせても同じ汽車に間に合います」と知らせます。オフにすると、いちばん早く着く経路を出します。</p>
-      <p class="about-more">前提の値と根拠の一覧、経路の探し方、運賃の決まりは、後半の<a href="#detail">くわしい資料</a>にまとめています。</p>
+      <p>初期設定で有効です。有効時は、駅での待ち時間が長くなっても、<strong>徒歩の時間が最も短くなる経路</strong>を選択します（徒歩1分を待ち時間4分相当として評価）。最初の駅での待ち時間が長い場合は、同じ列車に間に合う最も遅い出発時刻を案内します。無効にすると、最も早く到着する経路を表示します。</p>
+      <p class="about-more">前提条件と根拠、経路探索の方法、運賃の算出方法は、後半の<a href="#detail">詳細資料</a>に掲載しています。</p>
     </section>
 
     <section class="about-sec" id="s-spots">
-      <h2>名所と絵</h2>
+      <h2>名所と図版</h2>
       <figure class="about-fig">
-        <img src="img/spots/takanawa_chikutei.jpg" width="760" height="486" alt="小林清親「高輪牛町朧月景」。夜、海沿いの堤の上を前照灯をつけた汽車が走る" loading="lazy">
+        <img src="img/spots/takanawa_chikutei.jpg" width="760" height="486" alt="小林清親「高輪牛町朧月景」。夜間、海沿いの堤の上を前照灯をつけた汽車が走る" loading="lazy">
         <figcaption>小林清親「高輪牛町朧月景」1879年／パブリックドメイン</figcaption>
       </figure>
-      <p>地図の吹き出しを押すと、名所の絵と説明が出てきます。絵の多くは、江戸の終わりの歌川広重『名所江戸百景』と、明治の東京を光と影で描いた小林清親の作品です。</p>
-      <p>上の清親の絵は、高輪の海の上に築いた堤（高輪築堤）を、夜に汽車が走る様子です。この堤の石垣は2019年に高輪ゲートウェイ駅のそばの工事で見つかり、今は国の史跡になっています。明治の汽車が走った場所が、今の駅の足もとに残っているのです。</p>
-      <p>明治や江戸の絵や写真が見つからない店（木村屋、神谷バーなど）は、今の写真で紹介しています。</p>
+      <p>地図上の名所のラベルを選択すると、図版と説明を表示します。図版の多くは、江戸後期の歌川広重『名所江戸百景』と、明治期の東京を光と影の表現で描いた小林清親の作品です。</p>
+      <p>上図の清親の作品は、高輪の海上に築かれた堤（高輪築堤）を夜間に走行する汽車を描いたものです。この堤の石垣は2019年、高輪ゲートウェイ駅周辺の再開発工事で発見され、現在は国の史跡に指定されています。</p>
+      <p>明治・江戸期の図版や写真が見つからない店舗（木村屋、神谷バーなど）は、現在の写真で紹介しています。</p>
     </section>
 
     <section class="about-sec" id="s-notes">
-      <h2>知っておいてほしいこと</h2>
+      <h2>ご利用上の注意</h2>
       <ul class="about-list">
-        <li>経路と所要時間は<strong>推定</strong>です。当時の実際の移動を、そのまま再現したものではありません。</li>
-        <li>資料が見つかっていない値は「仮定」と書き、設定のスライダーで変えられるようにしています。資料にもとづく値には「出典あり」と書いています。</li>
-        <li>明治の駅や街道の位置は、今の地名や駅の位置からのおおよそです。一部の道は「道筋は推定」と表示します。</li>
-        <li>汽車の時刻表は明治18年5月のものです。その年の3月の開業時や11月の改正の時刻は入れていません。</li>
-        <li>出発時刻がちょうど汽車の発車に合うと、短い区間では明治の方が早く着くことがあります。明治の汽車は駅が少なく、待たずに乗れるうえ、新橋停車場（汐留）や神奈川停車場のように、今の駅から離れた停車場を選ぶと今の側は長く歩くためです。</li>
-        <li>名所の説明の多くは、Wikipedia などをもとにしていて、一次資料での確認はこれからです。説明ごとに出典を載せています。</li>
-        <li>今の電車は8路線（山手線、中央線快速、銀座線、丸ノ内線、京浜東北線（上野–赤羽、品川–桜木町）、埼京線 池袋–赤羽、東海道線 品川–横浜）だけで計算しているので、実際より遅く出ることがあります。今の電車の運賃は出していません。</li>
+        <li>経路と所要時間は<strong>推定値</strong>であり、当時の実際の移動を再現したものではありません。</li>
+        <li>資料が未入手の値は「仮定」と表示しています。主な仮定値（鉄道馬車の待ち時間・運行時間、徒歩速度など）は設定画面で変更できます。資料に基づく値は「出典あり」と表示しています。</li>
+        <li>明治の停車場や街道の位置は、現在の地名や駅の位置に基づくおおよその位置です。経路が不確かな区間は「道筋は推定」と表示します。</li>
+        <li>汽車の時刻表は明治18年5月時点のものです。同年3月の開業時や11月の改正後の時刻は反映していません。</li>
+        <li>出発時刻が汽車の発車時刻と一致する場合、短い区間では明治の方が早く到着することがあります。明治の汽車は停車駅が少なく待ち時間なしで乗車できること、また新橋停車場（汐留）や神奈川停車場のように現在の駅から離れた停車場を選択すると、現在の経路で徒歩が長くなることによるものです。</li>
+        <li>名所の説明の多くは Wikipedia などの二次資料に基づいており、一次資料による確認は今後の課題です。説明ごとに出典を掲載しています。</li>
+        <li>現在の電車は8路線（山手線、中央線快速、銀座線、丸ノ内線、京浜東北線（上野–赤羽、品川–桜木町）、埼京線 池袋–赤羽、東海道線 品川–横浜）のみで算出しているため、実際より長い所要時間になる場合があります。現在の電車の運賃は表示していません。</li>
       </ul>
     </section>
 
-
     <div class="about-part" id="detail">
-      <p class="about-part-label">くわしい資料</p>
-      <p>ここからは、計算のしかたやデータの確かさを、くわしく知りたい人のための説明です。</p>
+      <p class="about-part-label">詳細資料</p>
+      <p>以下では、算出方法やデータの信頼性について、詳しく知りたい方向けに説明します。</p>
     </div>
 
     <section class="about-sec" id="d-model">
-      <h2>明治18年の交通のモデル</h2>
-      <h3>汽車（時刻表で計算）</h3>
+      <h2>明治18年の交通モデル</h2>
+      <h3>汽車（時刻表に基づく算出）</h3>
       <div class="about-table-wrap"><table class="about-table">
-        <thead><tr><th scope="col">路線</th><th scope="col">駅</th><th scope="col">本数</th><th scope="col">メモ</th></tr></thead>
+        <thead><tr><th scope="col">路線</th><th scope="col">駅</th><th scope="col">本数</th><th scope="col">備考</th></tr></thead>
         <tbody>
-          <tr><th scope="row">官設鉄道<br><small>1872年開業</small></th><td>新橋・品川・大森・川崎・鶴見・神奈川・横浜</td><td class="num">1日15往復</td><td>各駅に停まる列車は新橋–横浜55分。品川と神奈川だけに停まる急行（1日2往復）は45分</td></tr>
-          <tr><th scope="row">日本鉄道 品川線<br><small>1885年開業</small></th><td>新橋・品川・目黒・渋谷・新宿・目白・板橋・赤羽</td><td class="num">1日4往復</td><td>新橋–赤羽を直通で75分（新橋–品川は官設鉄道の線路を走る）</td></tr>
-          <tr><th scope="row">日本鉄道<br><small>1883年開業</small></th><td>上野・王子・赤羽</td><td class="num">1日4往復</td><td>上野8:45発の急行は王子に停まらない</td></tr>
+          <tr><th scope="row">官設鉄道<br><small>1872年開業</small></th><td>新橋・品川・大森・川崎・鶴見・神奈川・横浜</td><td class="num">1日15往復</td><td>各駅停車は新橋–横浜55分。品川・神奈川のみに停車する急行（1日2往復）は45分</td></tr>
+          <tr><th scope="row">日本鉄道 品川線<br><small>1885年開業</small></th><td>新橋・品川・目黒・渋谷・新宿・目白・板橋・赤羽</td><td class="num">1日4往復</td><td>新橋–赤羽を直通運転し75分（新橋–品川は官設鉄道の線路を使用）</td></tr>
+          <tr><th scope="row">日本鉄道<br><small>1883年開業</small></th><td>上野・王子・赤羽</td><td class="num">1日4往復</td><td>上野8:45発の急行は王子を通過</td></tr>
         </tbody>
       </table></div>
-      <p>時刻は、明治18年5月刊『鉄道汽車便覧表』から列車ごとに書き写しました。指定した出発時刻より後に駅を出る列車にだけ乗れ、その日の最終列車のあとは汽車を使いません。貨物列車は除いています。</p>
+      <p>時刻は明治18年5月刊『鉄道汽車便覧表』から列車ごとに転記しています。指定した出発時刻以降に発車する列車のみを利用でき、当日の最終列車以降は汽車を利用しません。貨物列車は対象外です。</p>
       <h3>鉄道馬車</h3>
-      <p>東京馬車鉄道（1882年開業）の2路線です。新橋–銀座–京橋–日本橋–今川橋–須田町–上野広小路–上野–浅草と、浅草–蔵前–浅草橋–本町–日本橋。乗る時間は速さから出し、乗るたびに平均待ち時間を足します。</p>
-      <h3>街道と町の道</h3>
-      <p>東海道（日本橋–品川宿–川崎宿–神奈川宿–浅間下）、中山道（日本橋–板橋宿）、甲州街道（日本橋–内藤新宿）、日光・奥州道中（日本橋–千住宿）、大山道（赤坂見附–三軒茶屋）の5本と、町の道3本（赤坂見附〜新橋、上野への御成道、浅間下から野毛を通って横浜停車場へ向かう横浜道）。主な通過点を結んだ折れ線で、位置は今の地名や史跡からのおおよそです。街道にない地点どうしは、1.5km以内なら町の道（直線距離×1.3）でつなぎます。</p>
-      <h3>出発地・目的地にできる地点</h3>
-      <p>明治の地名55か所です。今の側の計算がずれないよう、今の駅から1km以内の地名に限っています。入力欄の一覧は、各地点にいちばん近いエリアの中心で、8つのエリアに自動で分けています。</p>
+      <p>東京馬車鉄道（1882年開業）の2路線（新橋–銀座–京橋–日本橋–今川橋–須田町–上野広小路–上野–浅草、浅草–蔵前–浅草橋–本町–日本橋）です。乗車時間は速度から算出し、乗車ごとに平均待ち時間を加算します。</p>
+      <h3>街道と市街路</h3>
+      <p>東海道（日本橋–品川宿–川崎宿–神奈川宿–浅間下）、中山道（日本橋–板橋宿）、甲州街道（日本橋–内藤新宿）、日光・奥州道中（日本橋–千住宿）、大山道（赤坂見附–三軒茶屋）の5街道と、市街路3本（赤坂見附〜新橋、上野への御成道、浅間下から野毛を経て横浜停車場に至る横浜道）です。主要な通過点を結んだ折れ線で、位置は現在の地名や史跡に基づくおおよその位置です。街道上にない地点同士は、1.5km以内であれば市街路（直線距離×1.3）で接続します。</p>
+      <h3>出発地・目的地に指定できる地点</h3>
+      <p>明治の地名55か所です。現在の経路の算出精度を保つため、現在の駅から1km以内の地名に限定しています。入力欄の一覧は、各地点を最寄りのエリア中心に基づいて8エリアに自動で分類しています。</p>
     </section>
 
     <section class="about-sec" id="d-params">
-      <h2>前提の値の一覧</h2>
-      <p>所要時間は「距離 × 迂回係数 ÷ 速さ ＋ 待ち時間」で計算しています。資料にもとづく値は「出典あり」、資料が見つかっていない値は「仮定」です。</p>
+      <h2>前提条件の一覧</h2>
+      <p>所要時間は「距離 × 迂回係数 ÷ 速度 ＋ 待ち時間」で算出しています。資料に基づく値は「出典あり」、資料が未入手の値は「仮定」と表示しています。</p>
       <ul class="about-params">
         <li class="about-param">
-          <div class="about-param-head"><span class="about-era old">明治</span><strong>徒歩の速さ</strong><span class="about-param-val">4km/h</span><span class="about-status warn">仮定</span><span class="about-param-slider">設定で変更可</span></div>
+          <div class="about-param-head"><span class="about-era old">明治</span><strong>徒歩速度</strong><span class="about-param-val">4km/h</span><span class="about-status warn">仮定</span><span class="about-param-slider">設定で変更可</span></div>
           <p>旅の1日の歩行距離（通説の「1日10里（約39km）」は史料的裏付けに乏しく、近世後期の旅日記の分析では男性平均約34.9km・女性約28.6km：科研費25350784 研究成果報告書）を約9〜10時間で歩く想定。市街地の歩行速度を直接示す資料は未入手（スライダーで変更可）</p>
         </li>
         <li class="about-param">
@@ -211,11 +210,11 @@
           <p>街道は主要通過点を結んだ折れ線のため、実際の道のりとの差を×1.1で補正</p>
         </li>
         <li class="about-param">
-          <div class="about-param-head"><span class="about-era old">明治</span><strong>町の道の迂回係数</strong><span class="about-param-val">1.3倍</span><span class="about-status warn">仮定</span></div>
+          <div class="about-param-head"><span class="about-era old">明治</span><strong>市街路の迂回係数</strong><span class="about-param-val">1.3倍</span><span class="about-status warn">仮定</span></div>
           <p>街道以外の市街路は道路網が不明なため、直線距離×1.3で推定</p>
         </li>
         <li class="about-param">
-          <div class="about-param-head"><span class="about-era old">明治</span><strong>鉄道馬車の速さ</strong><span class="about-param-val">8km/h</span><span class="about-status ok">出典あり（Wikipedia）</span></div>
+          <div class="about-param-head"><span class="about-era old">明治</span><strong>鉄道馬車の速度</strong><span class="about-param-val">8km/h</span><span class="about-status ok">出典あり（Wikipedia）</span></div>
           <p>東京馬車鉄道：新橋→浅草橋経由→浅草広小路 46分（約6km）から算出</p>
         </li>
         <li class="about-param">
@@ -231,15 +230,15 @@
           <p>終発の時刻は資料未入手（調査中）のため、仮に20:00とする。これより後は乗れない</p>
         </li>
         <li class="about-param">
-          <div class="about-param-head"><span class="about-era old">明治</span><strong>乗り継ぎ地点まで歩く最大距離</strong><span class="about-param-val">5km</span><span class="about-status warn">仮定</span></div>
+          <div class="about-param-head"><span class="about-era old">明治</span><strong>乗り継ぎ地点までの最大徒歩距離</strong><span class="about-param-val">5km</span><span class="about-status warn">仮定</span></div>
           <p>出発地・目的地から徒歩で乗り継ぎ地点に向かう最大距離（直線）</p>
         </li>
         <li class="about-param">
-          <div class="about-param-head"><span class="about-era old">明治</span><strong>近くの地点を町の道でつなぐ最大距離</strong><span class="about-param-val">1.5km</span><span class="about-status warn">仮定</span></div>
+          <div class="about-param-head"><span class="about-era old">明治</span><strong>地点間を市街路で接続する最大距離</strong><span class="about-param-val">1.5km</span><span class="about-status warn">仮定</span></div>
           <p>近接する地点同士を市街路でつなぐ最大距離（直線）</p>
         </li>
         <li class="about-param">
-          <div class="about-param-head"><span class="about-era now">現在</span><strong>徒歩の速さ</strong><span class="about-param-val">4.8km/h</span><span class="about-status ok">出典あり</span></div>
+          <div class="about-param-head"><span class="about-era now">現在</span><strong>徒歩速度</strong><span class="about-param-val">4.8km/h</span><span class="about-status ok">出典あり</span></div>
           <p>不動産の表示に関する公正競争規約の徒歩所要時間（80m/分）</p>
         </li>
         <li class="about-param">
@@ -252,52 +251,52 @@
         </li>
         <li class="about-param">
           <div class="about-param-head"><span class="about-era now">現在</span><strong>始発</strong><span class="about-param-val">5:00</span><span class="about-status warn">仮定</span><span class="about-param-slider">設定で変更可</span></div>
-          <p>今の路線の始発はおおむね5時前後。路線・駅ごとの違いは無視した仮定値。これより前に駅に着いたときは始発まで待つ</p>
+          <p>現在の路線の始発はおおむね5時前後。路線・駅ごとの違いは無視した仮定値。これより前に駅に着いたときは始発まで待つ</p>
         </li>
         <li class="about-param">
           <div class="about-param-head"><span class="about-era now">現在</span><strong>終電</strong><span class="about-param-val">24:00</span><span class="about-status warn">仮定</span><span class="about-param-slider">設定で変更可</span></div>
           <p>終電はおおむね0時台。路線・駅ごとの違いは無視し、24:00より後は乗れないとする仮定値</p>
         </li>
         <li class="about-param">
-          <div class="about-param-head"><span class="about-era now">現在</span><strong>駅まで歩く最大距離</strong><span class="about-param-val">2km</span><span class="about-status warn">仮定</span></div>
+          <div class="about-param-head"><span class="about-era now">現在</span><strong>駅までの最大徒歩距離</strong><span class="about-param-val">2km</span><span class="about-status warn">仮定</span></div>
           <p>出発地・目的地から駅まで歩く最大距離（直線）</p>
         </li>
         <li class="about-param">
-          <div class="about-param-head"><span class="about-era now">現在</span><strong>乗り換えで駅どうしを歩いてつなぐ最大距離</strong><span class="about-param-val">0.5km</span><span class="about-status warn">仮定</span></div>
+          <div class="about-param-head"><span class="about-era now">現在</span><strong>乗り換え時に駅間を徒歩で接続する最大距離</strong><span class="about-param-val">0.5km</span><span class="about-status warn">仮定</span></div>
           <p>乗換で駅同士を歩いてつなぐ最大距離（直線）</p>
         </li>
       </ul>
     </section>
 
     <section class="about-sec" id="d-route">
-      <h2>経路の探し方</h2>
+      <h2>経路探索の方法</h2>
       <ul class="about-list">
-        <li>地点と、乗っている列車・路線と、乗り物をもう使ったかを組にした「状態」の上で、時刻によって待ち時間が変わる最短経路を探します（ダイクストラ法）。乗り換えるたびに、汽車は次の発車時刻までの待ち、鉄道馬車と今の電車は平均待ち時間を足します。</li>
-        <li><strong>汽車・馬車を優先</strong>（はじめからオン）のときは、「所要分 ＋ 歩いた分 × 3」がいちばん小さい経路を選びます。歩く1分を、待つ4分ぶんとして数えるので、長く待っても歩かない経路が選ばれます。重みを付けても最良の経路を取りこぼさないよう、途中の経路は「着く時刻と歩いた分の両方で負けているもの」だけを捨てています。</li>
-        <li>はじめは「乗り物を1回以上使う経路のうち最も早いもの」にしていましたが、約1時間50分歩いて最後に鉄道馬車に12分乗るだけの経路が出たため、今の形に変えました。</li>
-        <li>最初の駅で10分以上待つときは、「出発を何時に遅らせても同じ列車に間に合います」と知らせ、出発時刻を変えるボタンを出します。</li>
-        <li>出発時刻のはじめの値は、ページを開いた時刻にいちばん近い5分刻みです。</li>
-        <li>「沿線の見どころ」には、経路が通る名所を通る順に並べます。出発地・目的地そのもの（100m以内）の名所は入れません。</li>
+        <li>「地点」「乗車中の列車・路線」「乗り物の利用有無」を組み合わせた状態に対し、時刻によって待ち時間が変化する最短経路探索（ダイクストラ法）を行います。乗り換えのたびに、汽車は次の発車時刻までの待ち時間、鉄道馬車と現在の電車は平均待ち時間を加算します。</li>
+        <li><strong>汽車・馬車を優先</strong>（初期設定で有効）の場合、「所要時間（分）＋ 徒歩時間（分）× 3」が最小となる経路を選択します。徒歩1分を待ち時間4分相当として評価するため、待ち時間が長くても徒歩の少ない経路が選ばれます。重み付けによって最適な経路を取りこぼさないよう、探索途中の経路は「到着時刻と徒歩時間の両方で劣るもの」のみを除外しています。</li>
+        <li>当初は「乗り物を1回以上利用する経路のうち最速のもの」としていましたが、約1時間50分歩いた後に鉄道馬車に12分乗車するだけの経路が選ばれたため、現在の方式に変更しました。</li>
+        <li>最初の駅での待ち時間が10分以上の場合は、同じ列車に間に合う最も遅い出発時刻を案内し、出発時刻を変更するボタンを表示します。</li>
+        <li>出発時刻の初期値は、ページを開いた時刻に最も近い5分刻みの時刻です。</li>
+        <li>「沿線の見どころ」には、経路上の名所を通過順に表示します。出発地・目的地そのもの（100m以内）の名所は含めません。</li>
       </ul>
     </section>
 
     <section class="about-sec" id="d-fare">
-      <h2>運賃の決まり</h2>
+      <h2>運賃の算出方法</h2>
       <ul class="about-list">
-        <li>汽車の運賃は、『鉄道汽車便覧表』の運賃表から、アプリで使う駅の間の上等・中等・下等を書き写しました。下等を主に出し、中等・上等を添えます。単位は銭（100銭＝1円）です。</li>
-        <li>日本鉄道の中で乗り継ぐとき（品川線で赤羽、そこから上野など）は、最初に乗った駅から最後に降りた駅までの通し運賃にします。</li>
-        <li>品川線で新橋から乗るときは、官設鉄道の新橋–品川の運賃に、品川から先の運賃を足します。資料に通し運賃が載っていないための仮定です。</li>
-        <li>官設鉄道の運賃は、1駅進むごとに上等15銭・中等10銭・下等5銭ずつ上がります（新橋–品川だけ上等25銭）。新橋–横浜は上等1円・中等60銭・下等30銭です。</li>
-        <li>鉄道馬車は1区あたり1等3銭・2等2銭ですが、区の区切りがわからないため、1回乗るごとに最低額の「2銭〜」とし、合計にも「〜」を付けます。</li>
-        <li>今の電車の運賃は出していません。</li>
+        <li>汽車の運賃は、『鉄道汽車便覧表』の運賃表から、本アプリで使用する駅間の上等・中等・下等を転記しています。下等を主に表示し、中等・上等を併記します。単位は銭（100銭＝1円）です。</li>
+        <li>日本鉄道の路線間で乗り継ぐ場合（品川線から赤羽で乗り換えて上野へ向かう場合など）は、最初の乗車駅から最後の降車駅までの通し運賃を適用します。</li>
+        <li>品川線に新橋から乗車する場合は、官設鉄道の新橋–品川間の運賃に品川以遠の運賃を加算します。資料に通し運賃の記載がないための仮定です。</li>
+        <li>官設鉄道の運賃は、1駅ごとに上等15銭・中等10銭・下等5銭ずつ加算されます（新橋–品川間のみ上等25銭）。新橋–横浜間は上等1円・中等60銭・下等30銭です。</li>
+        <li>鉄道馬車は1区あたり1等3銭・2等2銭ですが、区の区切りが不明なため、1乗車ごとに最低額の「2銭〜」として算出し、合計にも「〜」を付けて表示します。</li>
+        <li>現在の電車の運賃は表示していません。</li>
       </ul>
     </section>
 
     <section class="about-sec" id="d-now">
-      <h2>今の電車の計算</h2>
-      <p>今の側は、8路線だけの簡略モデルです。駅の間の距離（直線）を路線ごとの速さで割って乗る時間を出し、乗るたびに平均待ち時間（3分）を足します。路線が少ないので、実際より遅く出ることがあります。</p>
+      <h2>現在の電車の算出方法</h2>
+      <p>現在の経路は、8路線のみの簡略モデルで算出しています。駅間の直線距離を路線ごとの速度で除して乗車時間を求め、乗車ごとに平均待ち時間（3分）を加算します。対象路線が限られるため、実際より長い所要時間になる場合があります。</p>
       <div class="about-table-wrap"><table class="about-table">
-        <thead><tr><th scope="col">路線</th><th scope="col">速さ</th><th scope="col">根拠（概算）</th></tr></thead>
+        <thead><tr><th scope="col">路線</th><th scope="col">速度</th><th scope="col">根拠（概算）</th></tr></thead>
         <tbody>
           <tr><th scope="row">山手線</th><td class="num">34km/h</td><td>山手線 1周約34.5kmを約60分</td></tr>
           <tr><th scope="row">中央線快速</th><td class="num">44km/h</td><td>中央線快速 東京–新宿 約10.3kmを約14分</td></tr>
@@ -312,41 +311,41 @@
     </section>
 
     <section class="about-sec" id="d-data">
-      <h2>データの確かさ</h2>
+      <h2>データの信頼性</h2>
       <ul class="about-list">
-        <li><strong>時刻表</strong>：画像から書き写したもの（Claude による読み取り）を、人が画像と照らし合わせました。3路線とも全件一致です（官設鉄道の大森〜横浜は2026年10月5日、ほかは10月2日）。</li>
-        <li><strong>運賃</strong>：官設鉄道（7駅の全21組）は人が照合済みです。日本鉄道（9駅）は、行きと帰りが同じ額か、赤羽をまたぐ運賃が両側の合計と合うかを機械で確かめています。</li>
-        <li><strong>名所の説明（事実カード）</strong>：57枚。うち8枚は出典のページで内容を確かめた「確認済」、49枚は Wikipedia などをもとにした「未照合」です。カードごとに出典と状態を画面に出しています。</li>
-        <li><strong>絵と写真</strong>：45点。浮世絵・錦絵37点（歌川広重24点、小林清親5点ほか）、古写真2点、今の写真6点（明治・江戸の絵や写真が見つからない場合だけ）。すべて Wikimedia Commons から取り、作品名・作者・所蔵・権利を記録しています。</li>
-        <li><strong>テスト</strong>：26件（経路の計算、運賃、データの整合、名所の絵の有無、地名の検索）。公開は、テストが通ったときだけ行います。</li>
+        <li><strong>時刻表</strong>：画像からの転記（Claude による読み取り）を、担当者が画像と照合しています。3路線とも全件一致を確認しました（官設鉄道の大森〜横浜は2026年10月5日、その他は10月2日）。</li>
+        <li><strong>運賃</strong>：官設鉄道（7駅・全21区間）は担当者による照合済みです。日本鉄道（9駅）は、往復で同額であること、赤羽をまたぐ運賃が両区間の合計と一致することを機械的に確認しています。</li>
+        <li><strong>事実カード（名所・路線・街道などの説明）</strong>：57件。このうち8件は出典ページで内容を確認済み（確認済）、49件は Wikipedia などの二次資料に基づくもの（未照合）です。各カードに出典と照合状況を表示しています。</li>
+        <li><strong>図版・写真</strong>：45点。浮世絵・錦絵37点（歌川広重24点、小林清親5点ほか）、古写真2点、現在の写真6点（明治・江戸期の図版や写真が見つからない場合のみ）です。すべて Wikimedia Commons から取得し、作品名・作者・所蔵・ライセンスを記録しています。</li>
+        <li><strong>テスト</strong>：26件（経路計算、運賃、データの整合性、名所の図版の有無、地名検索）。テストに合格した場合のみ公開する仕組みです。</li>
       </ul>
     </section>
 
     <section class="about-sec" id="d-ai">
-      <h2>解説とAI</h2>
-      <p>「解説」タブの文章は、経路の計算結果と事実カードだけから組み立てた定型文です。根拠のない記述や数値は出ません。AI に解説文を書かせる機能も試しましたが、結果をタブで見やすくした結果、AI の文章を挟むより、経路・見どころ・根拠を自分でたどる方が使いやすいと判断し、AI は使わないことにしました。</p>
+      <h2>解説とAIの扱い</h2>
+      <p>「解説」タブの文章は、経路の算出結果と事実カードのみから構成する定型文で、根拠のない記述や数値は表示しません。AI による解説文の生成も検証しましたが、結果をタブで整理したことで、経路・見どころ・根拠を利用者が直接参照する方が分かりやすいと判断し、AI は導入しないこととしました。</p>
     </section>
 
     <section class="about-sec" id="d-make">
-      <h2>つくり</h2>
+      <h2>技術構成</h2>
       <ul class="about-list">
-        <li>画面：HTML・CSS・JavaScript（フレームワークなし）、地図ライブラリ MapLibre GL JS と maplibre-gl-compare（スワイプ）、アイコンは Material Symbols、文字は Noto Sans JP としっぽり明朝</li>
-        <li>経路の計算：JavaScript で、すべてブラウザの中で行います（サーバーなし）</li>
-        <li>公開：GitHub Pages。GitHub Actions でテストを通してから自動で公開します</li>
-        <li>開発：Claude Code を使い、実装のほか、時刻表・運賃の書き写し、名所の調べもの、資料づくりを手伝ってもらいました（時刻表と運賃は人が画像と照らし合わせて確かめています）</li>
+        <li>画面：HTML・CSS・JavaScript（フレームワーク不使用）、地図ライブラリ MapLibre GL JS と maplibre-gl-compare（スワイプ比較）。アイコンは Material Symbols、フォントは Noto Sans JP としっぽり明朝</li>
+        <li>経路計算：JavaScript により、すべてブラウザ内で処理（サーバー不要）</li>
+        <li>公開：GitHub Pages。GitHub Actions でテストを実行した後に自動で公開</li>
+        <li>開発：Claude Code を活用し、実装のほか、時刻表・運賃の転記、名所の調査、資料作成を実施（時刻表と運賃は担当者が画像と照合済み）</li>
       </ul>
       <p>ソースコード：<a href="https://github.com/junhongo-ccs/o-map" target="_blank" rel="noopener">github.com/junhongo-ccs/o-map</a></p>
     </section>
 
     <section class="about-sec" id="d-limits">
-      <h2>制約と今後</h2>
+      <h2>制約事項と今後の課題</h2>
       <ul class="about-list">
-        <li>明治の停車場・街道の位置は、今の地名や史跡からのおおよそです。甲州街道の日本橋〜半蔵門など、一部は道筋が不確かな「推定」の区間です。</li>
-        <li>汽車の時刻表は明治18年5月のものです。3月の品川線開業時の時刻や、11月の改正には切り替えられません。</li>
-        <li>鉄道馬車が何分おきに走っていたか、始発・終発は何時かは、資料が見つかっていません（仮定の値）。</li>
-        <li>乗り換えにかかる時間は見ていません。当時の時刻表には「発車の10分前までに乗る」とあります。</li>
-        <li>昌平橋は1873年の洪水で落ち、1878年に少し下流（今の万世橋のあたり）に鉄の橋が架かりました。1885年に中山道が神田川を渡った位置は、これから確かめます。</li>
-        <li>名所の説明の多くは、一次資料での確認がこれからです。</li>
+        <li>明治の停車場・街道の位置は、現在の地名や史跡に基づくおおよその位置です。甲州街道の日本橋〜半蔵門など、一部は経路が不確かな推定区間です。</li>
+        <li>汽車の時刻表は明治18年5月時点のもののみで、同年3月の品川線開業時や11月の改正後の時刻には対応していません。</li>
+        <li>鉄道馬車の運転間隔と始発・終発の時刻は資料が未入手のため、仮定値を使用しています。</li>
+        <li>乗り換えに要する時間は考慮していません。なお、当時の時刻表には「発車の10分前までに乗車すること」との注記があります。</li>
+        <li>昌平橋は1873年の洪水で流失し、1878年にやや下流（現在の万世橋付近）に鉄橋が架けられました。1885年時点で中山道が神田川を渡った位置は、今後確認します。</li>
+        <li>名所の説明の多くは、一次資料による確認が今後の課題です。</li>
       </ul>
     </section>
 
@@ -357,11 +356,11 @@
         <li>古地図：<a href="https://habs.rad.naro.go.jp/" target="_blank" rel="noopener">迅速測図（農研機構農業環境研究部門「歴史的農業環境閲覧システム」）</a> CC BY 2.1 JP</li>
         <li>地図：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a></li>
         <li>駅座標：<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a></li>
-        <li>名所の絵・写真：Wikimedia Commons から。作品名・作者・所蔵・権利は、名所のカードに一枚ずつ載せています</li>
+        <li>名所の図版・写真：Wikimedia Commons。作品名・作者・所蔵・ライセンスは、各名所のカードに掲載しています</li>
       </ul>
     </section>
 
-    <p class="about-cta about-cta-end"><a class="btn-primary about-open" href="./"><span class="material-symbols-outlined" aria-hidden="true">map</span>地図をひらく</a></p>
+    <p class="about-cta about-cta-end"><a class="btn-primary about-open" href="./"><span class="material-symbols-outlined" aria-hidden="true">map</span>地図を開く</a></p>
   </main>
 </body>
 </html>

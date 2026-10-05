@@ -78,6 +78,13 @@ body {
 button.nav-link { background: transparent; cursor: pointer; font: inherit; }
 .nav-icon { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; }
 .nav-icon .material-symbols-outlined { font-size: 22px; }
+/* 全画面表示：アイコン＋文言。全画面のときは「全画面を解除」と Esc キーの案内 */
+.nav-fs { display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 8px 0 12px; white-space: nowrap; } /* 文言が先、アイコン（または Esc）が後ろ */
+.nav-fs .material-symbols-outlined { font-size: 22px; }
+.nav-fs-key {
+  margin-left: 2px; padding: 0 5px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg);
+  font: 600 11px/1.6 system-ui, sans-serif; color: var(--ink-2);
+}
 .nav-link[aria-current="page"] { border-color: var(--old); color: var(--old); }
 .nav-menu { display: none; } /* スマホ・タブレット幅では歯車の代わりにハンバーガーを出す */
 .topbar-right nav { display: flex; gap: 8px; } /* 説明（i）と設定を横に並べる */

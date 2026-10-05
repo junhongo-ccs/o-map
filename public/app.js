@@ -273,14 +273,15 @@ fsBtn.addEventListener("click", () => {
   if (document.fullscreenElement) document.exitFullscreen();
   else document.documentElement.requestFullscreen().catch(() => {});
 });
-// Esc などで全画面が終わったときも、アイコンと読み上げの名前を合わせる（地図は画面の大きさの変化に自動で追従する）
+// Esc などで全画面が終わったときも、アイコンと文言を合わせる（地図は画面の大きさの変化に自動で追従する）。
+// 全画面のときは「全画面を解除」と、Esc キーでも解除できることを添える（アイコンは通常時だけ）
 document.addEventListener("fullscreenchange", () => {
   const on = !!document.fullscreenElement;
-  fsBtn.querySelector(".material-symbols-outlined").textContent = on ? "fullscreen_exit" : "fullscreen";
+  fsBtn.querySelector(".material-symbols-outlined").hidden = on; // 解除のときは「全画面を解除 Esc」だけで意味が通じるので、アイコンは出さない
+  fsBtn.querySelector(".nav-fs-label").textContent = on ? "全画面を解除" : "全画面表示する";
+  fsBtn.querySelector(".nav-fs-key").hidden = !on;
   fsBtn.setAttribute("aria-pressed", String(on));
-  const label = on ? "全画面表示を終了" : "全画面表示";
-  fsBtn.title = label;
-  fsBtn.setAttribute("aria-label", label);
+  fsBtn.title = on ? "全画面を解除（Esc キーでも解除できます）" : "全画面表示する";
 });
 
 // ---------- 地点の指定 ----------

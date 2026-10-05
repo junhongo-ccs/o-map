@@ -6,7 +6,7 @@
     "walkKmh": { "value": 4.8, "basis": "不動産の表示に関する公正競争規約の徒歩所要時間（80m/分）", "status": "出典あり" },
     "walkDetourStreet": { "value": 1.3, "basis": "道路網を使わず直線距離×1.3で推定（明治側と同じ係数）", "status": "仮定" },
     "railWaitMin": { "value": 3, "basis": "都心の主要路線は日中数分間隔。乗車ごとの平均待ち時間（乗換を含む）の仮定値", "status": "仮定", "min": 0, "max": 15, "step": 1 },
-    "railFirstMin": { "value": 300, "basis": "今の路線の始発はおおむね5時前後。路線・駅ごとの違いは無視した仮定値。これより前に駅に着いたときは始発まで待つ", "status": "仮定", "min": 240, "max": 420, "step": 10, "unit": "time" },
+    "railFirstMin": { "value": 300, "basis": "現在の路線の始発はおおむね5時前後。路線・駅ごとの違いは無視した仮定値。これより前に駅に着いたときは始発まで待つ", "status": "仮定", "min": 240, "max": 420, "step": 10, "unit": "time" },
     "railLastMin": { "value": 1440, "basis": "終電はおおむね0時台。路線・駅ごとの違いは無視し、24:00より後は乗れないとする仮定値", "status": "仮定", "min": 1320, "max": 1500, "step": 10, "unit": "time" },
     "accessRadiusKm": { "value": 2.0, "basis": "出発地・目的地から駅まで歩く最大距離（直線）", "status": "仮定" },
     "streetLinkKm": { "value": 0.5, "basis": "乗換で駅同士を歩いてつなぐ最大距離（直線）", "status": "仮定" }
