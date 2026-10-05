@@ -324,6 +324,20 @@
       "source": { "label": "メトロポリタン美術館「江戸高名会亭尽 深川八幡境内 二軒茶屋」", "url": "https://www.metmuseum.org/art/collection/search/55574" },
       "status": "未照合"
     },
+    "kamikawaguchiya": {
+      "title": "上川口屋",
+      "body": "鬼子母神堂の境内にある上川口屋は、1781年創業の、東京で一番古い駄菓子屋とされる。今の店主は13代目である。写真は今の店。",
+      "year": null,
+      "source": { "label": "豊島区「ネコに誘われ、雑司が谷ゆったり散歩」", "url": "https://www.city.toshima.lg.jp/ike-circle/tourism/spot/zoshigaya-sanpo.html" },
+      "status": "未照合"
+    },
+    "meguro_fudo": {
+      "title": "目黒不動（瀧泉寺）",
+      "body": "目黒不動は、円仁が霊夢に見た姿を彫ったと伝わる不動明王を本尊とする寺である。1812年に富くじが行われ、「江戸の三富」の一つとなった。門前には料理屋や土産物屋がぎっしりと並び、筍飯・目黒飴・餅花・粟餅が名物だった。絵は、仁王門の前のにぎわいと、名物の餅花を描いている。",
+      "year": null,
+      "source": { "label": "Wikipedia「瀧泉寺」", "url": "https://ja.wikipedia.org/wiki/瀧泉寺" },
+      "status": "未照合"
+    },
     "kanasugibashi": {
       "title": "金杉橋",
       "body": "金杉橋は、古川（渋谷川の下流）が海に注ぐあたりに架かる橋で、東海道が渡っていた。歌川広重の『名所江戸百景』に「金杉橋芝浦」として描かれた。",

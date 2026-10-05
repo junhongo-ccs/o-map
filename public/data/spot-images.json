@@ -384,6 +384,18 @@
       "license": "パブリックドメイン",
       "licenseUrl": null,
       "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1308387-Utagawa_Hiroshige-%E3%80%94%E6%B1%9F%E6%88%B8%E9%AB%98%E5%90%8D%E4%BC%9A%E4%BA%AD%E5%B0%BD%E3%80%95_%E7%8E%8B%E5%AD%90_%E6%89%87%E5%B1%8B-crd.jpg"
+    },
+    "meguro_fudo": {
+      "file": "img/spots/meguro_fudo.jpg",
+      "width": 532,
+      "height": 760,
+      "title": "江戸自慢三十六興 目黒不動餅花",
+      "artist": "歌川国貞（三代豊国）・二代歌川広重",
+      "date": "幕末の揃物",
+      "holder": "国立国会図書館",
+      "license": "パブリックドメイン",
+      "licenseUrl": null,
+      "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1303613-Utagawa_Kunisada_Hiroshige_II-%E6%B1%9F%E6%88%B8%E8%87%AA%E6%85%A2%E4%B8%89%E5%8D%81%E5%85%AD%E8%88%88_%E7%9B%AE%E9%BB%92%E4%B8%8D%E5%8B%95%E9%A4%85%E8%8A%B1-crd.jpg"
     }
   },
   "factImages": {
@@ -422,6 +434,18 @@
       "license": "パブリックドメイン（CC0）",
       "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.ja",
       "page": "https://commons.wikimedia.org/wiki/File:%E6%B1%9F%E6%88%B8%E9%AB%98%E5%90%8D%E4%BC%9A%E4%BA%AD%E5%B0%BD_%E6%B7%B1%E5%B7%9D%E5%85%AB%E5%B9%A1%E5%A2%83%E5%86%85_%E4%BA%8C%E8%BB%92%E8%8C%B6%E5%B1%8B-Fukagawa_Hachiman_Keidai_(Niken_Jya-ya)_MET_DP123221.jpg"
+    },
+    "kamikawaguchiya": {
+      "file": "img/spots/kamikawaguchiya.jpg",
+      "width": 760,
+      "height": 507,
+      "title": "上川口屋（現在）",
+      "artist": "撮影：torne",
+      "date": "2014年",
+      "holder": null,
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0/deed.ja",
+      "page": "https://commons.wikimedia.org/wiki/File:%E5%89%B5%E6%A5%AD%E4%B8%80%E4%B8%83%E5%85%AB%E4%B8%80%E5%B9%B4_%E4%B8%8A%E5%B7%9D%E5%8F%A3%E5%B1%8B_%E3%83%84%E3%83%AB%E3%83%9E%E3%83%BC%E3%82%AF_(12082728936).jpg"
     }
   }
 }
