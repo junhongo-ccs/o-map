@@ -282,6 +282,48 @@
       "source": { "label": "Wikipedia「富岡八幡宮」", "url": "https://ja.wikipedia.org/wiki/富岡八幡宮" },
       "status": "未照合"
     },
+    "ueno_seiyoken": {
+      "title": "上野精養軒",
+      "body": "精養軒は1872年に築地で開いた、日本のフランス料理店の草分けである。1876年に上野公園が開かれると、園内の食事と社交の場として、支店の上野精養軒を不忍池のほとりに開いた。明治期には王侯貴族や名士が馬車で訪れ、鹿鳴館時代の文明開化を象徴する店だった。",
+      "year": 1876,
+      "source": { "label": "Wikipedia「上野精養軒」", "url": "https://ja.wikipedia.org/wiki/上野精養軒" },
+      "status": "未照合"
+    },
+    "chomeiji_sakuramochi": {
+      "title": "長命寺桜もち",
+      "body": "1717年、山本新六が隅田川の土手の桜の葉を塩漬けにして桜もちを考え出し、向島の長命寺の門前で売り始めた。写真は1927年ごろの店（山本や）である。",
+      "year": null,
+      "source": { "label": "Wikipedia「長命寺桜もち」", "url": "https://ja.wikipedia.org/wiki/長命寺桜もち" },
+      "status": "未照合"
+    },
+    "oji_ogiya": {
+      "title": "王子の扇屋",
+      "body": "扇屋は王子の料理屋で、落語「王子の狐」では、狐の化けた娘を連れた男が上がり込み、土産に卵焼きまで包ませる。料理屋としての営業はやめたが、今も卵焼きを売っている。歌川広重は「江戸高名会亭尽」で王子の扇屋を描いた。",
+      "year": null,
+      "source": { "label": "Wikipedia「王子の狐」", "url": "https://ja.wikipedia.org/wiki/王子の狐" },
+      "status": "未照合"
+    },
+    "kimuraya": {
+      "title": "木村屋のあんぱん",
+      "body": "木村屋は1869年に木村安兵衛が芝日陰町で開いたパン屋で、1870年に京橋区尾張町（今の銀座）へ移った。1874年に酒種あんぱんを売り出した。写真は今の銀座本店である。",
+      "year": 1874,
+      "source": { "label": "Wikipedia「木村屋總本店」", "url": "https://ja.wikipedia.org/wiki/木村屋總本店" },
+      "status": "未照合"
+    },
+    "kamiya_bar": {
+      "title": "みかはや銘酒店（のちの神谷バー）",
+      "body": "1880年4月、神谷傳兵衛が郷里の三河にちなんだ「みかはや銘酒店」を浅草花川戸町に開いた。1912年に店の中を西洋風にして「神谷バー」と改めた。写真は今の神谷バーである。",
+      "year": 1880,
+      "source": { "label": "Wikipedia「神谷バー」", "url": "https://ja.wikipedia.org/wiki/神谷バー" },
+      "status": "未照合"
+    },
+    "fukagawa_nikenjaya": {
+      "title": "深川八幡の二軒茶屋",
+      "body": "富岡八幡宮の境内には、二軒茶屋と呼ばれた料理茶屋があった。歌川広重は1840年ごろ、江戸の名高い料理屋を描いた揃物「江戸高名会亭尽」の一枚にこの店を描いた。明治18年（1885）にも店があったかは確かめられていない。",
+      "year": null,
+      "source": { "label": "メトロポリタン美術館「江戸高名会亭尽 深川八幡境内 二軒茶屋」", "url": "https://www.metmuseum.org/art/collection/search/55574" },
+      "status": "未照合"
+    },
     "kanasugibashi": {
       "title": "金杉橋",
       "body": "金杉橋は、古川（渋谷川の下流）が海に注ぐあたりに架かる橋で、東海道が渡っていた。歌川広重の『名所江戸百景』に「金杉橋芝浦」として描かれた。",

@@ -1,5 +1,5 @@
 {
-  "note": "名所のカードに出す画像。Wikimedia Commons から取得し、長辺760pxに縮小して public/img/spots/ に置いた。CC BY のものは作者名とライセンスの表示が必要",
+  "note": "名所のカードに出す画像。Wikimedia Commons から取得し、長辺760pxに縮小して public/img/spots/ に置いた。CC BY のものは作者名とライセンスの表示が必要。factImages は、名所のカードの中の事実カードに添える画像（近くの名所にまとめた店など）。キーは facts.json の事実カードの ID",
   "images": {
     "nihonbashi": {
       "file": "img/spots/nihonbashi.jpg",
@@ -348,6 +348,80 @@
       "license": "パブリックドメイン",
       "licenseUrl": null,
       "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1303263-Utagawa_Hiroshige-%E5%90%8D%E6%89%80%E6%B1%9F%E6%88%B8%E7%99%BE%E6%99%AF_%E6%B7%B1%E5%B7%9D%E5%85%AB%E3%81%BE%E3%82%93%E5%B1%B1%E3%81%B2%E3%82%89%E3%81%8D-crd.jpg"
+    },
+    "ueno_seiyoken": {
+      "file": "img/spots/ueno_seiyoken.jpg",
+      "width": 760,
+      "height": 509,
+      "title": "Seiyoken hotel, Ueno park, Tokyo（彩色写真。本のページから写真の部分を切り出した）",
+      "artist": "撮影者不明",
+      "date": "1887〜97年ごろ",
+      "holder": "アムステルダム国立美術館",
+      "license": "パブリックドメイン（CC0）",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.ja",
+      "page": "https://commons.wikimedia.org/wiki/File:Handkarren_voor_een_hotel_in_het_Uenopark_te_Tokio_Seiyoken_hotel,_Ueno_park,_Tokyo_(titel_op_object),_RP-F-2001-7-1557H-4.jpg"
+    },
+    "chomeiji_sakuramochi": {
+      "file": "img/spots/chomeiji_sakuramochi.jpg",
+      "width": 760,
+      "height": 447,
+      "title": "長命寺桜もちの店（山本や）",
+      "artist": "撮影者不明（『墨田区の昭和史』より）",
+      "date": "1927年ごろ",
+      "holder": null,
+      "license": "パブリックドメイン",
+      "licenseUrl": null,
+      "page": "https://commons.wikimedia.org/wiki/File:Ch%C5%8Dmeiji_Sakuramochi_circa_1927.jpg"
+    },
+    "oji_ogiya": {
+      "file": "img/spots/oji_ogiya.jpg",
+      "width": 760,
+      "height": 495,
+      "title": "江戸高名会亭尽 王子 扇屋",
+      "artist": "歌川広重",
+      "date": "江戸時代後期",
+      "holder": "国立国会図書館",
+      "license": "パブリックドメイン",
+      "licenseUrl": null,
+      "page": "https://commons.wikimedia.org/wiki/File:NDL-DC_1308387-Utagawa_Hiroshige-%E3%80%94%E6%B1%9F%E6%88%B8%E9%AB%98%E5%90%8D%E4%BC%9A%E4%BA%AD%E5%B0%BD%E3%80%95_%E7%8E%8B%E5%AD%90_%E6%89%87%E5%B1%8B-crd.jpg"
+    }
+  },
+  "factImages": {
+    "kimuraya": {
+      "file": "img/spots/kimuraya.jpg",
+      "width": 760,
+      "height": 570,
+      "title": "銀座木村屋 銀座本店（現在）",
+      "artist": "撮影：Asanagi",
+      "date": "2022年",
+      "holder": null,
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.ja",
+      "page": "https://commons.wikimedia.org/wiki/File:Ginza_Kimuraya_Sohonten_2022-11-16.jpg"
+    },
+    "kamiya_bar": {
+      "file": "img/spots/kamiya_bar.jpg",
+      "width": 573,
+      "height": 760,
+      "title": "神谷バー（現在）",
+      "artist": "撮影：Kakidai",
+      "date": "2012年",
+      "holder": null,
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/deed.ja",
+      "page": "https://commons.wikimedia.org/wiki/File:Kamiya_bar_at_Asakusa_Tokyo.JPG"
+    },
+    "fukagawa_nikenjaya": {
+      "file": "img/spots/fukagawa_nikenjaya.jpg",
+      "width": 760,
+      "height": 498,
+      "title": "江戸高名会亭尽 深川八幡境内 二軒茶屋",
+      "artist": "歌川広重",
+      "date": "1840年ごろ",
+      "holder": "メトロポリタン美術館",
+      "license": "パブリックドメイン（CC0）",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.ja",
+      "page": "https://commons.wikimedia.org/wiki/File:%E6%B1%9F%E6%88%B8%E9%AB%98%E5%90%8D%E4%BC%9A%E4%BA%AD%E5%B0%BD_%E6%B7%B1%E5%B7%9D%E5%85%AB%E5%B9%A1%E5%A2%83%E5%86%85_%E4%BA%8C%E8%BB%92%E8%8C%B6%E5%B1%8B-Fukagawa_Hachiman_Keidai_(Niken_Jya-ya)_MET_DP123221.jpg"
     }
   }
 }

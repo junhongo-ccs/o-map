@@ -122,7 +122,8 @@ const markers = {
 // （Material Symbols。index.html の icon_names に同じ名前を並べる）。鳥居・橋・馬の形のアイコンは無いので近いもので代用
 const CATEGORY_ICON = {
   宿場: "hotel", 門: "gate", 社寺: "temple_buddhist", "川・橋": "water", 花の名所: "local_florist", 紅葉の名所: "eco", 庭園: "park",
-  街道: "road", 町並み: "shopping_bag", 水車: "mode_fan", 馬場: "target",
+  街道: "road", 町並み: "shopping_bag", 水車: "mode_fan", 馬場: "target", 茶屋: "local_cafe", 料理屋: "restaurant",
+  // 酒の店（銘酒店・バーなど）を足すときは "local_bar"（カクテルグラス）
 };
 // 名所のピン（事実カードのある宿場・名所。経路に関係なく両方の地図にいつも置く）。押すとカードを出す
 const SPOT_KINDS = new Set(["place", "shuku"]);
@@ -130,8 +131,8 @@ const ALL_SPOTS = Object.entries(NET_OLD.nodes)
   .filter(([, n]) => SPOT_KINDS.has(n.kind) && n.facts?.some((f) => FACTS.facts[f]))
   .map(([id, n]) => ({ id, name: n.name, category: n.category, lat: n.lat, lon: n.lon, facts: n.facts.filter((f) => FACTS.facts[f]) }));
 // 名所の画像（あれば）。作品名・作者・年代・所蔵・権利をクレジットとして添える
-function spotImageHTML(id) {
-  const im = SPOT_IMAGES.images[id];
+// im を渡せば、その画像を出す（事実カードに添える画像 factImages 用）
+function spotImageHTML(id, im = SPOT_IMAGES.images[id]) {
   if (!im) return "";
   const who = [im.artist, im.date, im.holder && `${im.holder}所蔵`].filter(Boolean).join("、");
   const lic = im.licenseUrl ? `<a href="${esc(im.licenseUrl)}" target="_blank" rel="noopener">${esc(im.license)}</a>` : esc(im.license);
@@ -144,7 +145,9 @@ function spotCardHTML(sp) {
     const f = FACTS.facts[id];
     // 事実カードのタイトルが名所名と同じ（かっこ書きを除いて同じ）なら、見出しの繰り返しになるので出さない
     const same = baseName(f.title) === baseName(sp.name);
-    return `<p>${same ? "" : `<span class="spot-title">${esc(f.title)}</span><br>`}${esc(f.body)}
+    // 近くの名所にまとめた店などは、事実カードごとの画像（factImages）を見出しの前に添える
+    const img = spotImageHTML(null, SPOT_IMAGES.factImages?.[id]);
+    return `${img ? `<div class="spot-fact">${img}</div>` : ""}<p>${same ? "" : `<span class="spot-title">${esc(f.title)}</span><br>`}${esc(f.body)}
       <br><a class="spot-src" href="${esc(f.source.url)}" target="_blank" rel="noopener">出典：${esc(f.source.label)}</a></p>`;
   }).join("")}</div>`;
 }
